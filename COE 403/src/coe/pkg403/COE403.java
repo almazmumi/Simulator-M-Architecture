@@ -14,7 +14,7 @@ public class COE403 {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-    	String [] Load_Store= {"SW","SH","SW","SD"}
+    	String [] Load_Store= {"SW","SH","SW","SD"};
         String OP="",a="",b="",c="",d="",f="",x="",Imm="";
         String Rd="",Rs="",Rt="",Func="";
         String ff,aa,bb,dd,ImmImm;//AI=all_instructions OI=one_instruction
@@ -31,13 +31,22 @@ public class COE403 {
             System.out.println("instruction # "+i);
             
             boolean NotStore=true;
-            instructions[i]=instructions[i].replace("[", "");
-            instructions[i]=instructions[i].replace("]", "");
-            instructions[i]=instructions[i].replace("=", ",");
-
+//            instructions[i]=instructions[i].replace("[", "");
+//            instructions[i]=instructions[i].replace("]", "");
+//            instructions[i]=instructions[i].replace("=", "");
+//            instructions[i]=instructions[i].replace(",", "");
+            
+            System.out.println(instructions[i]);
+            
+            String instArray[] = new String[4];
+            String instArray1[] = instructions[i].split("=")[0].split(" ");
+            String instArray2[] = instructions[i].split("=")[1].split(",");
+            instArray[0] = instArray1[0];
+            instArray[1] = instArray1[1];
+            instArray[2] = instArray1[0];
+            instArray[3] = instArray2[1];
             
             
-            String instArray[]=instructions[i].split(" ");
             ///////////////////////////////////////////////////////////
             for(int j=0;j<Load_Store.length;j++) {
             	if(Load_Store[j].contains(instArray[0])) {
