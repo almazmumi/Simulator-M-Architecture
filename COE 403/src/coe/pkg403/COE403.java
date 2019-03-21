@@ -14,6 +14,7 @@ public class COE403 {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+    	String [] Load_Store= {"SW","SH","SW","SD"}
         String OP="",a="",b="",c="",d="",f="",x="",Imm="";
         String Rd="",Rs="",Rt="",Func="";
         String ff,aa,bb,dd,ImmImm;//AI=all_instructions OI=one_instruction
@@ -21,24 +22,38 @@ public class COE403 {
         String instructions[] = new String[2];
         instructions[0]= "add r20 = r2 , r4 ";
         instructions[1]= "cor r5 = r7 , 3 ";
-//        instructions[2]= "mul r5 = r9 , r30 ";
+//        instructions[2]= "mul r5  r9  r30 ";
 //        instructions[3]= "geu r25 = r13 , r30 ";
 //        instructions[4]= "shr r3 = r2 , r30 ";
         
         
         for(i=0;i<instructions.length;i++){
             System.out.println("instruction # "+i);
+            
+            boolean NotStore=true;
+            instructions[i].replace('[', '');
+            instructions[i].replace(']', '');
+            instructions[i].replace('=', '');
+            instructions[i].replace(',', '');
+            
+            
             String instArray[]=instructions[i].split(" ");
-            
-            
-            if(instArray[5].contains("r")){//R-FORMAT
+            ///////////////////////////////////////////////////////////
+            for(int j=0;j<Load_Store.length;j++) {
+            	if(Load_Store[j].contains(instArray[0])) {
+            		NotStore=false;
+            		break;
+            	}
+            }
+            ///////////////////////////////////////////////////////////////////////
+            if(instArray[3].contains("r")&&NotStore){//R-FORMAT
                 System.out.println("R-FORMAT");
             System.out.println(instArray[0]+" "+instArray[1]+
-                    " "+instArray[3]+" "+instArray[5]);
+                    " "+instArray[2]+" "+instArray[3]);
             f=getFunc(instArray[0]);
             d=getRegister(instArray[1]);
-            a=getRegister(instArray[3]);
-            b=getRegister(instArray[5]);
+            a=getRegister(instArray[2]);
+            b=getRegister(instArray[3]);
             System.out.println("Instruction Number");
             System.out.println(f+" "+d+" "+a+" "+b);
             
@@ -55,14 +70,23 @@ public class COE403 {
             b=ExtRegister_5(bb);
             System.out.println("Instruction in binary after extending ");
             System.out.println(f+" "+d+" "+a+" "+b);
-        }else  if(!instArray[5].contains("r")){//I-FORMAT
+        }else  if(!instArray[3].contains("r")){//I-FORMAT
+        	if(NotStore==false) {
+        		
+
+                b=getRegister(instArray[3]);//Rb
+                a=getRegister(instArray[1]);//Rs
+                Imm=ExtRegister_12(instArray[2]);//Imm
+        		
+        	}
+        	else {
             System.out.println("I-FORMAT");
             System.out.println(instArray[0]+" "+instArray[1]+
                     " "+instArray[3]+" "+instArray[5]);
             f=getFunc(instArray[0]);// function
             b=getRegister(instArray[1]);//Rb
-            a=getRegister(instArray[3]);//Rs
-            Imm=instArray[5];//Imm
+            a=getRegister(instArray[2]);//Rs
+            Imm=instArray[3];//Imm
             System.out.println("Instruction Number");
             System.out.println(f+" "+b+" "+a+" "+Imm);
             
@@ -79,6 +103,9 @@ public class COE403 {
             Imm=ExtRegister_12(ImmImm);
             System.out.println("Instruction in binary after extending ");
             System.out.println(f+" "+b+" "+a+" "+Imm);
+            
+        	
+        	}
         }
          System.out.println();   
     }
@@ -164,6 +191,7 @@ public class COE403 {
     }
     return d;
     }
+    
     public static String ExtRegister_12(String operand){
         String d="";
     if(operand.length()==1){
