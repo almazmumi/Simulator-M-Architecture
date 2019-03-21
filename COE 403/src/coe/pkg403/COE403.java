@@ -31,10 +31,10 @@ public class COE403 {
             System.out.println("instruction # "+i);
             
             boolean NotStore=true;
-            instructions[i].replace('[', '');
-            instructions[i].replace(']', '');
-            instructions[i].replace('=', '');
-            instructions[i].replace(',', '');
+            instructions[i]=instructions[i].replace("[", "");
+            instructions[i]=instructions[i].replace("]", "");
+            instructions[i]=instructions[i].replace("=", ",");
+
             
             
             String instArray[]=instructions[i].split(" ");
