@@ -29,6 +29,8 @@ public class COE403 {
         for(i=0;i<instructions.length;i++){
             System.out.println("instruction # "+i);
             String instArray[]=instructions[i].split(" ");
+            
+            
             if(instArray[5].contains("r")){//R-FORMAT
                 System.out.println("R-FORMAT");
             System.out.println(instArray[0]+" "+instArray[1]+
@@ -118,75 +120,17 @@ public class COE403 {
         } 
         return f;
     }
-    public static String getRegister(String operand){
-        String d="";
-        if(operand.equals("r0")){
-            d="0";
-        }else if(operand.equals("r1")){
-            d="1";
-        }else if(operand.equals("r2")){
-            d="2";
-        }else if(operand.equals("r3")){
-            d="3";
-        }else if(operand.equals("r4")){
-            d="4";
-        }else if(operand.equals("r5")){
-            d="5";
-        }else if(operand.equals("r6")){
-            d="6";
-        }else if(operand.equals("r7")){
-            d="7";
-        }else if(operand.equals("r8")){
-            d="8";
-        }else if(operand.equals("r9")){
-            d="9";
-        }else if(operand.equals("r10")){
-            d="10";
-        }else if(operand.equals("r11")){
-            d="11";
-        }else if(operand.equals("r12")){
-            d="12";
-        }else if(operand.equals("r13")){
-            d="13";
-        }else if(operand.equals("r14")){
-            d="14";
-        }else if(operand.equals("r15")){
-            d="15";
-        }else if(operand.equals("r16")){
-            d="16";
-        }else if(operand.equals("r17")){
-            d="17";
-        }else if(operand.equals("r18")){
-            d="18";
-        }else if(operand.equals("r19")){
-            d="19";
-        }else if(operand.equals("r20")){
-            d="20";
-        }else if(operand.equals("r21")){
-            d="21";
-        }else if(operand.equals("r22")){
-            d="22";
-        }else if(operand.equals("r23")){
-            d="23";
-        }else if(operand.equals("r24")){
-            d="24";
-        }else if(operand.equals("r25")){
-            d="25";
-        }else if(operand.equals("r26")){
-            d="26";
-        }else if(operand.equals("r27")){
-            d="27";
-        }else if(operand.equals("r28")){
-            d="28";
-        }else if(operand.equals("r29")){
-            d="29";
-        }else if(operand.equals("r30")){
-            d="30";
-        }else if(operand.equals("r31")){
-            d="31";
-        }
-        return d;
-    }
+    
+    
+    
+    
+    public static String getRegister(String operand){  return operand.substring(1);   }
+    
+    
+    
+    
+    
+    
     private static String toBinary(String operand) {
          int dd=Integer.parseInt(operand);
          String a=Integer.toBinaryString(dd);
