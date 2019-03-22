@@ -5,12 +5,17 @@
  */
 package coe.pkg403;
 
+import java.util.ArrayList;
 import java.util.StringTokenizer;
 
 /**
  *
  * @author SAMSUNG
 
+public class TesTTokenizer {
+    /**
+     * @param args the command line arguments
+     */
 public class TesTTokenizer {
     /**
      * @param args the command line arguments
@@ -43,34 +48,33 @@ public class TesTTokenizer {
           instructions[i]=instructions[i].replace("=", " ");
           instructions[i]=instructions[i].replace(",", " ");
             
-
-            String instArray[] = new String[4];
+          	ArrayList<String> instArray = new ArrayList();
+     
 
             StringTokenizer st = new StringTokenizer(instructions[i]," ");
             int k =0;
             while (st.hasMoreTokens()) {  
-            	instArray[k]=st.nextToken();
-            	k++;
+            	instArray.add(st.nextToken());
+
                 
             }  
             
             ///////////////////////////////////////////////////////////
             for(int j=0;j<Load_Store.length;j++) {
-            	if(Load_Store[j].contains(instArray[0])) {
+            	if(Load_Store[j].contains(instArray.get(0))) {
             		NotStore=false;
             		break;
             	}
             }
             ///////////////////////////////////////////////////////////////////////
-            System.out.print(" T :"+instArray[3]);
-            if(instArray[3].contains("r")&&NotStore){//R-FORMAT
+            
+            if(instArray.get(3).contains("r")&&NotStore){//R-FORMAT
                 System.out.println("R-FORMAT");
-            System.out.println(instArray[0]+" "+instArray[1]+
-                    " "+instArray[2]+" "+instArray[3]);
-            f=getFunc(instArray[0]);
-            d=getRegister(instArray[1]);
-            a=getRegister(instArray[2]);
-            b=getRegister(instArray[3]);
+
+            f=getFunc(instArray.get(0));
+            d=getRegister(instArray.get(1));
+            a=getRegister(instArray.get(2));
+            b=getRegister(instArray.get(3));
             System.out.println("Instruction Number");
             System.out.println(f+" "+d+" "+a+" "+b);
             
@@ -87,23 +91,21 @@ public class TesTTokenizer {
             b=ExtRegister_5(bb);
             System.out.println("Instruction in binary after extending ");
             System.out.println(f+" "+d+" "+a+" "+b);
-        }else  if(!instArray[3].contains("r")){//I-FORMAT
+        }else  if(!instArray.get(3).contains("r")){//I-FORMAT
         	if(NotStore==false) {
         		
 
-                b=getRegister(instArray[3]);//Rb
-                a=getRegister(instArray[1]);//Rs
-                Imm=ExtRegister_12(instArray[2]);//Imm
+                b=getRegister(instArray.get(3));//Rb
+                a=getRegister(instArray.get(1));//Rs
+                Imm=ExtRegister_12(instArray.get(2));//Imm
         		
         	}
         	else {
-            System.out.println("I-FORMAT");
-            System.out.println(instArray[0]+" "+instArray[1]+
-                    " "+instArray[2]+" "+instArray[3]);
-            f=getFunc(instArray[0]);// function
-            b=getRegister(instArray[1]);//Rb
-            a=getRegister(instArray[2]);//Rs
-            Imm=instArray[3];//Imm
+
+            f=getFunc(instArray.get(0));// function
+            b=getRegister(instArray.get(1));//Rb
+            a=getRegister(instArray.get(2));//Rs
+            Imm=instArray.get(3);//Imm
             System.out.println("Instruction Number");
             System.out.println(f+" "+b+" "+a+" "+Imm);
             
@@ -241,4 +243,3 @@ public class TesTTokenizer {
     return d;
     }
 }
-
