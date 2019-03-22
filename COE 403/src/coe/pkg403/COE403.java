@@ -5,22 +5,29 @@
  */
 package coe.pkg403;
 
+import java.util.StringTokenizer;
+
 /**
  *
  * @author SAMSUNG
- */
-public class COE403 {
+
+public class TesTTokenizer {
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
     	String [] Load_Store= {"SW","SH","SW","SD"};
+    	
         String OP="",a="",b="",c="",d="",f="",x="",Imm="";
+        
         String Rd="",Rs="",Rt="",Func="";
+        
         String ff,aa,bb,dd,ImmImm;//AI=all_instructions OI=one_instruction
+        
+        
         int i;
         String instructions[] = new String[2];
-        instructions[0]= "add r20 = r2 , r4 ";
+        instructions[0]= "LD r20 =[ r2    ,  20 ]";
         instructions[1]= "cor r5 = r7 , 3 ";
 //        instructions[2]= "mul r5  r9  r30 ";
 //        instructions[3]= "geu r25 = r13 , r30 ";
@@ -31,21 +38,21 @@ public class COE403 {
             System.out.println("instruction # "+i);
             
             boolean NotStore=true;
-//            instructions[i]=instructions[i].replace("[", "");
-//            instructions[i]=instructions[i].replace("]", "");
-//            instructions[i]=instructions[i].replace("=", "");
-//            instructions[i]=instructions[i].replace(",", "");
+          instructions[i]=instructions[i].replace("[", "");
+          instructions[i]=instructions[i].replace("]", "");
+          instructions[i]=instructions[i].replace("=", " ");
+          instructions[i]=instructions[i].replace(",", " ");
             
-            System.out.println(instructions[i]);
-            
+
             String instArray[] = new String[4];
-            String instArray1[] = instructions[i].split("=")[0].split(" ");
-            String instArray2[] = instructions[i].split("=")[1].split(",");
-            instArray[0] = instArray1[0];
-            instArray[1] = instArray1[1];
-            instArray[2] = instArray1[0];
-            instArray[3] = instArray2[1];
-            
+
+            StringTokenizer st = new StringTokenizer(instructions[i]," ");
+            int k =0;
+            while (st.hasMoreTokens()) {  
+            	instArray[k]=st.nextToken();
+            	k++;
+                
+            }  
             
             ///////////////////////////////////////////////////////////
             for(int j=0;j<Load_Store.length;j++) {
@@ -55,6 +62,7 @@ public class COE403 {
             	}
             }
             ///////////////////////////////////////////////////////////////////////
+            System.out.print(" T :"+instArray[3]);
             if(instArray[3].contains("r")&&NotStore){//R-FORMAT
                 System.out.println("R-FORMAT");
             System.out.println(instArray[0]+" "+instArray[1]+
@@ -91,7 +99,7 @@ public class COE403 {
         	else {
             System.out.println("I-FORMAT");
             System.out.println(instArray[0]+" "+instArray[1]+
-                    " "+instArray[3]+" "+instArray[5]);
+                    " "+instArray[2]+" "+instArray[3]);
             f=getFunc(instArray[0]);// function
             b=getRegister(instArray[1]);//Rb
             a=getRegister(instArray[2]);//Rs
@@ -153,7 +161,9 @@ public class COE403 {
             f="14";
         }else if(Func.equals("max")|Func.equals("modu")){
             f="15";
-        } 
+        } else {
+        	f="0";
+        }
         return f;
     }
     
@@ -231,3 +241,4 @@ public class COE403 {
     return d;
     }
 }
+
