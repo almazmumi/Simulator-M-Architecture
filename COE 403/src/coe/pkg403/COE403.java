@@ -16,7 +16,7 @@ public class TesTTokenizer {
     /**
      * @param args the command line arguments
      */
-public class TesTTokenizer {
+public class COE403 {
     /**
      * @param args the command line arguments
      */
