@@ -73,7 +73,7 @@ public class Window extends JFrame {
 						instArray.add(a[i]);
 				}
 				try {
-					AssemblerNotUsed.loadAllInstructions();
+					Assembler.initializeCommands();
 				} catch (FileNotFoundException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -82,7 +82,7 @@ public class Window extends JFrame {
 				ProgramCounter pc = new ProgramCounter();
 				RegisterFile r = new RegisterFile();
 
-				AssemblerNotUsed.fetchInstruction(r, pc, instArray);
+				Assembler.SetInstructionInPC(pc, instArray);
 
 				for (int i = 0; i < pc.getInstructionsList().size(); i++) {
 					((IInstruction) pc.getInstructionsList().get(i)).execute(r);
