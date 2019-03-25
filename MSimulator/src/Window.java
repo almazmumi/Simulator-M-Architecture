@@ -85,7 +85,10 @@ public class Window extends JFrame {
 				Assembler.SetInstructionInPC(pc, instArray);
 
 				for (int i = 0; i < pc.getInstructionsList().size(); i++) {
-					((IInstruction) pc.getInstructionsList().get(i)).execute(r);
+					if(pc.getInstructionsList().get(i).getClass().getName().equals("IInstruction"))
+						((IInstruction) pc.getInstructionsList().get(i)).execute(r);
+					else if(pc.getInstructionsList().get(i).getClass().getName().equals("RInstruction"))
+						((RInstruction) pc.getInstructionsList().get(i)).execute(r);
 				}
 
 				T.setText(r.toString());

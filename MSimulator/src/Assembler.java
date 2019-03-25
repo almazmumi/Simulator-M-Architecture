@@ -78,7 +78,8 @@ public class Assembler {
 			Instruction Instruction_In;
 			System.out.println(instructionFormat.get(instArray.get(0).toUpperCase()));
 			if(instructionFormat.get(instArray.get(0).toUpperCase()).equals('I')){
-			 Instruction_In = new IInstruction(i, In.get(i), Inst);
+				 Instruction_In = new IInstruction(i, In.get(i), Inst);
+			 	pc.getInstructionsList().add(Instruction_In);
 			}else if(instructionFormat.get(instArray.get(0).toUpperCase()).equals('J')){
 				 Instruction_In = new JInstruction(i, In.get(i), Inst);
 				 pc.getInstructionsList().add(Instruction_In);
@@ -188,10 +189,10 @@ public class Assembler {
 		} else if (instArray.size() == 4) {// OP="",a="",b="",c="",d="",f="",x="",Imm="",Imm2="";
 
 			OP = ExtRegister_6(Integer.toBinaryString(instructionCommand.get(instArray.get(0).toUpperCase()))) ;
-			a = ExtRegister_5(IntToBinary(Register(instArray.get(1)))) ;
-			b = ExtRegister_5(IntToBinary(Register(instArray.get(2)))) ;
+			a = ExtRegister_5(IntToBinary(Register(instArray.get(2)))) ;
+			b = ExtRegister_5(IntToBinary(Register(instArray.get(3)))) ;
 			c = ExtRegister_5(IntToBinary("0")) ;
-			d = ExtRegister_5(IntToBinary(Register(instArray.get(4)))) ;
+			d = ExtRegister_5(IntToBinary(Register(instArray.get(1)))) ;
 
 			f = ExtRegister_4(Integer.toBinaryString(instructionFunction.get(instArray.get(0).toUpperCase()))) ;
 
@@ -255,7 +256,7 @@ public class Assembler {
 			a = ExtRegister_5(IntToBinary("0")) ;
 			b = ExtRegister_5(IntToBinary(Register(instArray.get(1)))) ;
 			Imm = ExtRegister_12(IntToBinary(instArray.get(2))) ;
-			f = ExtRegister_3(Integer.toBinaryString(instructionFunction.get(instArray.get(0).toUpperCase())));
+			f = ExtRegister_4(Integer.toBinaryString(instructionFunction.get(instArray.get(0).toUpperCase())));
 			return OP + a + b + f + Imm;
 
 		} else if (instArray.size() == 4) {// OP="",a="",b="",c="",d="",f="",x="",Imm="",Imm2="";
@@ -265,7 +266,7 @@ public class Assembler {
 				a = ExtRegister_5(IntToBinary(Register(instArray.get(1)))) ;
 				b = ExtRegister_5(IntToBinary(Register(instArray.get(3)))) ;
 				Imm = ExtRegister_12(IntToBinary(instArray.get(2))) ;
-				f = ExtRegister_3(Integer.toBinaryString(instructionFunction.get(instArray.get(0).toUpperCase())));
+				f = ExtRegister_4(Integer.toBinaryString(instructionFunction.get(instArray.get(0).toUpperCase())));
 				return OP + a + b + f + Imm;
 			} else {
 
@@ -273,7 +274,7 @@ public class Assembler {
 				a = ExtRegister_5(IntToBinary(Register(instArray.get(2))));
 				b = ExtRegister_5(IntToBinary(Register(instArray.get(1)))) ;
 				Imm = ExtRegister_12(IntToBinary(instArray.get(3)));
-				f = ExtRegister_3(Integer.toBinaryString(instructionFunction.get(instArray.get(0).toUpperCase()))) ;
+				f = ExtRegister_4(Integer.toBinaryString(instructionFunction.get(instArray.get(0).toUpperCase()))) ;
 				return OP + a + b + f + Imm;
 
 			}
@@ -285,7 +286,7 @@ public class Assembler {
 			b = ExtRegister_5(IntToBinary(Register(instArray.get(1)))) ;
 			Imm2 = ExtRegister_5(IntToBinary(instArray.get(4))) ;
 			Imm = ExtRegister_12(IntToBinary(instArray.get(3))) ;
-			f = ExtRegister_3(Integer.toBinaryString(instructionFunction.get(instArray.get(0).toUpperCase()))) ;
+			f = ExtRegister_4(Integer.toBinaryString(instructionFunction.get(instArray.get(0).toUpperCase()))) ;
 			return OP + a + b + f + Imm + Imm2;
 
 		} else if (instArray.size() == 6) {
@@ -305,7 +306,7 @@ public class Assembler {
 
 			Imm2 = ExtRegister_5(IntToBinary(instArray.get(2))) ;
 			Imm = ExtRegister_16(IntToBinary(instArray.get(3))) ;
-			f = ExtRegister_3(Integer.toBinaryString(instructionFunction.get(instArray.get(0).toUpperCase()))) ;
+			f = ExtRegister_4(Integer.toBinaryString(instructionFunction.get(instArray.get(0).toUpperCase()))) ;
 			return OP + a + Imm2 + Imm;
 
 		} else {
@@ -319,7 +320,7 @@ public class Assembler {
 				b = ExtRegister_5(IntToBinary(Register(instArray.get(2)))) ;
 
 			Imm = ExtRegister_16(IntToBinary(instArray.get(3))) ;
-			f = ExtRegister_3(Integer.toBinaryString(instructionFunction.get(instArray.get(0).toUpperCase()))) ;
+			f = ExtRegister_4(Integer.toBinaryString(instructionFunction.get(instArray.get(0).toUpperCase()))) ;
 			return OP + a + b + f + Imm;
 		}
 	}
@@ -454,14 +455,15 @@ public class Assembler {
 		return d + operand;
 	}
 
+
 	public static String ExtRegister_2(String operand) {
 		String d = "";
-		String Z = "0";
-		for (int i = 0; i < 26 - operand.length(); i++) {
-			d = d + Z;
+		if (operand.length() == 1) {
+			d = "0" + operand;
+		} else {
+			d = operand;
 		}
-
-		return d + operand;
+		return d;
 	}
 
 }

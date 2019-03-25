@@ -13,12 +13,13 @@ public class RInstruction extends Instruction {
 	public RInstruction(int instructionNumber, String instructionName, String instructionBinary) {
 		super(instructionNumber, instructionName, instructionBinary);
 		setInstructionOpcode(Integer.parseInt(instructionBinary.substring(0, 5),2));
-		a = Integer.parseInt(instructionBinary.substring(6, 10),2);
-		b = Integer.parseInt(instructionBinary.substring(11, 15),2);
-		f = Integer.parseInt(instructionBinary.substring(16, 19),2);
-		x = Integer.parseInt(instructionBinary.substring(20, 21),2);
-		c = Integer.parseInt(instructionBinary.substring(22, 26),2);
-		d = Integer.parseInt(instructionBinary.substring(27, 31),2);
+		a = Integer.parseInt(instructionBinary.substring(6, 11),2);
+		b = Integer.parseInt(instructionBinary.substring(11, 16),2);
+		f = Integer.parseInt(instructionBinary.substring(16, 20),2);
+		x = Integer.parseInt(instructionBinary.substring(20, 22),2);
+		c = Integer.parseInt(instructionBinary.substring(22, 27),2);
+		d = Integer.parseInt(instructionBinary.substring(27, 32),2);
+		setInstructionOpcode(Integer.parseInt(instructionBinary.substring(0, 6),2));
 		registerFile = new RegisterFile();
 	}
 
