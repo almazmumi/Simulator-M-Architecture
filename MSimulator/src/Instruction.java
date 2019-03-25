@@ -3,7 +3,7 @@ public class Instruction {
 	private int instructionNumber;
 	private String instructionName;
 	private String instructionBinary;
-	private String instrcutionOpcode;
+	private int instrcutionOpcode;
 	
 	public Instruction(int instructionNumber,String instructionName,String instructionBinary) {
 		this.instructionBinary = instructionBinary;
@@ -12,11 +12,11 @@ public class Instruction {
 	}
 
 
-	public String getInstrcutionOpcode() {
+	public int getInstrcutionOpcode() {
 		return instrcutionOpcode;
 	}
 
-	public void setInstrcutionOpcode(String instrcutionOpcode) {
+	public void setInstructionOpcode(int instrcutionOpcode) {
 		this.instrcutionOpcode = instrcutionOpcode;
 	}
 

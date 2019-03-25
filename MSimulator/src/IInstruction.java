@@ -1,35 +1,58 @@
 
 public class IInstruction extends Instruction{
 	
-	private String a;
-	private String b;
-	private String f;
-	private String imm12;
+	private int a;
+	private int b;
+	private int f;
+	private int imm12;
+	private int l;
+	private int r;
 	
+	RegisterFile registerFile;
 	public IInstruction(int instructionNumber, String instructionText, String instructionBinary) {
 		super(instructionNumber, instructionText, instructionBinary);
-		a = instructionBinary.substring(6, 10);
-		b = instructionBinary.substring(11, 15);
-		f = instructionBinary.substring(16, 19);
-		imm12 = instructionBinary.substring(20, 31);
+		a = Integer.parseInt(instructionBinary.substring(6, 11),2);
+		b = Integer.parseInt(instructionBinary.substring(11, 16),2);
+		String fS =instructionBinary.substring(16, 20); 
+		f = Integer.parseInt(fS,2);
+		imm12 = Integer.parseInt(instructionBinary.substring(20, 32),2);
+		String opcodeS = instructionBinary.substring(0, 6);
+		int opcode = Integer.parseInt(opcodeS,2);
+		setInstructionOpcode(opcode);
+		
 
 	}
 
-	public String getA() {
+	public int getA() {
 		return a;
 	}
 
-	public String getB() {
+	public int getB() {
 		return b;
 	}
 
-	public String getF() {
+	public int getF() {
 		return f;
 	}
 
-	public String getImm12() {
+
+	public int getImm12() {
 		return imm12;
 	}
+	
+	public void execute(RegisterFile r) {
+		registerFile = r;
+		if(getInstrcutionOpcode() == 32 && f == 0) {
+			add();
+		}
+	}
+
+	private void add() {
+		int result  = registerFile.getRegister(a) + imm12;
+		registerFile.setRegister(b,result );
+	}
+
+
 
 	
 

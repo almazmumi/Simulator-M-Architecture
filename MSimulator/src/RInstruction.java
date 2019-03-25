@@ -1,45 +1,60 @@
 
 public class RInstruction extends Instruction {
 
-	private String a;
-	private String bORimm5;
-	private String x;
-	private String f;
-	private String c;
-	private String d;
+	private int a;
+	private int b;
+	private int x;
+	private int f;
+	private int c;
+	private int d;
 	
+	
+	private RegisterFile registerFile;
 	public RInstruction(int instructionNumber, String instructionName, String instructionBinary) {
 		super(instructionNumber, instructionName, instructionBinary);
-		a = instructionBinary.substring(6, 10);
-		bORimm5 = instructionBinary.substring(11, 15);
-		f = instructionBinary.substring(16, 19);
-		x = instructionBinary.substring(20, 21);
-		c = instructionBinary.substring(22, 26);
-		d = instructionBinary.substring(27, 31);
+		setInstructionOpcode(Integer.parseInt(instructionBinary.substring(0, 5),2));
+		a = Integer.parseInt(instructionBinary.substring(6, 10),2);
+		b = Integer.parseInt(instructionBinary.substring(11, 15),2);
+		f = Integer.parseInt(instructionBinary.substring(16, 19),2);
+		x = Integer.parseInt(instructionBinary.substring(20, 21),2);
+		c = Integer.parseInt(instructionBinary.substring(22, 26),2);
+		d = Integer.parseInt(instructionBinary.substring(27, 31),2);
+		registerFile = new RegisterFile();
 	}
 
-	public String getA() {
+	public int getA() {
 		return a;
 	}
 
-	public String getB() {
-		return bORimm5;
+	public int getB() {
+		return b;
 	}
 
-	public String getX() {
+	public int getX() {
 		return x;
 	}
 
-	public String getF() {
+	public int getF() {
 		return f;
 	}
 
-	public String getC() {
+	public int getC() {
 		return c;
 	}
 
-	public String getD() {
+	public int getD() {
 		return d;
+	}
+	
+	public void execute(RegisterFile r) {
+		registerFile = r;
+		if(getInstrcutionOpcode() == 40 && f == 0 && x == 0) {
+			add();
+		}
+	}
+
+	private void add() {
+		registerFile.setRegister(d, registerFile.getRegister(a) + registerFile.getRegister(b));
 	}
 
 	
