@@ -18,13 +18,16 @@ public class Assembler {
 		
 		
 		loadAllInstructions();
-		String instructions[] = new String[5];
+		String instructions[] = new String[7];
 		instructions[0] = "BEQ R1, R4, 2 ";
 		instructions[1] = "BNE R3, R5, 2";
         instructions[2]	= "BLT R2, R4, 2 ";
         instructions[3]	= "BGE R5, R5, 2 ";
         instructions[4]	= "BLTU R6, R5, 2 ";
-//		instructions[0] = "LD r20 =[ r2    ,  20 ]";
+        instructions[5]	= "J 1 ";
+//        instructions[6]	= "JAL 2";
+        
+		instructions[6] = "add r5 = r5, 5"; // Successes to count it as an I type
 //		instructions[1] = "cor r5 = r7 , 3 ";
 //        instructions[2]	= "mul r5  r9  r30 ";
 //        instructions[3]	= "geu r25 = r13 , r30 ";
@@ -73,7 +76,7 @@ public class Assembler {
 					String opcodeBinary = padLeftZeros(toBinary(String.valueOf(instructionObject.getOpcode())),6);
 					String aBinary = padLeftZeros(toBinary(getRegister(instructionArray.get(1))),5);
 					String bBinary = padLeftZeros(toBinary(getRegister(instructionArray.get(2))),5);
-					String offset = padLeftZeros((instructionArray.get(3)),16);
+					String offset = padLeftZeros(toBinary((instructionArray.get(3))),16);
 					String instructionBinary = opcodeBinary + aBinary + bBinary + offset;
 					BInstruction BInstruction = new BInstruction(i, instructions[i], instructionBinary);
 					pc.getInstructionsList().add(BInstruction);
@@ -82,7 +85,7 @@ public class Assembler {
 					String opcodeBinary = padLeftZeros(toBinary(String.valueOf(instructionObject.getOpcode())),6);
 					String aBinary = padLeftZeros(toBinary(getRegister(instructionArray.get(1))),5);
 					String bBinary = padLeftZeros(toBinary(instructionArray.get(2)),5);
-					String offset = padLeftZeros((instructionArray.get(3)),16);
+					String offset = padLeftZeros(toBinary((instructionArray.get(3))),16);
 					String instructionBinary = opcodeBinary + aBinary + bBinary + offset;
 					BInstruction BInstruction = new BInstruction(i, instructions[i], instructionBinary);
 					pc.getInstructionsList().add(BInstruction);
@@ -91,7 +94,7 @@ public class Assembler {
 					String opcodeBinary = padLeftZeros(toBinary(String.valueOf(instructionObject.getOpcode())),6);
 					String aBinary = padLeftZeros(toBinary(getRegister(instructionArray.get(1))),5);
 					String bBinary = padLeftZeros("0",5);
-					String offset = padLeftZeros((instructionArray.get(3)),16);
+					String offset = padLeftZeros(toBinary((instructionArray.get(3))),16);
 					String instructionBinary = opcodeBinary + aBinary + bBinary + offset;
 					BInstruction BInstruction = new BInstruction(i, instructions[i], instructionBinary);
 					pc.getInstructionsList().add(BInstruction);
@@ -101,21 +104,42 @@ public class Assembler {
 			case "J":
 				
 				String opcodeBinary = padLeftZeros(toBinary(String.valueOf(instructionObject.getOpcode())),6);
-				String offset = padLeftZeros(instructionArray.get(3),26);
+				String offset = padLeftZeros(toBinary(instructionArray.get(1)),26);
 				String instructionBinary = opcodeBinary + offset;
-				BInstruction BInstruction = new BInstruction(i, instructions[i], instructionBinary);
-				pc.getInstructionsList().add(BInstruction);
+				JInstruction JInstruction = new JInstruction(i, instructions[i], instructionBinary);
+				pc.getInstructionsList().add(JInstruction);
 				
 				break;
-			case "R":
+			case "R": 	// NOT DONE YET, 
+						//There are two type one with C missing and one with D missing.
+						
 				
 				if(instructionArray.get(3).toLowerCase().contains("r")){
 					// Here check if it's R or I. If it is R function, it will be done and get out of this switch loop 
 					// if its otherwise it will go the i type section.
+//					String opcodeBinary1 = padLeftZeros(toBinary(String.valueOf(instructionObject.getOpcode())),6);
+//					String aBinary = padLeftZeros(toBinary(getRegister(instructionArray.get(1))),5);
+//					String bBinary = padLeftZeros(toBinary(getRegister(instructionArray.get(2))),5);
+//					String fBinary = padLeftZeros(toBinary(String.valueOf((instructionObject.getFunction()))),5);
+//					String xBinary = padLeftZeros(toBinary(String.valueOf((instructionObject.getX()))),5);
+//					String instructionBinary1 = opcodeBinary1 + aBinary + bBinary + fBinary + xBinary;
+//					RInstruction RInstruction = new RInstruction(i, instructions[i], instructionBinary1);
+//					pc.getInstructionsList().add(RInstruction);
+					
 					break;
 				}
+				instructionObject = instructionFormat.get(instructionArray.get(0).toUpperCase()+"I");
 			case "I":
 				
+				String opcodeBinary1 = padLeftZeros(toBinary(String.valueOf(instructionObject.getOpcode())),6);
+				String aBinary = padLeftZeros(toBinary(getRegister(instructionArray.get(1))),5);
+				String bBinary = padLeftZeros(toBinary(getRegister(instructionArray.get(2))),5);
+				String fBinary = padLeftZeros(toBinary((instructionArray.get(3))),4);
+				String immBinary = padLeftZeros(toBinary(String.valueOf(instructionArray.get(3))),12);
+				String instructionBinary1 = opcodeBinary1 + aBinary + bBinary + fBinary + immBinary;
+				
+				IInstruction IInstruction = new IInstruction(i, instructions[i], instructionBinary1);
+				pc.getInstructionsList().add(IInstruction);
 				break;
 			}
 			//B====================================================================================================
@@ -193,7 +217,7 @@ public class Assembler {
 		}
 		
 		for(int j = 0; j<pc.getInstructionsList().size();j++) {
-			System.out.println(pc.getInstructionsList().get(j).getInstructionName());
+			System.out.println(pc.getInstructionsList().get(j).getInstructionName().trim() + " - " + pc.getInstructionsList().get(j).getClass().getSimpleName().substring(0,1)+ " Format" );
 			System.out.println(pc.getInstructionsList().get(j).getInstructionBinary());
 			System.out.println();
 			

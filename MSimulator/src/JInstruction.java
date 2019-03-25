@@ -2,8 +2,7 @@
 public class JInstruction extends Instruction{
 
 	private String offset;
-	public JInstruction(int instructionNumber, String instructionName, String instructionBinary,
-			String instructionFormat) {
+	public JInstruction(int instructionNumber, String instructionName, String instructionBinary) {
 		super(instructionNumber, instructionName, instructionBinary);
 		// TODO Auto-generated constructor stub
 		offset = instructionBinary.substring(6);
