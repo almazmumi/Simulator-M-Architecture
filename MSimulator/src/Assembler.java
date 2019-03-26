@@ -76,7 +76,6 @@ public class Assembler {
 			InstructionFetch(In.get(i));
 			String Inst = GetInstructionInBinary();
 			Instruction Instruction_In;
-			System.out.println(instructionFormat.get(instArray.get(0).toUpperCase()));
 			if(instructionFormat.get(instArray.get(0).toUpperCase()).equals('I')){
 				 Instruction_In = new IInstruction(i, In.get(i), Inst);
 			 	pc.getInstructionsList().add(Instruction_In);
@@ -293,9 +292,9 @@ public class Assembler {
 
 		}
 
-		for (int i = 0; i < instArray.size(); i++) {
-			System.out.println(instArray.get(i));
-		}
+//		for (int i = 0; i < instArray.size(); i++) {
+//			System.out.println(instArray.get(i));
+//		}
 		return null;
 	}
 

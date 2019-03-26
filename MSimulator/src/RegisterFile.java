@@ -4,7 +4,7 @@ public class RegisterFile {
 	
 	public RegisterFile(){
 		// Register files are an array of 31 string(Binary Value)
-		registersFile = new int[31];	
+		registersFile = new int[32];	
 	}
 	
 	public int getRegister(int RegisterNumber) {
@@ -15,6 +15,9 @@ public class RegisterFile {
 		registersFile[RegisterNumber] = newValue;
 	}
 	
+	public int[] getRegistersFile() {
+		return registersFile;
+	}
 	@Override
 	public String toString() {
 		String r = "<html> ";
