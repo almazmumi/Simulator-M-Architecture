@@ -47,7 +47,12 @@ public class Instruction {
 	public void setInstructionBinary(String instructionBinary) {
 		this.instructionBinary = instructionBinary;
 	}
+	
+	public void execute(ProgramCounter pc, RegisterFile rf) {
+		System.out.println("noooo");
+	}
 
+	
 	
 	
 

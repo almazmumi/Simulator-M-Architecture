@@ -32,30 +32,6 @@ public class Assembler {
 	static ArrayList<String> instructions = new ArrayList<String>();
 
 	
-	public static void main(String[] args) throws FileNotFoundException {
-		
-		
-		
-		
-		
-		
-		
-		initializeCommands();
-//		RegisterFile r = new RegisterFile();
-//		ArrayList<String> instructions = new ArrayList<String>();
-//		instructions.add( "add r5 = r5, 5");
-//		ProgramCounter pc = new ProgramCounter();
-//		SetInstructionInPC(pc, instructions);
-//		
-//		for (int i = 0; i < pc.getInstructionsList().size(); i++) {
-//			((IInstruction) pc.getInstructionsList().get(i)).execute(r);
-//		}
-		
-		
-		//B=====================================================================================================================
-		
-	}
-	
 	public static void InstructionFetch(String instructions) {
 		instArray = new ArrayList<String>();
 		instructions = instructions.replace("[", "");
@@ -74,7 +50,7 @@ public class Assembler {
 	public static void SetInstructionInPC(ProgramCounter pc,ArrayList<String> In){
 		for(int i =0;i<In.size();i++){
 			InstructionFetch(In.get(i));
-			String Inst = GetInstructionInBinary();
+			String Inst = getMachineCode();
 			Instruction Instruction_In;
 			if(instructionFormat.get(instArray.get(0).toUpperCase()).equals('I')){
 				 Instruction_In = new IInstruction(i, In.get(i), Inst);
@@ -96,59 +72,41 @@ public class Assembler {
 
 	}
 
-
-	public static String GetInstructionInBinary() {
+	public static String getMachineCode() {
 		String Is = "";
-		if (instructionFormat.get(instArray.get(0).toUpperCase().toUpperCase()).equals('R')
+		if (instructionFormat.get(instArray.get(0).toUpperCase()).equals('R')
 				|| instructionFormat.get(instArray.get(0).toUpperCase()).equals('I')) {
-			/*
-			 * here we check if it R type or I type
-			 *
-			 * 
-			 * 
-			 */
-
+			
+			// here we check if it's R type or I type
 			if (!instArray.get(2).contains("R") || !instArray.get(3).contains("R")
 					|| instructionFormat.get(instArray.get(0).toUpperCase()).equals('I')) {
 				// I type
-
 				if (!instArray.get(2).contains("RET")) {
 					instArray.set(0, instArray.get(0).toUpperCase() + "I");
 				}
-
-				return ConvertThe_I_Type();
-
+				return parseIType();
 			}
 
 			else {
-
 				// R type
-				return ConvertThe_R_Type();
+				return parseRType();
 
 			}
 
 		} else if (instructionFormat.get(instArray.get(0).toUpperCase()).equals('B')) {
-
-			if (!instArray.get(2).contains("R") || !instArray.get(3).contains("R")
+			
+			if (!instArray.get(1).contains("R") || !instArray.get(2).contains("R")
 					|| instructionFormat.get(instArray.get(0).toUpperCase()).equals('I')) {
 				// I type
-
 				instArray.set(0, instArray.get(0).toUpperCase() + "I");
-
-				return ConvertThe_B_Type();
-
+				return parseIType();
 			} else {
-
-				return ConvertThe_B_Type();
-
+				return parseBType();
 			}
 
 		} else if (instructionFormat.get(instArray.get(0).toUpperCase()).equals('J')) {
-
-			return ConvertThe_J_Type();
-
+			return parseJType();
 		}
-
 		return Is;
 
 	}
@@ -160,7 +118,7 @@ public class Assembler {
 		instructionX = new HashMap<String, Integer>();
 
 		Scanner sc = new Scanner(new FileReader("resources/instructionSet.csv"));
-		sc.nextLine(); // consume header
+		sc.nextLine();
 		while (sc.hasNextLine()) {
 			String[] instruction = sc.nextLine().split(",");
 			instructionFormat.put(instruction[0], instruction[1].charAt(0));
@@ -172,7 +130,7 @@ public class Assembler {
 		sc.close();
 	}
 
-	private static String ConvertThe_R_Type() {
+	private static String parseRType() {
 
 		if (instArray.size() == 2) {
 
@@ -245,7 +203,7 @@ public class Assembler {
 		return null;
 	}
 
-	private static String ConvertThe_I_Type() {
+	private static String parseIType() {
 
 		if (instArray.size() == 2) {
 
@@ -298,14 +256,13 @@ public class Assembler {
 		return null;
 	}
 
-	private static String ConvertThe_B_Type() {
+	private static String parseBType() {
 		if (instructionCommand.get(instArray.get(0).toUpperCase()) > 7 && instructionCommand.get(instArray.get(0).toUpperCase()) < 14) {
 			OP = ExtRegister_6(Integer.toBinaryString(instructionCommand.get(instArray.get(0).toUpperCase()))) ;
 			a = ExtRegister_5(IntToBinary(Register(instArray.get(1)))) ;
 
 			Imm2 = ExtRegister_5(IntToBinary(instArray.get(2))) ;
 			Imm = ExtRegister_16(IntToBinary(instArray.get(3))) ;
-			f = ExtRegister_4(Integer.toBinaryString(instructionFunction.get(instArray.get(0).toUpperCase()))) ;
 			return OP + a + Imm2 + Imm;
 
 		} else {
@@ -319,12 +276,11 @@ public class Assembler {
 				b = ExtRegister_5(IntToBinary(Register(instArray.get(2)))) ;
 
 			Imm = ExtRegister_16(IntToBinary(instArray.get(3))) ;
-			f = ExtRegister_4(Integer.toBinaryString(instructionFunction.get(instArray.get(0).toUpperCase()))) ;
-			return OP + a + b + f + Imm;
+			return OP + a + b + Imm;
 		}
 	}
 
-	private static String ConvertThe_J_Type() {
+	private static String parseJType() {
 
 		OP = ExtRegister_6(Integer.toBinaryString(instructionCommand.get(instArray.get(0).toUpperCase()))) ;
 

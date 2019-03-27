@@ -47,11 +47,12 @@ public class RInstruction extends Instruction {
 		return d;
 	}
 	
-	public void execute(RegisterFile r) {
+	public void execute(ProgramCounter pc, RegisterFile r) {
 		registerFile = r;
 		if(getInstrcutionOpcode() == 40 && f == 0 && x == 0) {
 			add();
 		}
+		pc.incrementProgramCounter();
 	}
 
 	private void add() {

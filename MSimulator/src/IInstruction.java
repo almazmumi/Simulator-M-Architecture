@@ -40,11 +40,12 @@ public class IInstruction extends Instruction{
 		return imm12;
 	}
 	
-	public void execute(RegisterFile r) {
+	public void execute(ProgramCounter pc, RegisterFile r) {
 		registerFile = r;
 		if(getInstrcutionOpcode() == 32 && f == 0) {
 			add();
 		}
+		pc.setProgramCounter(pc.getProgramCounter()+1);
 	}
 
 	private void add() {
