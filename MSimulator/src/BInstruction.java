@@ -1,6 +1,6 @@
 
 public class BInstruction extends Instruction {
-
+	//TODO - Error handling
 	private int a;
 	private int b;
 	private int offset;
@@ -61,85 +61,138 @@ public class BInstruction extends Instruction {
 			BGEUI();
 		}
 	}
+	
+	
+	// ======================================================================
+	
+	// TODO Unsigned 
 	private void BGEUI() {
-		// TODO Auto-generated method stub
-		
-	}
-	private void BLTUI() {
-		// TODO Auto-generated method stub
-		
-	}
-	private void BGEI() {
-		// TODO Auto-generated method stub
-		
-	}
-	private void BLTI() {
-		// TODO Auto-generated method stub
-		
-	}
-	private void BNEI() {
-		// TODO Auto-generated method stub
-		
-	}
-	private void BEQI() {
-		// TODO Auto-generated method stub
-		
-	}
-	private void JR() {
-		// TODO Auto-generated method stub
-		
-	}
-	private void JALR() {
-		// TODO Auto-generated method stub
-		
-	}
-	private void LOOPD() {
-		// TODO Auto-generated method stub
-		
-	}
-	private void LOOP() {
-		// TODO Auto-generated method stub
-		
-	}
-	private void BGEU() {
-		if(rf.getRegister(a) >= rf.getRegister(b)) {
+		if(rf.getRegister(a) >= b) {
 			pc.setProgramCounter(offset);
+		}else {
+			pc.incrementProgramCounter();
 		}
 		
 	}
+	
+	// TODO Unsigned 
+	private void BLTUI() {
+		if(rf.getRegister(a) < b) {
+			pc.setProgramCounter(offset-1);
+		}else {
+			pc.incrementProgramCounter();
+		}
+	}
+	private void BGEI() {
+		if(rf.getRegister(a) >= b) {
+			pc.setProgramCounter(offset-1);
+		}else {
+			pc.incrementProgramCounter();
+		}
+		
+	}
+	private void BLTI() {
+		if(rf.getRegister(a) < b) {
+			pc.setProgramCounter(offset-1);
+		}else {
+			pc.incrementProgramCounter();
+		}
+		
+	}
+	private void BNEI() {
+		if(rf.getRegister(a) != b) {
+			pc.setProgramCounter(offset-1);
+		}else {
+			pc.incrementProgramCounter();
+		}
+		
+	}
+	private void BEQI() {
+		if(rf.getRegister(a) == b) {
+			pc.setProgramCounter(offset-1);
+		}else {
+			pc.incrementProgramCounter();
+		}
+		
+	}
+	
+	// ================================================
+
+	
+	private void JR() {
+		pc.setProgramCounter(rf.getRegister(b) + offset-1);
+	}
+	private void JALR() {
+		pc.setProgramCounter(rf.getRegister(b)+offset-1);
+		rf.setRegister(b, pc.getProgramCounter());
+	}
+	private void LOOPD() {
+		
+	}
+	private void LOOP() {
+		
+		
+	}
+	
+	// =================================================
+	
+	
+	// TODO Unsigned 
+	private void BGEU() {
+		if(rf.getRegister(a) >= rf.getRegister(b)) {
+			pc.setProgramCounter(offset-1);
+		}else {
+			pc.incrementProgramCounter();
+		}
+		
+	}
+	
+	// TODO Unsigned 
 	private void BLTU() {
 		
 		// Make Sure that is extended U not S signed
 		if(rf.getRegister(a) < rf.getRegister(b)) {
-			pc.setProgramCounter(offset);
+			pc.setProgramCounter(offset-1);
+		}else {
+			pc.incrementProgramCounter();
 		}
 		
 	}
+	
+	
 	private void BGE() {
 		if(rf.getRegister(a) >= rf.getRegister(b)) {
-			pc.setProgramCounter(offset);
+			pc.setProgramCounter(offset-1);
+		}else {
+			pc.incrementProgramCounter();
 		}
 		
 	}
 	private void BLT() {
 		if(rf.getRegister(a) < rf.getRegister(b)) {
-			pc.setProgramCounter(offset);
+			pc.setProgramCounter(offset-1);
+		}else {
+			pc.incrementProgramCounter();
 		}
 		
 	}
 	private void BNE() {
 		if(rf.getRegister(a) != rf.getRegister(b)) {
-			pc.setProgramCounter(offset);
+			pc.setProgramCounter(offset-1);
+		}else {
+			pc.incrementProgramCounter();
 		}
 		
 	}
 	private void BEQ() {
 		if(rf.getRegister(a) == rf.getRegister(b)) {
-			pc.setProgramCounter(offset);
+			pc.setProgramCounter(offset-1);
+		}else {
+			pc.incrementProgramCounter();
 		}
 		
 	}
-	
+	// ==========================================================
 
 	
 	

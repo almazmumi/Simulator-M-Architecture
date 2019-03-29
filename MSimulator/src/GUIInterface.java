@@ -39,8 +39,15 @@ import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import java.awt.Dimension;
 
+@SuppressWarnings("serial")
 public class GUIInterface extends JFrame {
+	
+	//TODO make error code area
+	
+	
+	
 	private ProgramCounter pc;
 	private RegisterFile rf;
 	private ArrayList<String> instArray;
@@ -49,6 +56,7 @@ public class GUIInterface extends JFrame {
 	private int count = -1; // for btnCompileLineByLine
 	private boolean firstTime = true;
 
+	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -152,12 +160,21 @@ public class GUIInterface extends JFrame {
 		// =========================================================================================
 
 		// =========================================================================================
-		JButton btnCompileAll = new JButton("Compile All");
-		btnCompileAll.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		panel.add(btnCompileAll);
-		JButton btnCompileOneLine = new JButton("Compile Line by Line");
-		btnCompileOneLine.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		panel.add(btnCompileOneLine);
+		JButton run = new JButton("Run");
+		run.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		panel.add(run);
+		JButton debug = new JButton("Debug");
+		debug.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		panel.add(debug);
+		
+		JButton btnReset = new JButton("Reset");
+
+		btnReset.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		panel.add(btnReset);
+		
+		JLabel lblPcvalue = new JLabel("PC = 0");
+		lblPcvalue.setFont(new Font("Tahoma", Font.PLAIN, 19));
+		panel.add(lblPcvalue);
 		// =========================================================================================
 
 		// =========================================================================================
@@ -189,17 +206,7 @@ public class GUIInterface extends JFrame {
 
 			@SuppressWarnings("unlikely-arg-type")
 			@Override
-			public void insertUpdate(DocumentEvent e) {
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
+			public void insertUpdate(DocumentEvent e) {				
 				char c = txtpnCodeview.getText().toString().charAt(txtpnCodeview.getText().toString().length() - 1);
 				if (c == ' ') {
 					String lines[] = txtpnCodeview.getText().toString().split("\\r?\\n");
@@ -225,11 +232,7 @@ public class GUIInterface extends JFrame {
 						}
 					};
 					SwingUtilities.invokeLater(doAssist);
-
 				}
-				System.out.println("2");
-
-
 			}
 
 			@Override
@@ -269,16 +272,49 @@ public class GUIInterface extends JFrame {
 		contentPane.add(machineCodeArea, BorderLayout.WEST);
 		// =========================================================================================
 
+		
+		
+		btnReset.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				pc = new ProgramCounter();
+				rf = new RegisterFile();
+				updateRegisterFileTable(table, rf, pc);
+				lblPcvalue.setText("PC = 0");
+				machineCodeArea.setText("");
+				firstTime = true;
+				StyledDocument doc = (StyledDocument) rowLines.getDocument();
+				int start = pc.getProgramCounter()*2;
+				int end = start+2;
+				StyledDocument docc = rowLines.getStyledDocument();
+				Style style = rowLines.addStyle("MyHilite", null);
+				
+				StyleConstants.setBold(style, false);
+				doc.setCharacterAttributes(0,rowLines.getText().toString().length()-1, style, true);
+			}
+		});
+		
+		
 		// =========================================================================================
 		instArray = new ArrayList<String>();
 
-		btnCompileAll.addActionListener(new ActionListener() {
+		run.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
+				machineCodeArea.setText("");
+				StyledDocument doc = (StyledDocument) rowLines.getDocument();
+				int start = pc.getProgramCounter()*2;
+				int end = start+2;
+				StyledDocument docc = rowLines.getStyledDocument();
+				Style style = rowLines.addStyle("MyHilite", null);
+				
+				StyleConstants.setBold(style, false);
+				doc.setCharacterAttributes(0,rowLines.getText().toString().length()-1, style, true);
+				
+				
 				/* Convert the text to array list of assembly instructions */
 				String[] a = txtpnCodeview.getText().split(System.getProperty("line.separator"));
 				for (int i = 0; i < a.length; i++) {
+					a[i] = a[i].split("\\//")[0];
 					if (!a[i].equals(""))
 						instArray.add(a[i]);
 				}
@@ -306,14 +342,7 @@ public class GUIInterface extends JFrame {
 					}
 					
 					// Execute Instruction
-//					if (pc.getInstructionsList().get(pc.getProgramCounter()).getClass().getName()
-//							.equals("IInstruction"))
-//						(pc.getInstructionsList().get(pc.getProgramCounter())).execute(pc, rf);
-//					else if (pc.getInstructionsList().get(pc.getProgramCounter()).getClass().getName()
-//							.equals("RInstruction"))
-					
 					(pc.getInstructionsList().get(pc.getProgramCounter())).execute(pc, rf);
-					
 					updateRegisterFileTable(table, rf, pc);
 					
 				}
@@ -321,10 +350,11 @@ public class GUIInterface extends JFrame {
 				pc.setProgramCounter(0);
 				instArray.clear();
 				
+				
 			}
 		});
 
-		btnCompileOneLine.addActionListener(new ActionListener() {
+		debug.addActionListener(new ActionListener() {
 
 			
 
@@ -335,8 +365,10 @@ public class GUIInterface extends JFrame {
 					/* Convert the text to array list of assembly instructions */
 					String[] a = txtpnCodeview.getText().split(System.getProperty("line.separator"));
 					for (int i = 0; i < a.length; i++) {
-						if (!a[i].equals(""))
+						a[i] = a[i].split("\\//")[0];
+						if (!a[i].equals("")) {
 							instArray.add(a[i]);
+						}
 					}
 					
 					/* Reinitialise the ProgramCounter and RegisterFile */
@@ -353,15 +385,15 @@ public class GUIInterface extends JFrame {
 							+ (pc.getInstructionsList().get(pc.getProgramCounter())).getInstructionBinary());
 				}
 				
-				
+				lblPcvalue.setText("PC = "+pc.getProgramCounter());
 				StyledDocument doc = (StyledDocument) rowLines.getDocument();
-				
 				int start = pc.getProgramCounter()*2;
 				int end = start+2;
 				StyledDocument docc = rowLines.getStyledDocument();
 				Style style = rowLines.addStyle("MyHilite", null);
-
-				StyleConstants.setForeground(style, Color.RED);
+				
+				StyleConstants.setBold(style, false);
+				doc.setCharacterAttributes(0,rowLines.getText().toString().length()-1, style, true);				
 				StyleConstants.setBold(style, true);
 				doc.setCharacterAttributes(start, end - start, style, true);				
 				
@@ -376,8 +408,7 @@ public class GUIInterface extends JFrame {
 				}
 				
 				
-				
-
+			
 			}
 		});
 
@@ -389,4 +420,5 @@ public class GUIInterface extends JFrame {
 			t.getModel().setValueAt(r.getRegister(i), i, 2);
 		}
 	}
+
 }

@@ -8,12 +8,11 @@ import java.util.StringTokenizer;
 
 public class Assembler {
 
+	
+	//TODO - Make an error exception 
 	static String OP = "", a = "", b = "", c = "", d = "", f = "", x = "", Imm = "", Imm2 = "";
-
 	static String Rd = "", Rs = "", Rt = "", Func = "";
-
 	static String Instruction_inBinary = "";
-
 	static int R1, R2, R3, ImmInt, ImmInt2;
 
 	static HashMap<String, Character> instructionFormat;
@@ -99,7 +98,7 @@ public class Assembler {
 					|| instructionFormat.get(instArray.get(0).toUpperCase()).equals('I')) {
 				// I type
 				instArray.set(0, instArray.get(0).toUpperCase() + "I");
-				return parseIType();
+				return parseBType();
 			} else {
 				return parseBType();
 			}
@@ -271,7 +270,7 @@ public class Assembler {
 			a = ExtRegister_5(IntToBinary(Register(instArray.get(1)))) ;
 
 			if (instArray.size() == 2)
-				b = ExtRegister_5(IntToBinary("0")) ;
+				b = ExtRegister_5(IntToBinary("0"));
 			else
 				b = ExtRegister_5(IntToBinary(Register(instArray.get(2)))) ;
 
