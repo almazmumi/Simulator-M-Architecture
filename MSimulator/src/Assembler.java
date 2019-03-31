@@ -94,8 +94,8 @@ public class Assembler {
 
 		} else if (instructionFormat.get(instArray.get(0).toUpperCase()).equals('B')) {
 			
-			if (!instArray.get(1).contains("R") || !instArray.get(2).contains("R")
-					|| instructionFormat.get(instArray.get(0).toUpperCase()).equals('I')) {
+			if ((!instArray.get(1).contains("R") || !instArray.get(2).contains("R")
+					|| instructionFormat.get(instArray.get(0).toUpperCase()).equals('I'))&&!instArray.get(0).toUpperCase().contains("LOOP") ) {
 				// I type
 				instArray.set(0, instArray.get(0).toUpperCase() + "I");
 				return parseBType();
