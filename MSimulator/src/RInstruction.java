@@ -50,14 +50,220 @@ public class RInstruction extends Instruction {
 	public void execute(ProgramCounter pc, RegisterFile r) {
 		registerFile = r;
 		if(getInstrcutionOpcode() == 40 && f == 0 && x == 0) {
-			add();
+			ADD();
 		}
 		pc.incrementProgramCounter();
 	}
-
-	private void add() {
-		registerFile.setRegister(d, registerFile.getRegister(a) + registerFile.getRegister(b));
+        /*
+        ALU INTSTRUCTIONS (R-FORMAT)
+        */
+	private void ADD(){
+            registerFile.setRegister(d, registerFile.getRegister(a) + registerFile.getRegister(b));
 	}
-
+        
+        private void AND() {
+            registerFile.setRegister(d, registerFile.getRegister(a) & registerFile.getRegister(b));
+	}
+        
+        private void OR() {
+            registerFile.setRegister(d, registerFile.getRegister(a) | registerFile.getRegister(b));
+	}
+        
+        private void XOR() {
+            registerFile.setRegister(d, registerFile.getRegister(a) ^ registerFile.getRegister(b));
+	}
+        
+        private void NADD() {
+            registerFile.setRegister(d, (registerFile.getRegister(a)*-1) + registerFile.getRegister(b));
+	}
+        
+        private void CAND() {
+            registerFile.setRegister(d, ~registerFile.getRegister(a) & registerFile.getRegister(b));
+	}
+        
+        private void COR() {
+            registerFile.setRegister(d, ~registerFile.getRegister(a) | registerFile.getRegister(b));
+	}
+        
+        private void XNOR() {
+            registerFile.setRegister(d, ~registerFile.getRegister(a) ^ registerFile.getRegister(b));
+	}
+        
+         private void SUB() {
+             NADD();
+	}
+        
+        private void ANDC() {
+            CAND();
+	}
+        
+        private void ORC() {
+            COR();
+        }
+        /*
+        ALU INTSTRUCTIONS (R-FORMAT)
+        */
+        
+        /*
+        ALU COMPARE INTSTRUCTIONS (R-FORMAT)
+        */
+	private void EQ() {
+            if(registerFile.getRegister(a)==registerFile.getRegister(b)){
+                registerFile.setRegister(d, 1);
+            }else{
+                registerFile.setRegister(d, -1);
+            }
+	}
+        
+        private void NE() {
+           if(registerFile.getRegister(a)!=registerFile.getRegister(b)){
+                registerFile.setRegister(d, 1);
+            }else{
+                registerFile.setRegister(d, -1);
+            }
+	}
+        
+        private void LT() {
+            if(registerFile.getRegister(a)<registerFile.getRegister(b)){
+                registerFile.setRegister(d, 1);
+            }else{
+                registerFile.setRegister(d, -1);
+            }
+	}
+        
+        private void GE() {
+            if(registerFile.getRegister(a)>=registerFile.getRegister(b)){
+                registerFile.setRegister(d, 1);
+            }else{
+                registerFile.setRegister(d, -1);
+            }
+	}
+        
+        private void LTU() {
+            if(registerFile.getRegister(a)<registerFile.getRegister(b)){
+                registerFile.setRegister(d, 1);
+            }else{
+                registerFile.setRegister(d, -1);
+            }
+	}
+        
+        private void GEU() {
+            if(registerFile.getRegister(a)>=registerFile.getRegister(b)){
+                registerFile.setRegister(d, 1);
+            }else{
+                registerFile.setRegister(d, -1);
+            }
+	}
+        
+        private void MIN() {
+            if(registerFile.getRegister(a)<registerFile.getRegister(b)){
+                registerFile.setRegister(d, registerFile.getRegister(a));
+            }else if(registerFile.getRegister(a)>registerFile.getRegister(b)){
+                registerFile.setRegister(d, registerFile.getRegister(b));
+            }else{
+                registerFile.setRegister(d,1);
+            }
+	}
+        
+        private void MAX() {
+            if(registerFile.getRegister(a)>registerFile.getRegister(b)){
+                registerFile.setRegister(d, registerFile.getRegister(a));
+            }else if(registerFile.getRegister(a)<registerFile.getRegister(b)){
+                registerFile.setRegister(d, registerFile.getRegister(b));
+            }else{
+                registerFile.setRegister(d,1);
+            }
+	}
+        
+         private void GT() {
+             LT();
+	}
+        
+        private void LE() {
+            GE();
+	}
+        
+        private void GTU() {
+            LEU();
+        }
+        
+        private void LEU() {
+            GEU();
+        }
+        /*
+        ALU INTSTRUCTIONS (R-FORMAT)
+        */
+        
+         /*
+        ALU SHIFT AND ROTATE INTSTRUCTIONS (R-FORMAT)
+        */
+	private void SHL() {
+            int x=registerFile.getRegister(a);
+                x=x<<b;
+		registerFile.setRegister(d, x);
+	}
+        
+        private void SHR() {
+            int x=registerFile.getRegister(a);
+                x=x>>>b;
+		registerFile.setRegister(d, x);
+	}
+        
+        private void SAR() {
+            int x=registerFile.getRegister(a);
+                x=x>>b;
+		registerFile.setRegister(d, x);
+	}
+        
+        private void ROR() {
+            int x=registerFile.getRegister(a);
+                x=Integer.rotateRight(x, b);
+		registerFile.setRegister(b, x);
+	}
+        
+//        private void SHL() {
+//            SHLR();
+//	}
+//        
+//        private void SHR() {
+//            SHLR();
+//	}
+//        
+//        private void SAR() {
+//            SALR();
+//	}
+//        
+//	private void ROL() {
+//            ROR();
+//	}
+        /*
+        ALU SHIFT AND ROTATE INTSTRUCTIONS (R-FORMAT)
+        */
+        
+         /*
+        ALU MULTIPLY AND DIVIDE INTSTRUCTIONS (I-FORMAT)
+        */
+	private void MUL() {
+            registerFile.setRegister(d, registerFile.getRegister(a) * registerFile.getRegister(b));
+	}
+        
+        private void DIV() {
+            registerFile.setRegister(d, registerFile.getRegister(a) / registerFile.getRegister(b));
+	}
+        
+        private void MOD() {
+            registerFile.setRegister(d, registerFile.getRegister(a) % registerFile.getRegister(b));
+	}
+        
+        private void DIVU() {
+            registerFile.setRegister(d, registerFile.getRegister(a) / registerFile.getRegister(b));
+	}
+        
+        private void MODU() {
+            registerFile.setRegister(d, registerFile.getRegister(a) % registerFile.getRegister(b));
+	}
+        /*
+        ALU MULTIPLY AND DIVIDE INTSTRUCTIONS (I-FORMAT)
+        */
 	
 }
