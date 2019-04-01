@@ -43,6 +43,54 @@ public class IInstruction extends Instruction{
 		registerFile = r;
 		if(getInstrcutionOpcode() == 32 && f == 0) {
 			ADD();
+		}else if(getInstrcutionOpcode() == 32 && f == 1) {
+			NADD();
+		}else if(getInstrcutionOpcode() == 32 && f == 2) {
+			AND();
+		}else if(getInstrcutionOpcode() == 32 && f == 3) {
+			CAND();
+		}else if(getInstrcutionOpcode() == 33 && f == 4) {
+			OR();
+		}else if(getInstrcutionOpcode() == 33 && f == 5) {
+			COR();
+		}else if(getInstrcutionOpcode() == 33 && f == 6) {
+			XOR();
+		}else if(getInstrcutionOpcode() == 33 && f == 7) {
+			SET();
+		}else if(getInstrcutionOpcode() == 34 && f == 8) {
+			EQ();
+		}else if(getInstrcutionOpcode() == 34 && f == 9) {
+			NE();
+		}else if(getInstrcutionOpcode() == 34 && f == 10) {
+			LT();
+		}else if(getInstrcutionOpcode() == 34 && f == 11) {
+			GE();
+		}else if(getInstrcutionOpcode() == 35 && f == 12) {
+			LTU();
+		}else if(getInstrcutionOpcode() == 35 && f == 13) {
+			GEU();
+		}else if(getInstrcutionOpcode() == 35 && f == 14) {
+			MIN();
+		}else if(getInstrcutionOpcode() == 35 && f == 15) {
+			MAX();
+		}else if(getInstrcutionOpcode() == 37 && f == 0) {
+			SHLR();
+		}else if(getInstrcutionOpcode() == 37 && f == 1) {
+			SHLR();
+		}else if(getInstrcutionOpcode() == 37 && f == 2) {
+			SALR();
+		}else if(getInstrcutionOpcode() == 37 && f == 3) {
+			ROR();
+		}else if(getInstrcutionOpcode() == 37 && f == 8) {
+			MUL();
+		}else if(getInstrcutionOpcode() == 37 && f == 12) {
+			DIV();
+		}else if(getInstrcutionOpcode() == 37 && f == 13) {
+			MOD();
+		}else if(getInstrcutionOpcode() == 37 && f == 14) {
+			DIVU();
+		}else if(getInstrcutionOpcode() == 37 && f == 15) {
+			MODU();
 		}
 		pc.setProgramCounter(pc.getProgramCounter()+1);
 	}
