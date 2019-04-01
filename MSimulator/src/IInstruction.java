@@ -43,6 +43,7 @@ public class IInstruction extends Instruction{
 		registerFile = r;
 		if(getInstrcutionOpcode() == 32 && f == 0) {
 			ADD();
+<<<<<<< HEAD
 		}else if(getInstrcutionOpcode() == 32 && f == 1) {
 			NADD();
 		}else if(getInstrcutionOpcode() == 32 && f == 2) {
@@ -92,6 +93,11 @@ public class IInstruction extends Instruction{
 		}else if(getInstrcutionOpcode() == 37 && f == 15) {
 			MODU();
 		}
+=======
+		}else if(getInstrcutionOpcode() == 32 && f == 0)
+		
+		
+>>>>>>> 528c308f2f164054bb624bccd901ca4be5b2ff6c
 		pc.setProgramCounter(pc.getProgramCounter()+1);
 	}
         /*

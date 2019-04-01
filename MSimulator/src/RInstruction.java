@@ -51,6 +51,7 @@ public class RInstruction extends Instruction {
 		registerFile = r;
 		if(getInstrcutionOpcode() == 40 && f == 0 && x == 0) {
 			ADD();
+<<<<<<< HEAD
 		}else if(getInstrcutionOpcode() == 40 && f == 1 && x == 0) {
 			NADD();
 		}else if(getInstrcutionOpcode() == 40 && f == 2 && x == 0) {
@@ -99,6 +100,28 @@ public class RInstruction extends Instruction {
 			DIVU();
 		}else if(getInstrcutionOpcode() == 40 && f == 15 && x == 1) {
 			MODU();
+=======
+		} else if(getInstrcutionOpcode() == 40 && f == 0 && x == 0) {
+			ADD();
+		} else if(getInstrcutionOpcode() == 40 && f == 0 && x == 0) {
+			ADD();
+		} else if(getInstrcutionOpcode() == 40 && f == 0 && x == 0) {
+			ADD();
+		} else if(getInstrcutionOpcode() == 40 && f == 0 && x == 0) {
+			ADD();
+		} else if(getInstrcutionOpcode() == 40 && f == 0 && x == 0) {
+			ADD();
+		} else if(getInstrcutionOpcode() == 40 && f == 0 && x == 0) {
+			ADD();
+		} else if(getInstrcutionOpcode() == 40 && f == 0 && x == 0) {
+			ADD();
+		} else if(getInstrcutionOpcode() == 40 && f == 0 && x == 0) {
+			ADD();
+		} else if(getInstrcutionOpcode() == 40 && f == 0 && x == 0) {
+			ADD();
+		}else if(getInstrcutionOpcode() == 40 && f == 0 && x == 0) {
+			ADD();
+>>>>>>> 528c308f2f164054bb624bccd901ca4be5b2ff6c
 		}
 		pc.incrementProgramCounter();
 	}

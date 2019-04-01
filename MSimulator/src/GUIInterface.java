@@ -248,7 +248,7 @@ public class GUIInterface extends JFrame {
 		table.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		contentPane.add(table, BorderLayout.EAST);
 		table.setModel(new DefaultTableModel(
-				new Object[][] { { "R1", "R0", "0" }, { "R0", "R1", "0" }, { "R2", "R2", "0" }, { "R3", "R3", "0" },
+				new Object[][] { { "R0", "R0", "0" }, { "R1", "R1", "0" }, { "R2", "R2", "0" }, { "R3", "R3", "0" },
 						{ "R4", "R4", "0" }, { "R5", "R5", "0" }, { "R6", "R6", "0" }, { "R7", "R7", "0" },
 						{ "R8", "R8", "0" }, { "R9", "R9", "0" }, { "R10", "T0", "0" }, { "R11", "T1", "0" },
 						{ "R12", "T2", "0" }, { "R13", "T3", "0" }, { "R14", "T4", "0" }, { "R15", "T5", "0" },
@@ -300,6 +300,10 @@ public class GUIInterface extends JFrame {
 		run.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				/* Reinitialise the ProgramCounter and RegisterFile */
+				pc = new ProgramCounter();
+				rf = new RegisterFile();
+
 				machineCodeArea.setText("");
 				StyledDocument doc = (StyledDocument) rowLines.getDocument();
 				int start = pc.getProgramCounter()*2;
@@ -319,10 +323,7 @@ public class GUIInterface extends JFrame {
 						instArray.add(a[i]);
 				}
 				
-				/* Reinitialise the ProgramCounter and RegisterFile */
-				pc = new ProgramCounter();
-				rf = new RegisterFile();
-
+				
 				/* Convert assembly language into machine code */
 				Assembler.SetInstructionInPC(pc, instArray);
 
