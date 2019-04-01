@@ -43,7 +43,9 @@ public class IInstruction extends Instruction{
 		registerFile = r;
 		if(getInstrcutionOpcode() == 32 && f == 0) {
 			ADD();
-		}
+		}else if(getInstrcutionOpcode() == 32 && f == 0)
+		
+		
 		pc.setProgramCounter(pc.getProgramCounter()+1);
 	}
         /*

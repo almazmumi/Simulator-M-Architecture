@@ -51,6 +51,26 @@ public class RInstruction extends Instruction {
 		registerFile = r;
 		if(getInstrcutionOpcode() == 40 && f == 0 && x == 0) {
 			ADD();
+		} else if(getInstrcutionOpcode() == 40 && f == 0 && x == 0) {
+			ADD();
+		} else if(getInstrcutionOpcode() == 40 && f == 0 && x == 0) {
+			ADD();
+		} else if(getInstrcutionOpcode() == 40 && f == 0 && x == 0) {
+			ADD();
+		} else if(getInstrcutionOpcode() == 40 && f == 0 && x == 0) {
+			ADD();
+		} else if(getInstrcutionOpcode() == 40 && f == 0 && x == 0) {
+			ADD();
+		} else if(getInstrcutionOpcode() == 40 && f == 0 && x == 0) {
+			ADD();
+		} else if(getInstrcutionOpcode() == 40 && f == 0 && x == 0) {
+			ADD();
+		} else if(getInstrcutionOpcode() == 40 && f == 0 && x == 0) {
+			ADD();
+		} else if(getInstrcutionOpcode() == 40 && f == 0 && x == 0) {
+			ADD();
+		}else if(getInstrcutionOpcode() == 40 && f == 0 && x == 0) {
+			ADD();
 		}
 		pc.incrementProgramCounter();
 	}
