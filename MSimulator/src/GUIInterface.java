@@ -47,7 +47,7 @@ public class GUIInterface extends JFrame {
 	//TODO make error code area
 	
 	
-	private Memory Mem; 
+	private DataMemory Mem; 
 	private ProgramCounter pc;
 	private RegisterFile rf;
 	private ArrayList<String> instArray;
@@ -303,7 +303,7 @@ public class GUIInterface extends JFrame {
 				/* Reinitialise the ProgramCounter and RegisterFile */
 				pc = new ProgramCounter();
 				rf = new RegisterFile();
-				Mem=new Memory();
+				Mem=new DataMemory();
 				machineCodeArea.setText("");
 				StyledDocument doc = (StyledDocument) rowLines.getDocument();
 				int start = pc.getProgramCounter()*2;
@@ -375,7 +375,7 @@ public class GUIInterface extends JFrame {
 					/* Reinitialise the ProgramCounter and RegisterFile */
 					pc = new ProgramCounter();
 					rf = new RegisterFile();
-					Mem=new Memory();
+					Mem=new DataMemory();
 					/* Convert assembly language into machine code */
 					Assembler.SetInstructionInPC(pc, instArray);
 					machineCodeArea.setText("");
