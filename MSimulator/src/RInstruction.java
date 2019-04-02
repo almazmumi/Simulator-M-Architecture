@@ -8,7 +8,7 @@ public class RInstruction extends Instruction {
 	private int c;
 	private int d;
 	
-	DataMemory dataMemory;
+	DataMemory Mem;
 	private RegisterFile registerFile;
 	public RInstruction(int instructionNumber, String instructionName, String instructionBinary) {
 		super(instructionNumber, instructionName, instructionBinary);
@@ -49,7 +49,7 @@ public class RInstruction extends Instruction {
 	
 	public void execute(ProgramCounter pc, RegisterFile r, DataMemory M)  {
 		registerFile = r;
-		dataMemory = M;
+		Mem = M;
 		if(getInstrcutionOpcode() == 40 && f == 0 && x == 0) {
 			ADD();
 
@@ -122,7 +122,31 @@ public class RInstruction extends Instruction {
 		}else if(getInstrcutionOpcode() == 40 && f == 0 && x == 0) {
 			ADD();
 //>>>>>>> 528c308f2f164054bb624bccd901ca4be5b2ff6c
-		}
+		}else if(getInstrcutionOpcode() == 27 && f == 0) {
+            SB();
+        }else if(getInstrcutionOpcode() == 27 && f == 1) {
+            SH();
+        }else if(getInstrcutionOpcode() == 27 && f == 2) {
+            SW();
+        }else if(getInstrcutionOpcode() == 27 && f == 3) {
+            SD();
+        }else if(getInstrcutionOpcode() == 26 && f == 0) {
+            LBU();
+        }else if(getInstrcutionOpcode() == 26 && f == 1) {
+            LHU();
+        }else if(getInstrcutionOpcode() == 26 && f == 2) {
+            LWU();
+        }else if(getInstrcutionOpcode() == 26 && f == 3) {
+            LDU();
+        }else if(getInstrcutionOpcode() == 26 && f == 4) {
+            LB();
+        }else if(getInstrcutionOpcode() == 26 && f == 5) {
+            LH();
+        }else if(getInstrcutionOpcode() == 26 && f == 6) {
+            LW();
+        }else if(getInstrcutionOpcode() == 26 && f == 7) {
+            LD();
+        }
 		pc.incrementProgramCounter();
 	}
         /*
@@ -336,5 +360,293 @@ public class RInstruction extends Instruction {
         /*
         ALU MULTIPLY AND DIVIDE INTSTRUCTIONS (I-FORMAT)
         */
+
+
+
+                private void SB() {
+            String Byte = Integer.toBinaryString(registerFile.getRegister(d));
+            String ss = "";
+            String Z = "0";
+            for (int i = 0; i < 64 - Byte.length(); i++) {
+                ss = ss + Z;
+            }
+        
+            Byte=ss+Byte;
+            Byte=Byte.substring(56,64);
+            System.out.println(Byte);
+            System.out.println(Integer.parseInt(Byte,2));
+            char Data = (char) Integer.parseInt(Byte,2);
+            int Address= (registerFile.getRegister(b)<<x)+registerFile.getRegister(a);
+            Mem.addData(Address, Data);
+            
+    }
+        
+        private void SH() {
+            String Byte = Integer.toBinaryString(registerFile.getRegister(d));
+            String [] Bytes=new String[2];
+            String ss = "";
+            String Z = "0";
+            for (int i = 0; i < 64 - Byte.length(); i++) {
+            	ss= ss + Z;
+            }
+        
+            Byte=ss+Byte;
+
+            Bytes[1]=Byte.substring(48,56);
+            Bytes[0]=Byte.substring(56,64);
+
+            for(int i =0;i<2;i++) {
+            
+            char Data = (char) Integer.parseInt(Bytes[i],2);
+            int Address=  (registerFile.getRegister(b)<<x)+registerFile.getRegister(a)+i;
+            Mem.addData(Address, Data);
+            }
+    }
+        private void SW() {
+            String Byte = Integer.toBinaryString(registerFile.getRegister(d));
+            String [] Bytes=new String[4];
+            String ss = "";
+            String Z = "0";
+            for (int i = 0; i < 64 - Byte.length(); i++) {
+            	ss = ss + Z;
+            }
+        
+            Byte=ss+Byte;
+            Bytes[3]=Byte.substring(32,40);
+            Bytes[2]=Byte.substring(40,48);
+            Bytes[1]=Byte.substring(48,56);
+            Bytes[0]=Byte.substring(56,64);
+            for(int i =0;i<4;i++) {
+            char Data = (char) Integer.parseInt(Bytes[i],2);
+            int Address= (registerFile.getRegister(b)<<x)+registerFile.getRegister(a)+i;
+            Mem.addData(Address, Data);
+            }
+            
+    }
+        private void SD() {
+            String Byte = Integer.toBinaryString(registerFile.getRegister(d));
+            String [] Bytes=new String[8];
+            String ss = "";
+            String Z = "0";
+            for (int i = 0; i < 64 - Byte.length(); i++) {
+            	ss= ss + Z;
+            }
+        
+            Byte=ss+Byte;
+            Bytes[7]=Byte.substring(0,8);
+            Bytes[6]=Byte.substring(8,16);
+            Bytes[5]=Byte.substring(16,24);
+            Bytes[4]=Byte.substring(24,32);
+            Bytes[3]=Byte.substring(32,40);
+            Bytes[2]=Byte.substring(40,48);
+            Bytes[1]=Byte.substring(48,56);
+            Bytes[0]=Byte.substring(56,64);
+
+            for(int i =0;i<7;i++) {
+            char Data = (char) Integer.parseInt(Bytes[i],2);
+            int Address= (registerFile.getRegister(b)<<x)+registerFile.getRegister(a)+i;
+            Mem.addData(Address, Data);
+            }
+            
+    }
+        
+        private void LB() {
+            
+
+        
+
+            int Address= (registerFile.getRegister(b)<<x)+registerFile.getRegister(a);
+        
+            String Byte = Integer.toBinaryString((int)Mem.getData(Address));
+            
+            for (int i = 0; i < 8 - Byte.length(); i++) {
+                Byte = "0" + Byte;
+            }
+            
+            String ss = "";
+            String Z = Byte.substring(0,1);
+            for (int i = 0; i < 64 - Byte.length(); i++) {
+            	ss = ss + Z;
+            }
+            Byte=d+Byte;
+             registerFile.setRegister(d,Integer.parseInt(Byte,2));
+            
+    }
+        
+        private void LH() {
+            String [] Bytes=new String[2];
+            int Address= (registerFile.getRegister(b)<<x)+registerFile.getRegister(a);
+        
+            String Byte ="";
+            Bytes[0]= Integer.toBinaryString((int)Mem.getData(Address));
+            Bytes[1]= Integer.toBinaryString((int)Mem.getData(Address+1));
+            
+            for(int j=0;j<Bytes.length;j++) {
+            for (int i = 0; i < 8 - Bytes[j].length(); i++) {
+                Bytes[j] = "0" + Bytes[j];
+            }}
+            
+            Byte=Bytes[1]+Bytes[0];
+
+            String ss= "";
+            String Z = Byte.substring(0,1);
+            for (int i = 0; i < 64 - Byte.length(); i++) {
+            	ss = ss + Z;
+            }
+            Byte=ss+Byte;
+             registerFile.setRegister(d,Integer.parseInt(Byte,2));
+            
+    }
+        private void LW() {
+            String [] Bytes=new String[4];
+            int Address= (registerFile.getRegister(b)<<x)+registerFile.getRegister(a);
+        
+            String Byte ="";
+            Bytes[0]= Integer.toBinaryString((int)Mem.getData(Address));
+            Bytes[1]= Integer.toBinaryString((int)Mem.getData(Address+1));
+            Bytes[2]= Integer.toBinaryString((int)Mem.getData(Address+2));
+            Bytes[3]= Integer.toBinaryString((int)Mem.getData(Address+3));
+            
+            for(int j=0;j<Bytes.length;j++) {
+            for (int i = 0; i < 8 - Bytes[j].length(); i++) {
+                Bytes[j] = "0" + Bytes[j];
+            }}
+            
+            Byte=Bytes[3]+Bytes[2]+Bytes[1]+Bytes[0];
+            
+            String ss = "";
+            String Z = Byte.substring(0,1);
+            for (int i = 0; i < 64 - Byte.length(); i++) {
+            	ss =ss + Z;
+            }
+            Byte=ss+Byte;
+             registerFile.setRegister(d,Integer.parseInt(Byte,2));
+    }
+        
+        private void LD() {
+            String [] Bytes=new String[2];
+            int Address= (registerFile.getRegister(b)<<x)+registerFile.getRegister(a);
+        
+            String Byte ="";
+            Bytes[0]= Integer.toBinaryString((int)Mem.getData(Address));
+            Bytes[1]= Integer.toBinaryString((int)Mem.getData(Address+1));
+            Bytes[2]= Integer.toBinaryString((int)Mem.getData(Address+2));
+            Bytes[3]= Integer.toBinaryString((int)Mem.getData(Address+3));
+            Bytes[4]= Integer.toBinaryString((int)Mem.getData(Address));
+            Bytes[5]= Integer.toBinaryString((int)Mem.getData(Address+1));
+            Bytes[6]= Integer.toBinaryString((int)Mem.getData(Address+2));
+            Bytes[7]= Integer.toBinaryString((int)Mem.getData(Address+3));
+            
+            for(int j=0;j<Bytes.length;j++) {
+            for (int i = 0; i < 8 - Bytes[j].length(); i++) {
+                Bytes[j] = "0" + Bytes[j];
+            }
+            Byte=Bytes[j]+Byte;
+            }
+            
+
+             registerFile.setRegister(d,Integer.parseInt(Byte,2));
+            
+    }
+
+
+        private void LBU() {
+            
+
+        
+
+            int Address= (registerFile.getRegister(b)<<x)+registerFile.getRegister(a);
+        
+            String Byte = Integer.toBinaryString((int)Mem.getData(Address));
+            
+            for (int i = 0; i < 8 - Byte.length(); i++) {
+                Byte = "0" + Byte;
+            }
+            
+            String ss = "";
+            String Z = "0";
+            for (int i = 0; i < 64 - Byte.length(); i++) {
+            	ss = ss + Z;
+            }
+            Byte=d+Byte;
+             registerFile.setRegister(d,Integer.parseInt(Byte,2));
+            
+    }
+        
+        private void LHU() {
+            String [] Bytes=new String[2];
+            int Address= (registerFile.getRegister(b)<<x)+registerFile.getRegister(a);
+        
+            String Byte ="";
+            Bytes[0]= Integer.toBinaryString((int)Mem.getData(Address));
+            Bytes[1]= Integer.toBinaryString((int)Mem.getData(Address+1));
+            
+            for(int j=0;j<Bytes.length;j++) {
+            for (int i = 0; i < 8 - Bytes[j].length(); i++) {
+                Bytes[j] = "0" + Bytes[j];
+            }}
+            
+            Byte=Bytes[1]+Bytes[0];
+
+            String ss= "";
+            String Z = "0";
+            for (int i = 0; i < 64 - Byte.length(); i++) {
+            	ss = ss + Z;
+            }
+            Byte=ss+Byte;
+             registerFile.setRegister(d,Integer.parseInt(Byte,2));
+            
+    }
+        private void LWU() {
+            String [] Bytes=new String[4];
+            int Address= (registerFile.getRegister(b)<<x)+registerFile.getRegister(a);
+        
+            String Byte ="";
+            Bytes[0]= Integer.toBinaryString((int)Mem.getData(Address));
+            Bytes[1]= Integer.toBinaryString((int)Mem.getData(Address+1));
+            Bytes[2]= Integer.toBinaryString((int)Mem.getData(Address+2));
+            Bytes[3]= Integer.toBinaryString((int)Mem.getData(Address+3));
+            
+            for(int j=0;j<Bytes.length;j++) {
+            for (int i = 0; i < 8 - Bytes[j].length(); i++) {
+                Bytes[j] = "0" + Bytes[j];
+            }}
+            
+            Byte=Bytes[3]+Bytes[2]+Bytes[1]+Bytes[0];
+            
+            String ss = "";
+            String Z = "0";
+            for (int i = 0; i < 64 - Byte.length(); i++) {
+            	ss =ss + Z;
+            }
+            Byte=ss+Byte;
+             registerFile.setRegister(d,Integer.parseInt(Byte,2));
+    }
+        
+        private void LDU() {
+            String [] Bytes=new String[2];
+            int Address= (registerFile.getRegister(b)<<x)+registerFile.getRegister(a);
+        
+            String Byte ="";
+            Bytes[0]= Integer.toBinaryString((int)Mem.getData(Address));
+            Bytes[1]= Integer.toBinaryString((int)Mem.getData(Address+1));
+            Bytes[2]= Integer.toBinaryString((int)Mem.getData(Address+2));
+            Bytes[3]= Integer.toBinaryString((int)Mem.getData(Address+3));
+            Bytes[4]= Integer.toBinaryString((int)Mem.getData(Address));
+            Bytes[5]= Integer.toBinaryString((int)Mem.getData(Address+1));
+            Bytes[6]= Integer.toBinaryString((int)Mem.getData(Address+2));
+            Bytes[7]= Integer.toBinaryString((int)Mem.getData(Address+3));
+            
+            for(int j=0;j<Bytes.length;j++) {
+            for (int i = 0; i < 8 - Bytes[j].length(); i++) {
+                Bytes[j] = "0" + Bytes[j];
+            }
+            Byte=Bytes[j]+Byte;
+            }
+            
+
+             registerFile.setRegister(d,Integer.parseInt(Byte,2));
+            
+    }
 	
 }
