@@ -77,8 +77,9 @@ public class Assembler {
 				|| instructionFormat.get(instArray.get(0).toUpperCase()).equals('I')) {
 			
 			// here we check if it's R type or I type
-			if (!instArray.get(2).contains("R") || !instArray.get(3).contains("R")
-					|| instructionFormat.get(instArray.get(0).toUpperCase()).equals('I')) {
+			if ((!instArray.get(2).contains("R") || !instArray.get(3).contains("R")
+					|| instructionFormat.get(instArray.get(0).toUpperCase()).equals('I'))
+					&&!(instArray.get(1).contains("R") && instArray.get(2).contains("R") && !instArray.get(3).contains("R")&&instArray.size()==5)) {
 				// I type
 				if (!instArray.get(2).contains("RET")) {
 					instArray.set(0, instArray.get(0).toUpperCase() + "I");
@@ -157,7 +158,7 @@ public class Assembler {
 			return OP + a + b + f + x + c + d;
 
 		} else if (instArray.size() == 5) {
-			if (instructionCommand.get(instArray.get(0).toUpperCase()) == 20) {
+			if (instructionCommand.get(instArray.get(0).toUpperCase()) == 27) {
 
 				OP = ExtRegister_6(Integer.toBinaryString(instructionCommand.get(instArray.get(0).toUpperCase()))) ;
 				a = ExtRegister_5(IntToBinary(Register(instArray.get(1)))) ;
@@ -168,7 +169,7 @@ public class Assembler {
 				f = ExtRegister_4(Integer.toBinaryString(instructionFunction.get(instArray.get(0).toUpperCase()))) ;
 
 				x = ExtRegister_3(Integer.toBinaryString(instructionX.get(instArray.get(0).toUpperCase()))) ;
-				Imm = ExtRegister_2(IntToBinary(instArray.get(4))) ;
+				Imm = ExtRegister_2(IntToBinary(instArray.get(3))) ;
 				Imm2 = "";
 
 				return OP + a + b + f + Imm + c + d;
