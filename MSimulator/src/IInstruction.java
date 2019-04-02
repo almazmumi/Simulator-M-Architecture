@@ -269,5 +269,193 @@ public class IInstruction extends Instruction{
         /*
         ALU MULTIPLY AND DIVIDE INTSTRUCTIONS (I-FORMAT)
         */
+
+
+           private void SB() {
+            String Byte = Integer.toBinaryString(registerFile.getRegister(b));
+            String d = "";
+            String Z = "0";
+            for (int i = 0; i < 64 - Byte.length(); i++) {
+                d = d + Z;
+            }
+        
+            Byte=d+Byte;
+            Byte=Byte.substring(56,64);
+            System.out.println(Byte);
+            System.out.println(Integer.parseInt(Byte,2));
+            char Data = (char) Integer.parseInt(Byte,2);
+            int Address= imm12+registerFile.getRegister(a);
+            Mem.AddData(Address, Data);
+            
+    }
+        
+        private void SH() {
+            String Byte = Integer.toBinaryString(registerFile.getRegister(b));
+            String [] Bytes=new String[2];
+            String d = "";
+            String Z = "0";
+            for (int i = 0; i < 64 - Byte.length(); i++) {
+                d = d + Z;
+            }
+        
+            Byte=d+Byte;
+
+            Bytes[1]=Byte.substring(48,56);
+            Bytes[0]=Byte.substring(56,64);
+
+            for(int i =0;i<2;i++) {
+            
+            char Data = (char) Integer.parseInt(Bytes[i],2);
+            int Address= imm12+registerFile.getRegister(a)+i;
+            Mem.AddData(Address, Data);
+            }
+    }
+        private void SW() {
+            String Byte = Integer.toBinaryString(registerFile.getRegister(b));
+            String [] Bytes=new String[4];
+            String d = "";
+            String Z = "0";
+            for (int i = 0; i < 64 - Byte.length(); i++) {
+                d = d + Z;
+            }
+        
+            Byte=d+Byte;
+            Bytes[3]=Byte.substring(32,40);
+            Bytes[2]=Byte.substring(40,48);
+            Bytes[1]=Byte.substring(48,56);
+            Bytes[0]=Byte.substring(56,64);
+            for(int i =0;i<4;i++) {
+            char Data = (char) Integer.parseInt(Bytes[i],2);
+            int Address= imm12+registerFile.getRegister(a)+i;
+            Mem.AddData(Address, Data);
+            }
+            
+    }
+        private void SD() {
+            String Byte = Integer.toBinaryString(registerFile.getRegister(b));
+            String [] Bytes=new String[8];
+            String d = "";
+            String Z = "0";
+            for (int i = 0; i < 64 - Byte.length(); i++) {
+                d = d + Z;
+            }
+        
+            Byte=d+Byte;
+            Bytes[7]=Byte.substring(0,8);
+            Bytes[6]=Byte.substring(8,16);
+            Bytes[5]=Byte.substring(16,24);
+            Bytes[4]=Byte.substring(24,32);
+            Bytes[3]=Byte.substring(32,40);
+            Bytes[2]=Byte.substring(40,48);
+            Bytes[1]=Byte.substring(48,56);
+            Bytes[0]=Byte.substring(56,64);
+
+            for(int i =0;i<7;i++) {
+            char Data = (char) Integer.parseInt(Bytes[i],2);
+            int Address= imm12+registerFile.getRegister(a)+i;
+            Mem.AddData(Address, Data);
+            }
+            
+    }
+        
+        private void LB() {
+            
+
+        
+
+            int Address= imm12+registerFile.getRegister(a);
+        
+            String Byte = Integer.toBinaryString((int)Mem.GetData(Address));
+            
+            for (int i = 0; i < 8 - Byte.length(); i++) {
+                Byte = "0" + Byte;
+            }
+            
+            String d = "";
+            String Z = Byte.substring(1,2);
+            for (int i = 0; i < 64 - Byte.length(); i++) {
+                d = d + Z;
+            }
+            Byte=d+Byte;
+             registerFile.setRegister(b,Integer.parseInt(Byte,2));
+            
+    }
+        
+        private void LH() {
+            String [] Bytes=new String[2];
+            int Address= imm12+registerFile.getRegister(a);
+        
+            String Byte ="";
+            Bytes[0]= Integer.toBinaryString((int)Mem.GetData(Address));
+            Bytes[1]= Integer.toBinaryString((int)Mem.GetData(Address+1));
+            
+            for(int j=0;j<Bytes.length;j++) {
+            for (int i = 0; i < 8 - Bytes[j].length(); i++) {
+                Bytes[j] = "0" + Bytes[j];
+            }}
+            
+            Byte=Bytes[1]+Bytes[0];
+
+            String d = "";
+            String Z = Byte.substring(1,2);
+            for (int i = 0; i < 64 - Byte.length(); i++) {
+                d = d + Z;
+            }
+            Byte=d+Byte;
+             registerFile.setRegister(b,Integer.parseInt(Byte,2));
+            
+    }
+        private void LW() {
+            String [] Bytes=new String[4];
+            int Address= imm12+registerFile.getRegister(a);
+        
+            String Byte ="";
+            Bytes[0]= Integer.toBinaryString((int)Mem.GetData(Address));
+            Bytes[1]= Integer.toBinaryString((int)Mem.GetData(Address+1));
+            Bytes[2]= Integer.toBinaryString((int)Mem.GetData(Address+2));
+            Bytes[3]= Integer.toBinaryString((int)Mem.GetData(Address+3));
+            
+            for(int j=0;j<Bytes.length;j++) {
+            for (int i = 0; i < 8 - Bytes[j].length(); i++) {
+                Bytes[j] = "0" + Bytes[j];
+            }}
+            
+            Byte=Bytes[3]+Bytes[2]+Bytes[1]+Bytes[0];
+            
+            String d = "";
+            String Z = Byte.substring(1,2);
+            for (int i = 0; i < 64 - Byte.length(); i++) {
+                d = d + Z;
+            }
+            Byte=d+Byte;
+             registerFile.setRegister(b,Integer.parseInt(Byte,2));
+    }
+        private void LD() {
+            String [] Bytes=new String[2];
+            int Address= imm12+registerFile.getRegister(a);
+        
+            String Byte ="";
+            Bytes[0]= Integer.toBinaryString((int)Mem.GetData(Address));
+            Bytes[1]= Integer.toBinaryString((int)Mem.GetData(Address+1));
+            Bytes[2]= Integer.toBinaryString((int)Mem.GetData(Address+2));
+            Bytes[3]= Integer.toBinaryString((int)Mem.GetData(Address+3));
+            Bytes[4]= Integer.toBinaryString((int)Mem.GetData(Address));
+            Bytes[5]= Integer.toBinaryString((int)Mem.GetData(Address+1));
+            Bytes[6]= Integer.toBinaryString((int)Mem.GetData(Address+2));
+            Bytes[7]= Integer.toBinaryString((int)Mem.GetData(Address+3));
+            
+            for(int j=0;j<Bytes.length;j++) {
+            for (int i = 0; i < 8 - Bytes[j].length(); i++) {
+                Bytes[j] = "0" + Bytes[j];
+            }
+            Byte=Bytes[j]+Byte;
+            }
+            
+
+             registerFile.setRegister(b,Integer.parseInt(Byte,2));
+            
+    }
+
+
 }
 
