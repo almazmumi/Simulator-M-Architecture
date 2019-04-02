@@ -51,6 +51,77 @@ public class RInstruction extends Instruction {
 		registerFile = r;
 		if(getInstrcutionOpcode() == 40 && f == 0 && x == 0) {
 			ADD();
+<<<<<<< HEAD
+		}else if(getInstrcutionOpcode() == 40 && f == 1 && x == 0) {
+			NADD();
+		}else if(getInstrcutionOpcode() == 40 && f == 2 && x == 0) {
+			AND();
+		}else if(getInstrcutionOpcode() == 40 && f == 3 && x == 0) {
+			CAND();
+		}else if(getInstrcutionOpcode() == 40 && f == 4 && x == 0) {
+			OR();
+		}else if(getInstrcutionOpcode() == 40 && f == 5 && x == 0) {
+			COR();
+		}else if(getInstrcutionOpcode() == 40 && f == 6 && x == 0) {
+			XOR();
+		}else if(getInstrcutionOpcode() == 40 && f == 7 && x == 0) {
+			XNOR();
+		}else if(getInstrcutionOpcode() == 40 && f == 8 && x == 0) {
+			EQ();
+		}else if(getInstrcutionOpcode() == 40 && f == 9 && x == 0) {
+			NE();
+		}else if(getInstrcutionOpcode() == 40 && f == 10 && x == 0) {
+			LT();
+		}else if(getInstrcutionOpcode() == 40 && f == 11 && x == 0) {
+			GE();
+		}else if(getInstrcutionOpcode() == 40 && f == 12 && x == 0) {
+			LTU();
+		}else if(getInstrcutionOpcode() == 40 && f == 13 && x == 0) {
+			GEU();
+		}else if(getInstrcutionOpcode() == 40 && f == 14 && x == 0) {
+			MIN();
+		}else if(getInstrcutionOpcode() == 40 && f == 15 && x == 0) {
+			MAX();
+		}else if(getInstrcutionOpcode() == 40 && f == 0 && x == 1) {
+			SHL();
+		}else if(getInstrcutionOpcode() == 40 && f == 1 && x == 1) {
+			SHR();
+		}else if(getInstrcutionOpcode() == 40 && f == 2 && x == 1) {
+			SAR();
+		}else if(getInstrcutionOpcode() == 40 && f == 3 && x == 1) {
+			ROR();
+		}else if(getInstrcutionOpcode() == 40 && f == 8 && x == 1) {
+			MUL();
+		}else if(getInstrcutionOpcode() == 40 && f == 12 && x == 1) {
+			DIV();
+		}else if(getInstrcutionOpcode() == 40 && f == 13 && x == 1) {
+			MOD();
+		}else if(getInstrcutionOpcode() == 40 && f == 14 && x == 1) {
+			DIVU();
+		}else if(getInstrcutionOpcode() == 40 && f == 15 && x == 1) {
+			MODU();
+=======
+		} else if(getInstrcutionOpcode() == 40 && f == 0 && x == 0) {
+			ADD();
+		} else if(getInstrcutionOpcode() == 40 && f == 0 && x == 0) {
+			ADD();
+		} else if(getInstrcutionOpcode() == 40 && f == 0 && x == 0) {
+			ADD();
+		} else if(getInstrcutionOpcode() == 40 && f == 0 && x == 0) {
+			ADD();
+		} else if(getInstrcutionOpcode() == 40 && f == 0 && x == 0) {
+			ADD();
+		} else if(getInstrcutionOpcode() == 40 && f == 0 && x == 0) {
+			ADD();
+		} else if(getInstrcutionOpcode() == 40 && f == 0 && x == 0) {
+			ADD();
+		} else if(getInstrcutionOpcode() == 40 && f == 0 && x == 0) {
+			ADD();
+		} else if(getInstrcutionOpcode() == 40 && f == 0 && x == 0) {
+			ADD();
+		}else if(getInstrcutionOpcode() == 40 && f == 0 && x == 0) {
+			ADD();
+>>>>>>> 528c308f2f164054bb624bccd901ca4be5b2ff6c
 		}
 		pc.incrementProgramCounter();
 	}
@@ -89,17 +160,17 @@ public class RInstruction extends Instruction {
             registerFile.setRegister(d, ~registerFile.getRegister(a) ^ registerFile.getRegister(b));
 	}
         
-         private void SUB() {
-             NADD();
-	}
-        
-        private void ANDC() {
-            CAND();
-	}
-        
-        private void ORC() {
-            COR();
-        }
+//        private void SUB() {
+//             NADD();
+//	}
+//        
+//        private void ANDC() {
+//            CAND();
+//	}
+//        
+//        private void ORC() {
+//            COR();
+//        }
         /*
         ALU INTSTRUCTIONS (R-FORMAT)
         */
