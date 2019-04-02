@@ -102,13 +102,13 @@ public class IInstruction extends Instruction{
         }else if(getInstrcutionOpcode() == 25 && f == 3) {
             SD();
         }else if(getInstrcutionOpcode() == 24 && f == 0) {
-            
+            LBU();
         }else if(getInstrcutionOpcode() == 24 && f == 1) {
-            
+            LHU();
         }else if(getInstrcutionOpcode() == 24 && f == 2) {
-            
+            LWU();
         }else if(getInstrcutionOpcode() == 24 && f == 3) {
-            
+            LDU();
         }else if(getInstrcutionOpcode() == 24 && f == 4) {
             LB();
         }else if(getInstrcutionOpcode() == 24 && f == 5) {
@@ -523,6 +523,105 @@ public class IInstruction extends Instruction{
             Bytes[5]= Integer.toBinaryString((int)Mem.getData(Address+1));
             Bytes[6]= Integer.toBinaryString((int)Mem.getData(Address+2));
             Bytes[7]= Integer.toBinaryString((int)Mem.getData(Address+3));
+            
+            for(int j=0;j<Bytes.length;j++) {
+            for (int i = 0; i < 8 - Bytes[j].length(); i++) {
+                Bytes[j] = "0" + Bytes[j];
+            }
+            Byte=Bytes[j]+Byte;
+            }
+            
+
+             registerFile.setRegister(b,Integer.parseInt(Byte,2));
+            
+    }
+
+            private void LBU() {
+            
+
+            
+
+            int Address= imm12+registerFile.getRegister(a);
+        
+            String Byte = Integer.toBinaryString((int)Mem.GetData(Address));
+            
+            for (int i = 0; i < 8 - Byte.length(); i++) {
+                Byte = "0" + Byte;
+            }
+            
+            String d = "";
+            String Z = "0";
+            for (int i = 0; i < 31 - Byte.length(); i++) {
+                d = d + Z;
+            }
+            Byte=d+Byte;
+            System.out.print(Byte);
+             registerFile.setRegister(b,Integer.parseInt(Byte.trim(),2));
+            
+    }
+        
+        private void LHU() {
+            String [] Bytes=new String[2];
+            int Address= imm12+registerFile.getRegister(a);
+        
+            String Byte ="";
+            Bytes[0]= Integer.toBinaryString((int)Mem.GetData(Address));
+            Bytes[1]= Integer.toBinaryString((int)Mem.GetData(Address+1));
+            
+            for(int j=0;j<Bytes.length;j++) {
+            for (int i = 0; i < 8 - Bytes[j].length(); i++) {
+                Bytes[j] = "0" + Bytes[j];
+            }}
+            
+            Byte=Bytes[1]+Bytes[0];
+
+            String d = "";
+            String Z = "0";
+            for (int i = 0; i < 64 - Byte.length(); i++) {
+                d = d + Z;
+            }
+            Byte=d+Byte;
+             registerFile.setRegister(b,Integer.parseInt(Byte,2));
+            
+    }
+        private void LWU() {
+            String [] Bytes=new String[4];
+            int Address= imm12+registerFile.getRegister(a);
+        
+            String Byte ="";
+            Bytes[0]= Integer.toBinaryString((int)Mem.GetData(Address));
+            Bytes[1]= Integer.toBinaryString((int)Mem.GetData(Address+1));
+            Bytes[2]= Integer.toBinaryString((int)Mem.GetData(Address+2));
+            Bytes[3]= Integer.toBinaryString((int)Mem.GetData(Address+3));
+            
+            for(int j=0;j<Bytes.length;j++) {
+            for (int i = 0; i < 8 - Bytes[j].length(); i++) {
+                Bytes[j] = "0" + Bytes[j];
+            }}
+            
+            Byte=Bytes[3]+Bytes[2]+Bytes[1]+Bytes[0];
+            
+            String d = "";
+            String Z = "0";
+            for (int i = 0; i < 64 - Byte.length(); i++) {
+                d = d + Z;
+            }
+            Byte=d+Byte;
+             registerFile.setRegister(b,Integer.parseInt(Byte,2));
+    }
+        private void LDU() {
+            String [] Bytes=new String[2];
+            int Address= imm12+registerFile.getRegister(a);
+        
+            String Byte ="";
+            Bytes[0]= Integer.toBinaryString((int)Mem.GetData(Address));
+            Bytes[1]= Integer.toBinaryString((int)Mem.GetData(Address+1));
+            Bytes[2]= Integer.toBinaryString((int)Mem.GetData(Address+2));
+            Bytes[3]= Integer.toBinaryString((int)Mem.GetData(Address+3));
+            Bytes[4]= Integer.toBinaryString((int)Mem.GetData(Address+4));
+            Bytes[5]= Integer.toBinaryString((int)Mem.GetData(Address+5));
+            Bytes[6]= Integer.toBinaryString((int)Mem.GetData(Address+6));
+            Bytes[7]= Integer.toBinaryString((int)Mem.GetData(Address+7));
             
             for(int j=0;j<Bytes.length;j++) {
             for (int i = 0; i < 8 - Bytes[j].length(); i++) {
