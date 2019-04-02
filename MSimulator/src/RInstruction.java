@@ -8,7 +8,7 @@ public class RInstruction extends Instruction {
 	private int c;
 	private int d;
 	
-	
+	Memory Mem;
 	private RegisterFile registerFile;
 	public RInstruction(int instructionNumber, String instructionName, String instructionBinary) {
 		super(instructionNumber, instructionName, instructionBinary);
@@ -47,8 +47,9 @@ public class RInstruction extends Instruction {
 		return d;
 	}
 	
-	public void execute(ProgramCounter pc, RegisterFile r) {
+	public void execute(ProgramCounter pc, RegisterFile r,Memory M)  {
 		registerFile = r;
+		Mem=M;
 		if(getInstrcutionOpcode() == 40 && f == 0 && x == 0) {
 			ADD();
 <<<<<<< HEAD

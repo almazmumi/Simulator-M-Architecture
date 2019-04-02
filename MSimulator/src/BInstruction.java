@@ -23,7 +23,7 @@ public class BInstruction extends Instruction {
 		return offset;
 	}
 	
-	public void execute(ProgramCounter pc, RegisterFile rf) {
+	public void execute(ProgramCounter pc, RegisterFile r,Memory M)  {
 		this.pc = pc;
 		this.rf = rf;
 		

@@ -7,7 +7,7 @@ public class IInstruction extends Instruction{
 	private int imm12;
 	private int l;
 	private int r;
-	
+	Memory Mem;
 	RegisterFile registerFile;
 	public IInstruction(int instructionNumber, String instructionText, String instructionBinary) {
 		super(instructionNumber, instructionText, instructionBinary);
@@ -39,8 +39,9 @@ public class IInstruction extends Instruction{
 		return imm12;
 	}
 	
-	public void execute(ProgramCounter pc, RegisterFile r) {
-		registerFile = r;
+	public void execute(ProgramCounter pc, RegisterFile r,Memory M) {
+        registerFile = r;
+        Mem=M;
 		if(getInstrcutionOpcode() == 32 && f == 0) {
 			ADD();
 <<<<<<< HEAD

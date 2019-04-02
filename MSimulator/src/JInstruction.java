@@ -17,7 +17,7 @@ public class JInstruction extends Instruction{
 	}
 	
 	
-	public void execute(ProgramCounter pc, RegisterFile r) {
+	public void execute(ProgramCounter pc, RegisterFile r,Memory M)  {
 		if(getInstrcutionOpcode() == 2) {
 			J(pc);
 		}else if(getInstrcutionOpcode() == 3) {

@@ -48,7 +48,7 @@ public class Instruction {
 		this.instructionBinary = instructionBinary;
 	}
 	
-	public void execute(ProgramCounter pc, RegisterFile rf) {
+	public void execute(ProgramCounter pc, RegisterFile r,Memory M) {
 		System.out.println("noooo");
 	}
 

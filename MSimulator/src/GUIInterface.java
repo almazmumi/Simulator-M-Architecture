@@ -47,7 +47,7 @@ public class GUIInterface extends JFrame {
 	//TODO make error code area
 	
 	
-	
+	private Memory Mem; 
 	private ProgramCounter pc;
 	private RegisterFile rf;
 	private ArrayList<String> instArray;
@@ -303,7 +303,7 @@ public class GUIInterface extends JFrame {
 				/* Reinitialise the ProgramCounter and RegisterFile */
 				pc = new ProgramCounter();
 				rf = new RegisterFile();
-
+				Mem=new Memory();
 				machineCodeArea.setText("");
 				StyledDocument doc = (StyledDocument) rowLines.getDocument();
 				int start = pc.getProgramCounter()*2;
@@ -343,7 +343,7 @@ public class GUIInterface extends JFrame {
 					}
 					
 					// Execute Instruction
-					(pc.getInstructionsList().get(pc.getProgramCounter())).execute(pc, rf);
+					(pc.getInstructionsList().get(pc.getProgramCounter())).execute(pc, rf,Mem);
 					updateRegisterFileTable(table, rf, pc);
 					
 				}
@@ -375,7 +375,7 @@ public class GUIInterface extends JFrame {
 					/* Reinitialise the ProgramCounter and RegisterFile */
 					pc = new ProgramCounter();
 					rf = new RegisterFile();
-	
+					Mem=new Memory();
 					/* Convert assembly language into machine code */
 					Assembler.SetInstructionInPC(pc, instArray);
 					machineCodeArea.setText("");
@@ -399,7 +399,7 @@ public class GUIInterface extends JFrame {
 				doc.setCharacterAttributes(start, end - start, style, true);				
 				
 
-				(pc.getInstructionsList().get(pc.getProgramCounter())).execute(pc, rf);
+				(pc.getInstructionsList().get(pc.getProgramCounter())).execute(pc, rf,Mem);
 				updateRegisterFileTable(table, rf, pc);
 
 				if(pc.getProgramCounter() == pc.getInstructionsList().size()) {
