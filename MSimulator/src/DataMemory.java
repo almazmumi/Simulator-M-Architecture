@@ -9,7 +9,7 @@ private static char [] MemoryArray ;
 DataMemory() {
 	 MemoryArray = new char[8192];
 }
-static void AddData(int Address,char Data) {
+static void sddData(int Address,char Data) {
 	MemoryArray[Address]=Data;
 	
 }
@@ -24,7 +24,7 @@ static void MemoryReset() {
 }
 
 
-char GetData(int i) {
+char getData(int i) {
 	return MemoryArray[i];
 }
 static void ListElemnts() {

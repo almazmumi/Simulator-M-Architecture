@@ -87,7 +87,7 @@ public class IInstruction extends Instruction{
 			MUL();
 		}else if(getInstrcutionOpcode() == 37 && f == 12) {
 			DIV();
-		}else if(getInstrcutionOpcode() == 37 && f == 13) {
+		}else if(getInstrcutionOpcode() == 37 && f == 13) { 
 			MOD();
 		}else if(getInstrcutionOpcode() == 37 && f == 14) {
 			DIVU();
@@ -543,7 +543,7 @@ public class IInstruction extends Instruction{
 
             int Address= imm12+registerFile.getRegister(a);
         
-            String Byte = Integer.toBinaryString((int)Mem.GetData(Address));
+            String Byte = Integer.toBinaryString((int)Mem.getData(Address));
             
             for (int i = 0; i < 8 - Byte.length(); i++) {
                 Byte = "0" + Byte;
@@ -565,8 +565,8 @@ public class IInstruction extends Instruction{
             int Address= imm12+registerFile.getRegister(a);
         
             String Byte ="";
-            Bytes[0]= Integer.toBinaryString((int)Mem.GetData(Address));
-            Bytes[1]= Integer.toBinaryString((int)Mem.GetData(Address+1));
+            Bytes[0]= Integer.toBinaryString((int)Mem.getData(Address));
+            Bytes[1]= Integer.toBinaryString((int)Mem.getData(Address+1));
             
             for(int j=0;j<Bytes.length;j++) {
             for (int i = 0; i < 8 - Bytes[j].length(); i++) {
@@ -589,10 +589,10 @@ public class IInstruction extends Instruction{
             int Address= imm12+registerFile.getRegister(a);
         
             String Byte ="";
-            Bytes[0]= Integer.toBinaryString((int)Mem.GetData(Address));
-            Bytes[1]= Integer.toBinaryString((int)Mem.GetData(Address+1));
-            Bytes[2]= Integer.toBinaryString((int)Mem.GetData(Address+2));
-            Bytes[3]= Integer.toBinaryString((int)Mem.GetData(Address+3));
+            Bytes[0]= Integer.toBinaryString((int)Mem.getData(Address));
+            Bytes[1]= Integer.toBinaryString((int)Mem.getData(Address+1));
+            Bytes[2]= Integer.toBinaryString((int)Mem.getData(Address+2));
+            Bytes[3]= Integer.toBinaryString((int)Mem.getData(Address+3));
             
             for(int j=0;j<Bytes.length;j++) {
             for (int i = 0; i < 8 - Bytes[j].length(); i++) {
@@ -614,14 +614,14 @@ public class IInstruction extends Instruction{
             int Address= imm12+registerFile.getRegister(a);
         
             String Byte ="";
-            Bytes[0]= Integer.toBinaryString((int)Mem.GetData(Address));
-            Bytes[1]= Integer.toBinaryString((int)Mem.GetData(Address+1));
-            Bytes[2]= Integer.toBinaryString((int)Mem.GetData(Address+2));
-            Bytes[3]= Integer.toBinaryString((int)Mem.GetData(Address+3));
-            Bytes[4]= Integer.toBinaryString((int)Mem.GetData(Address+4));
-            Bytes[5]= Integer.toBinaryString((int)Mem.GetData(Address+5));
-            Bytes[6]= Integer.toBinaryString((int)Mem.GetData(Address+6));
-            Bytes[7]= Integer.toBinaryString((int)Mem.GetData(Address+7));
+            Bytes[0]= Integer.toBinaryString((int)Mem.getData(Address));
+            Bytes[1]= Integer.toBinaryString((int)Mem.getData(Address+1));
+            Bytes[2]= Integer.toBinaryString((int)Mem.getData(Address+2));
+            Bytes[3]= Integer.toBinaryString((int)Mem.getData(Address+3));
+            Bytes[4]= Integer.toBinaryString((int)Mem.getData(Address+4));
+            Bytes[5]= Integer.toBinaryString((int)Mem.getData(Address+5));
+            Bytes[6]= Integer.toBinaryString((int)Mem.getData(Address+6));
+            Bytes[7]= Integer.toBinaryString((int)Mem.getData(Address+7));
             
             for(int j=0;j<Bytes.length;j++) {
             for (int i = 0; i < 8 - Bytes[j].length(); i++) {
