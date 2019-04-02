@@ -92,12 +92,37 @@ public class IInstruction extends Instruction{
 			DIVU();
 		}else if(getInstrcutionOpcode() == 37 && f == 15) {
 			MODU();
-		}
-=======
-		}else if(getInstrcutionOpcode() == 32 && f == 0)
-		
-		
->>>>>>> 528c308f2f164054bb624bccd901ca4be5b2ff6c
+		}else if(getInstrcutionOpcode() == 25 && f == 0) {
+            SB();
+        }else if(getInstrcutionOpcode() == 25 && f == 1) {
+            SH();
+        }else if(getInstrcutionOpcode() == 25 && f == 2) {
+            SW();
+        }else if(getInstrcutionOpcode() == 25 && f == 3) {
+            SD();
+        }else if(getInstrcutionOpcode() == 24 && f == 0) {
+            
+        }else if(getInstrcutionOpcode() == 24 && f == 1) {
+            
+        }else if(getInstrcutionOpcode() == 24 && f == 2) {
+            
+        }else if(getInstrcutionOpcode() == 24 && f == 3) {
+            
+        }else if(getInstrcutionOpcode() == 24 && f == 4) {
+            LB();
+        }else if(getInstrcutionOpcode() == 24 && f == 5) {
+            LH();
+        }else if(getInstrcutionOpcode() == 24 && f == 6) {
+            LW();
+        }else if(getInstrcutionOpcode() == 24 && f == 7) {
+            LD();
+        }
+
+
+
+
+
+
 		pc.setProgramCounter(pc.getProgramCounter()+1);
 	}
         /*
