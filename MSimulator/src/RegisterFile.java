@@ -18,14 +18,12 @@ public class RegisterFile {
 	public int[] getRegistersFile() {
 		return registersFile;
 	}
-	@Override
-	public String toString() {
-		String r = "<html> ";
-		for (int i = 0; i < registersFile.length; i++) {
-			r += "R"+ i + ": "+ registersFile[i] + "<br>";
+	
+	public void reset() {
+		for (int i= 0; i< registersFile.length; i++) {
+			registersFile[i] = 0;
 		}
-		r += r + "</html>";
-		return r;
 	}
+
 	
 }

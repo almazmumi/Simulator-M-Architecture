@@ -6,6 +6,8 @@ public class BInstruction extends Instruction {
 	private int offset;
 	private ProgramCounter pc;
 	private RegisterFile rf;
+	
+	
 	public BInstruction(int instructionNumber, String instructionText, String instructionBinary) {
 		super(instructionNumber, instructionText, instructionBinary);
 		a = Integer.parseInt(instructionBinary.substring(6, 11),2);
@@ -13,6 +15,8 @@ public class BInstruction extends Instruction {
 		offset = Integer.parseInt(instructionBinary.substring(16, 32),2);
 		setInstructionOpcode(Integer.parseInt(instructionBinary.substring(0,6), 2));
 	}
+	
+	
 	public int getA() {
 		return a;
 	}
@@ -126,10 +130,17 @@ public class BInstruction extends Instruction {
 		pc.setProgramCounter(rf.getRegister(b)+offset-1);
 		rf.setRegister(b, pc.getProgramCounter());
 	}
+	
 	private void LOOPD() {
 		
 	}
 	private void LOOP() {
+		rf.setRegister(b,rf.getRegister(b)+1);
+		if(rf.getRegister(b) == rf.getRegister(a)) {
+			pc.incrementProgramCounter();
+		}else{
+			pc.setProgramCounter(offset);
+		}
 		
 		
 	}

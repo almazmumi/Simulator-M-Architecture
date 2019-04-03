@@ -10,6 +10,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.UndoableEditListener;
 import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -17,6 +18,7 @@ import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
 import java.io.LineNumberReader;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
@@ -40,23 +42,26 @@ import javax.swing.SwingConstants;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import java.awt.Dimension;
+import javax.swing.JRadioButtonMenuItem;
 
 @SuppressWarnings("serial")
 public class GUIInterface extends JFrame {
-	
-	//TODO make error code area
-	
-	
-	private DataMemory Mem; 
+
+	// TODO make error code area
+
+	private DataMemory mem;
 	private ProgramCounter pc;
 	private RegisterFile rf;
 	private ArrayList<String> instArray;
 	private JPanel contentPane;
 	private JTable table;
-	private int count = -1; // for btnCompileLineByLine
+
 	private boolean firstTime = true;
 
-	
+	private String RegistersOption = "Decimal";
+
+	private String MachineCodeOption = "Binary";
+
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -73,6 +78,36 @@ public class GUIInterface extends JFrame {
 	public GUIInterface() {
 		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+		// =========================================================================================
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		contentPane.setLayout(new BorderLayout(0, 0));
+		JPanel panel = new JPanel();
+		contentPane.add(panel, BorderLayout.SOUTH);
+		// =========================================================================================
+
+		// =========================================================================================
+		table = new JTable();
+		table.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		contentPane.add(table, BorderLayout.EAST);
+		table.setModel(new DefaultTableModel(
+				new Object[][] { { "R0", "R0", "0" }, { "R1", "R1", "0" }, { "R2", "R2", "0" }, { "R3", "R3", "0" },
+						{ "R4", "R4", "0" }, { "R5", "R5", "0" }, { "R6", "R6", "0" }, { "R7", "R7", "0" },
+						{ "R8", "R8", "0" }, { "R9", "R9", "0" }, { "R10", "T0", "0" }, { "R11", "T1", "0" },
+						{ "R12", "T2", "0" }, { "R13", "T3", "0" }, { "R14", "T4", "0" }, { "R15", "T5", "0" },
+						{ "R16", "T6", "0" }, { "R17", "T7", "0" }, { "R18", "T8", "0" }, { "R19", "T9", "0" },
+						{ "R20", "S0", "0" }, { "R21", "S1", "0" }, { "R22", "S2", "0" }, { "R23", "S3", "0" },
+						{ "R24", "S4", "0" }, { "R25", "S5", "0" }, { "R26", "S6", "0" }, { "R27", "S7", "0" },
+						{ "R28", "S8", "0" }, { "R29", "FP", "0" }, { "R30", "SP", "0" }, { "R31", "LR", "0" }, },
+				new String[] { "R#", "R Name", "Register Number" }));
+		table.getColumnModel().getColumn(0).setPreferredWidth(50);
+		table.getColumnModel().getColumn(0).setMinWidth(50);
+		table.getColumnModel().getColumn(2).setPreferredWidth(100);
+		table.getColumnModel().getColumn(2).setMinWidth(90);
+		table.setRowHeight(28);
+		// =========================================================================================
 
 		// Menu Items
 		// ==================================================================================
@@ -138,6 +173,78 @@ public class GUIInterface extends JFrame {
 		JCheckBoxMenuItem chckbxmntmDataMemory = new JCheckBoxMenuItem("Data memory");
 		chckbxmntmDataMemory.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		mnEditView.add(chckbxmntmDataMemory);
+
+		JMenu mnRegistersValue = new JMenu("Registers Value");
+		mnRegistersValue.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+		mnEdit.add(mnRegistersValue);
+
+		ButtonGroup registersOption = new ButtonGroup();
+		JRadioButtonMenuItem rdbtnmntmBinary = new JRadioButtonMenuItem("Binary");
+		rdbtnmntmBinary.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+		registersOption.add(rdbtnmntmBinary);
+		mnRegistersValue.add(rdbtnmntmBinary);
+
+		JRadioButtonMenuItem rdbtnmntmHex = new JRadioButtonMenuItem("Hex");
+		rdbtnmntmHex.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+		registersOption.add(rdbtnmntmHex);
+		mnRegistersValue.add(rdbtnmntmHex);
+
+		JRadioButtonMenuItem rdbtnmntmDecimal = new JRadioButtonMenuItem("Decimal");
+		rdbtnmntmDecimal.setSelected(true);
+		rdbtnmntmDecimal.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+		registersOption.add(rdbtnmntmDecimal);
+		mnRegistersValue.add(rdbtnmntmDecimal);
+
+		ActionListener registersOptionActionListeners = new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JRadioButtonMenuItem aButton = (JRadioButtonMenuItem) e.getSource();
+				MachineCodeOption = aButton.getText();
+				System.out.println(MachineCodeOption);
+				updateRegisterFileTable(table, rf, pc);
+//		        if(aButton.getText().equals("Decimal")) {
+//		        	RegistersOption = aButton.getText();
+//		        }else if(aButton.getText().equals("Binary")) {
+//		        	
+//		        }else if(aButton.getText().equals("Hex")) {
+//		        	
+//		        }
+			}
+		};
+
+		JMenu mnMachineCodeValue = new JMenu("Machine Code Value");
+		mnMachineCodeValue.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+		mnEdit.add(mnMachineCodeValue);
+
+		rdbtnmntmBinary.addActionListener(registersOptionActionListeners);
+		rdbtnmntmHex.addActionListener(registersOptionActionListeners);
+		rdbtnmntmDecimal.addActionListener(registersOptionActionListeners);
+
+		ButtonGroup machineCodeOption = new ButtonGroup();
+		JRadioButtonMenuItem rdbtnmntmBinaryMC = new JRadioButtonMenuItem("Binary");
+		rdbtnmntmBinaryMC.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+		machineCodeOption.add(rdbtnmntmBinaryMC);
+		mnMachineCodeValue.add(rdbtnmntmBinaryMC);
+
+		JRadioButtonMenuItem rdbtnmntmHexMC = new JRadioButtonMenuItem("Hex");
+		rdbtnmntmHexMC.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+		machineCodeOption.add(rdbtnmntmHexMC);
+		mnMachineCodeValue.add(rdbtnmntmHexMC);
+
+		ActionListener machineCodeOptionActionListeners = new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JRadioButtonMenuItem aButton = (JRadioButtonMenuItem) e.getSource();
+				MachineCodeOption = aButton.getText();
+
+			}
+		};
+
+		rdbtnmntmBinaryMC.addActionListener(machineCodeOptionActionListeners);
+		rdbtnmntmHexMC.addActionListener(machineCodeOptionActionListeners);
+
 		// ==========================================================================================
 
 		// =========================================================================================
@@ -151,27 +258,18 @@ public class GUIInterface extends JFrame {
 		// =========================================================================================
 
 		// =========================================================================================
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		setContentPane(contentPane);
-		contentPane.setLayout(new BorderLayout(0, 0));
-		JPanel panel = new JPanel();
-		contentPane.add(panel, BorderLayout.SOUTH);
-		// =========================================================================================
-
-		// =========================================================================================
 		JButton run = new JButton("Run");
 		run.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		panel.add(run);
 		JButton debug = new JButton("Debug");
 		debug.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		panel.add(debug);
-		
+
 		JButton btnReset = new JButton("Reset");
 
 		btnReset.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		panel.add(btnReset);
-		
+
 		JLabel lblPcvalue = new JLabel("PC = 0");
 		lblPcvalue.setFont(new Font("Tahoma", Font.PLAIN, 19));
 		panel.add(lblPcvalue);
@@ -200,13 +298,12 @@ public class GUIInterface extends JFrame {
 
 			@Override
 			public void removeUpdate(DocumentEvent e) {
-				
 
 			}
 
 			@SuppressWarnings("unlikely-arg-type")
 			@Override
-			public void insertUpdate(DocumentEvent e) {				
+			public void insertUpdate(DocumentEvent e) {
 				char c = txtpnCodeview.getText().toString().charAt(txtpnCodeview.getText().toString().length() - 1);
 				if (c == ' ') {
 					String lines[] = txtpnCodeview.getText().toString().split("\\r?\\n");
@@ -244,27 +341,6 @@ public class GUIInterface extends JFrame {
 		// =========================================================================================
 
 		// =========================================================================================
-		table = new JTable();
-		table.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		contentPane.add(table, BorderLayout.EAST);
-		table.setModel(new DefaultTableModel(
-				new Object[][] { { "R0", "R0", "0" }, { "R1", "R1", "0" }, { "R2", "R2", "0" }, { "R3", "R3", "0" },
-						{ "R4", "R4", "0" }, { "R5", "R5", "0" }, { "R6", "R6", "0" }, { "R7", "R7", "0" },
-						{ "R8", "R8", "0" }, { "R9", "R9", "0" }, { "R10", "T0", "0" }, { "R11", "T1", "0" },
-						{ "R12", "T2", "0" }, { "R13", "T3", "0" }, { "R14", "T4", "0" }, { "R15", "T5", "0" },
-						{ "R16", "T6", "0" }, { "R17", "T7", "0" }, { "R18", "T8", "0" }, { "R19", "T9", "0" },
-						{ "R20", "S0", "0" }, { "R21", "S1", "0" }, { "R22", "S2", "0" }, { "R23", "S3", "0" },
-						{ "R24", "S4", "0" }, { "R25", "S5", "0" }, { "R26", "S6", "0" }, { "R27", "S7", "0" },
-						{ "R28", "S8", "0" }, { "R29", "FP", "0" }, { "R30", "SP", "0" }, { "R31", "LR", "0" }, },
-				new String[] { "R#", "R Name", "Register Number" }));
-		table.getColumnModel().getColumn(0).setPreferredWidth(50);
-		table.getColumnModel().getColumn(0).setMinWidth(50);
-		table.getColumnModel().getColumn(2).setPreferredWidth(100);
-		table.getColumnModel().getColumn(2).setMinWidth(90);
-		table.setRowHeight(28);
-		// =========================================================================================
-
-		// =========================================================================================
 		JTextPane machineCodeArea = new JTextPane();
 		machineCodeArea.setFont(new Font("Tahoma", Font.PLAIN, 22));
 		machineCodeArea.setText(null);
@@ -272,28 +348,27 @@ public class GUIInterface extends JFrame {
 		contentPane.add(machineCodeArea, BorderLayout.WEST);
 		// =========================================================================================
 
-		
-		
+		// Initialise the program counter, registerFile and dataMemory.
+		pc = new ProgramCounter();
+		rf = new RegisterFile();
+		mem = new DataMemory();
+
 		btnReset.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				pc = new ProgramCounter();
-				rf = new RegisterFile();
+				pc.reset();
+				rf.reset();
+				mem.reset();
 				updateRegisterFileTable(table, rf, pc);
 				lblPcvalue.setText("PC = 0");
 				machineCodeArea.setText("");
 				firstTime = true;
 				StyledDocument doc = (StyledDocument) rowLines.getDocument();
-				int start = pc.getProgramCounter()*2;
-				int end = start+2;
-				StyledDocument docc = rowLines.getStyledDocument();
 				Style style = rowLines.addStyle("MyHilite", null);
-				
 				StyleConstants.setBold(style, false);
-				doc.setCharacterAttributes(0,rowLines.getText().toString().length()-1, style, true);
+				doc.setCharacterAttributes(0, rowLines.getText().toString().length() - 1, style, true);
 			}
 		});
-		
-		
+
 		// =========================================================================================
 		instArray = new ArrayList<String>();
 
@@ -301,115 +376,165 @@ public class GUIInterface extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				/* Reinitialise the ProgramCounter and RegisterFile */
-				pc = new ProgramCounter();
-				rf = new RegisterFile();
-				Mem=new DataMemory();
+				pc.reset();
+				rf.reset();
+				mem.reset();
 				machineCodeArea.setText("");
+
+				// To style the lines number
 				StyledDocument doc = (StyledDocument) rowLines.getDocument();
-				int start = pc.getProgramCounter()*2;
-				int end = start+2;
-				StyledDocument docc = rowLines.getStyledDocument();
 				Style style = rowLines.addStyle("MyHilite", null);
-				
 				StyleConstants.setBold(style, false);
-				doc.setCharacterAttributes(0,rowLines.getText().toString().length()-1, style, true);
-				
-				
+				doc.setCharacterAttributes(0, rowLines.getText().toString().length() - 1, style, true);
+				// -----------------------------------------------------------------------------------
+
 				/* Convert the text to array list of assembly instructions */
-				String[] a = txtpnCodeview.getText().split(System.getProperty("line.separator"));
+
+				// to replace all blank lines
+				String[] a = txtpnCodeview.getText().toString().replaceAll("(?m)^[ \t]*\r?\n", "")
+						.split(System.getProperty("line.separator"));
+				// ---------------------------------------------------------------------------------------------------------------
+
+				// to save all @lables in programCounter
 				for (int i = 0; i < a.length; i++) {
 					a[i] = a[i].split("\\//")[0];
-					if (!a[i].equals(""))
+					String temp = a[i].split(" ")[0];
+					if (temp.contains("@")) {
+						pc.addLableAddress(a[i].split(" ")[0], i);
+						a[i] = a[i].replace(temp, "").trim().equals("") ? null : a[i].replace(temp, "").trim();
+					}
+					if (a[i] != null) {
 						instArray.add(a[i]);
+					}
 				}
-				
-				
+
 				/* Convert assembly language into machine code */
 				Assembler.SetInstructionInPC(pc, instArray);
 
 				// Execute the instruction listmachineCodeArea.setText("");
 				while (pc.getProgramCounter() < pc.getInstructionsList().size()) {
-					
-					
-					/*Print Machine Code Binary*/
-					
-					if(machineCodeArea.getText().equals("")) {
-						machineCodeArea.setText(( pc.getInstructionsList().get(pc.getProgramCounter()))
-										.getInstructionBinary());
-					} else {
-						machineCodeArea.setText(machineCodeArea.getText() + "\r\n"
-							+ (pc.getInstructionsList().get(pc.getProgramCounter()))
-									.getInstructionBinary());
+
+					/* Print Machine Code Binary */
+					String binaryString = pc.getInstructionsList().get(pc.getProgramCounter()).getInstructionBinary();
+					int decimal = Integer.parseUnsignedInt(binaryString, 2);
+					String hexStr = Integer.toUnsignedString(decimal, 16);
+					if (MachineCodeOption.equals("Hex")) {
+						if (machineCodeArea.getText().equals("")) {
+							machineCodeArea.setText(hexStr + "");
+						} else {
+							machineCodeArea.setText(machineCodeArea.getText() + "\r\n" + hexStr);
+						}
+					} else if (MachineCodeOption.equals("Binary")) {
+						if (machineCodeArea.getText().equals("")) {
+							machineCodeArea.setText(binaryString + "");
+						} else {
+							machineCodeArea.setText(machineCodeArea.getText() + "\r\n" + binaryString);
+						}
 					}
-					
+
 					// Execute Instruction
-					(pc.getInstructionsList().get(pc.getProgramCounter())).execute(pc, rf,Mem);
+					(pc.getInstructionsList().get(pc.getProgramCounter())).execute(pc, rf, mem);
 					updateRegisterFileTable(table, rf, pc);
-					
 				}
-				
+
 				pc.setProgramCounter(0);
 				instArray.clear();
-				
-				
+
 			}
 		});
 
 		debug.addActionListener(new ActionListener() {
-
-			
-
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
-				if(firstTime) {
+
+				if (!pc.isItRunning()) {
+					/* Reinitialise the ProgramCounter and RegisterFile */
+					pc.reset();
+					rf.reset();
+					mem.reset();
+					machineCodeArea.setText("");
+
+					// To style the lines number
+					StyledDocument doc = (StyledDocument) rowLines.getDocument();
+					Style style = rowLines.addStyle("MyHilite", null);
+					StyleConstants.setBold(style, false);
+					doc.setCharacterAttributes(0, rowLines.getText().toString().length() - 1, style, true);
+					// -----------------------------------------------------------------------------------
+
 					/* Convert the text to array list of assembly instructions */
-					String[] a = txtpnCodeview.getText().split(System.getProperty("line.separator"));
+
+					// to replace all blank lines
+					String[] a = txtpnCodeview.getText().toString().replaceAll("(?m)^[ \t]*\r?\n", "")
+							.split(System.getProperty("line.separator"));
+					// ---------------------------------------------------------------------------------------------------------------
+
+					// to save all @lables in programCounter
 					for (int i = 0; i < a.length; i++) {
 						a[i] = a[i].split("\\//")[0];
-						if (!a[i].equals("")) {
+						String temp = a[i].split(" ")[0];
+						if (temp.contains("@")) {
+							pc.addLableAddress(a[i].split(" ")[0], i);
+							a[i] = a[i].replace(temp, "").trim().equals("") ? null : a[i].replace(temp, "").trim();
+						}
+						if (a[i] != null) {
 							instArray.add(a[i]);
 						}
 					}
-					
-					/* Reinitialise the ProgramCounter and RegisterFile */
-					pc = new ProgramCounter();
-					rf = new RegisterFile();
-					Mem=new DataMemory();
+
 					/* Convert assembly language into machine code */
 					Assembler.SetInstructionInPC(pc, instArray);
-					machineCodeArea.setText("");
-					firstTime = false;
-					machineCodeArea.setText((pc.getInstructionsList().get(pc.getProgramCounter())).getInstructionBinary());
-				}else {
-					machineCodeArea.setText(machineCodeArea.getText() + "\r\n"
-							+ (pc.getInstructionsList().get(pc.getProgramCounter())).getInstructionBinary());
-				}
-				
-				lblPcvalue.setText("PC = "+pc.getProgramCounter());
-				StyledDocument doc = (StyledDocument) rowLines.getDocument();
-				int start = pc.getProgramCounter()*2;
-				int end = start+2;
-				StyledDocument docc = rowLines.getStyledDocument();
-				Style style = rowLines.addStyle("MyHilite", null);
-				
-				StyleConstants.setBold(style, false);
-				doc.setCharacterAttributes(0,rowLines.getText().toString().length()-1, style, true);				
-				StyleConstants.setBold(style, true);
-				doc.setCharacterAttributes(start, end - start, style, true);				
-				
 
-				(pc.getInstructionsList().get(pc.getProgramCounter())).execute(pc, rf,Mem);
+					/* Print Machine Code Binary */
+					String binaryString = pc.getInstructionsList().get(pc.getProgramCounter()).getInstructionBinary();
+					int decimal = Integer.parseUnsignedInt(binaryString, 2);
+					String hexStr = Integer.toUnsignedString(decimal, 16);
+					if (MachineCodeOption.equals("Hex")) {
+
+						machineCodeArea.setText(hexStr + "");
+
+					} else if (MachineCodeOption.equals("Binary")) {
+
+						machineCodeArea.setText(binaryString + "");
+
+					}
+
+				} else {
+					/* Print Machine Code Binary */
+					String binaryString = pc.getInstructionsList().get(pc.getProgramCounter()).getInstructionBinary();
+					int decimal = Integer.parseUnsignedInt(binaryString, 2);
+					String hexStr = Integer.toUnsignedString(decimal, 16);
+					if (MachineCodeOption.equals("Hex")) {
+						machineCodeArea.setText(machineCodeArea.getText() + "\r\n" + hexStr);
+
+					} else if (MachineCodeOption.equals("Binary")) {
+
+						machineCodeArea.setText(machineCodeArea.getText() + "\r\n" + binaryString);
+
+					}
+
+				}
+
+				lblPcvalue.setText("PC = " + pc.getProgramCounter());
+				StyledDocument doc = (StyledDocument) rowLines.getDocument();
+				int start = pc.getProgramCounter() * 2;
+				int end = start + 2;
+				Style style = rowLines.addStyle("MyHilite", null);
+
+				StyleConstants.setBold(style, false);
+				doc.setCharacterAttributes(0, rowLines.getText().toString().length() - 1, style, true);
+				StyleConstants.setBold(style, true);
+				doc.setCharacterAttributes(start, end - start, style, true);
+
+				(pc.getInstructionsList().get(pc.getProgramCounter())).execute(pc, rf, mem);
 				updateRegisterFileTable(table, rf, pc);
 
-				if(pc.getProgramCounter() == pc.getInstructionsList().size()) {
-					pc.setProgramCounter(0);
+				if (pc.getProgramCounter() == pc.getInstructionsList().size()) {
+					pc.reset();
+					rf.reset();
 					firstTime = true;
 					instArray.clear();
 				}
-				
-				
-			
+
 			}
 		});
 
@@ -417,9 +542,19 @@ public class GUIInterface extends JFrame {
 	}
 
 	private void updateRegisterFileTable(JTable t, RegisterFile r, ProgramCounter pc) {
-		for (int i = 0; i < 32; i++) {
-			t.getModel().setValueAt(r.getRegister(i), i, 2);
-		}
+		if (RegistersOption.equals("Decimal"))
+			for (int i = 0; i < 32; i++) {
+				t.getModel().setValueAt(r.getRegister(i), i, 2);
+			}
+		else if (RegistersOption.equals("Hex"))
+			for (int i = 0; i < 32; i++) {
+
+				t.getModel().setValueAt(Integer.toString(r.getRegister(i), 16).toUpperCase(), i, 2);
+			}
+		else if (RegistersOption.equals("Binary"))
+			for (int i = 0; i < 32; i++) {
+				t.getModel().setValueAt(Integer.toBinaryString(r.getRegister(i)), i, 2);
+			}
 	}
 
 }
