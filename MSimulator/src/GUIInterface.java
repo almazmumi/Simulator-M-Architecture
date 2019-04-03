@@ -358,6 +358,7 @@ public class GUIInterface extends JFrame {
 				pc.reset();
 				rf.reset();
 				mem.reset();
+				instArray.clear();
 				updateRegisterFileTable(table, rf, pc);
 				lblPcvalue.setText("PC = 0");
 				machineCodeArea.setText("");
