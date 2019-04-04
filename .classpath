@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry excluding="coe/pkg403/" kind="src" path="COE 403/src"/>
+	<classpathentry kind="src" path="COE 403/src/coe/pkg403"/>
+	<classpathentry kind="src" path="MIPS-simulator-master/src"/>
+	<classpathentry excluding="src/" kind="src" path="MSimulator"/>
+	<classpathentry kind="src" path="MSimulator/src"/>
+	<classpathentry kind="src" path="testing/src"/>
+	<classpathentry kind="output" path="COE 403/build/classes"/>
+</classpath>
