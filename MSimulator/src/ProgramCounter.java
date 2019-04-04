@@ -11,6 +11,7 @@ public class ProgramCounter {
 		this.instructionsList = new ArrayList<Instruction>();
 		lableList = new HashMap<String, Integer>();
 		programCounter = 0;
+		isItRunning = false;
 	}
 	
 	public List<Instruction> getInstructionsList() {

@@ -56,7 +56,6 @@ public class GUIInterface extends JFrame {
 	private JPanel contentPane;
 	private JTable table;
 
-	private boolean firstTime = true;
 
 	private String RegistersOption = "Decimal";
 
@@ -200,16 +199,10 @@ public class GUIInterface extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				JRadioButtonMenuItem aButton = (JRadioButtonMenuItem) e.getSource();
-				MachineCodeOption = aButton.getText();
+				RegistersOption = aButton.getText();
 				System.out.println(MachineCodeOption);
 				updateRegisterFileTable(table, rf, pc);
-//		        if(aButton.getText().equals("Decimal")) {
-//		        	RegistersOption = aButton.getText();
-//		        }else if(aButton.getText().equals("Binary")) {
-//		        	
-//		        }else if(aButton.getText().equals("Hex")) {
-//		        	
-//		        }
+
 			}
 		};
 
@@ -281,10 +274,10 @@ public class GUIInterface extends JFrame {
 		textCodeArea.setLayout(new BorderLayout(0, 0));
 		JTextPane txtpnCodeview = new JTextPane();
 		textCodeArea.add(txtpnCodeview, BorderLayout.CENTER);
-		txtpnCodeview.setFont(new Font("Tahoma", Font.PLAIN, 22));
+		txtpnCodeview.setFont(new Font("Segoe UI Historic", Font.PLAIN, 22));
 
 		JTextPane rowLines = new JTextPane();
-		rowLines.setFont(new Font("Tahoma", Font.PLAIN, 22));
+		rowLines.setFont(new Font("Segoe UI Historic", Font.PLAIN, 22));
 		rowLines.setText(
 				"1\r\n2\r\n3\r\n4\r\n5\r\n6\r\n7\r\n8\r\n9\r\n10\r\n11\r\n12\r\n13\r\n14\r\n15\r\n16\r\n17\r\n18\r\n19\r\n20\r\n21\r\n22\r\n23\r\n24\r\n25\r\n26\r\n27\r\n28\r\n29\r\n30\r\n31\r\n32\r\n33\r\n34\r\n35\r\n36\r\n37\r\n38\r\n39\r\n40\r\n41\r\n42\r\n43\r\n44\r\n45\r\n46\r\n47\r\n48\r\n49\r\n50\r\n51\r\n52\r\n53\r\n54\r\n55\r\n56\r\n57\r\n58\r\n59\r\n60\r\n61\r\n62\r\n63\r\n64\r\n65\r\n66\r\n67\r\n68\r\n69\r\n70\r\n71\r\n72\r\n73\r\n74\r\n75\r\n76\r\n77\r\n78\r\n79\r\n80\r\n81\r\n82\r\n83\r\n84\r\n85\r\n86\r\n87\r\n88\r\n89\r\n90\r\n91\r\n92\r\n93\r\n94\r\n95\r\n96\r\n97\r\n98\r\n99\r\n100");
 		rowLines.setEnabled(false);
@@ -306,29 +299,58 @@ public class GUIInterface extends JFrame {
 			public void insertUpdate(DocumentEvent e) {
 				char c = txtpnCodeview.getText().toString().charAt(txtpnCodeview.getText().toString().length() - 1);
 				if (c == ' ') {
-					String lines[] = txtpnCodeview.getText().toString().split("\\r?\\n");
 
-					Runnable doAssist = new Runnable() {
-						@Override
-						public void run() {
-//							StyledDocument doc = (StyledDocument) txtpnCodeview.getDocument();
-//							int start = 0;
-//							for (int i = 0; i < lines.length - 1; i++) {
-//								start += lines[i].length() + 1;
-//							}
-//
-//							int end = start + lines[lines.length - 1].split(" ")[0].length() + 1;
-//
-//							StyledDocument docc = txtpnCodeview.getStyledDocument();
-//
-//							Style style = txtpnCodeview.addStyle("MyHilite", null);
-//
-//							// style = textPane.getStyle("MyHilite");
-//							StyleConstants.setBold(style, true);
-//							doc.setCharacterAttributes(start, end - start, style, false);
-						}
-					};
-					SwingUtilities.invokeLater(doAssist);
+					String[] temp = txtpnCodeview.getText().toString().split(" ");
+					String tempString = temp[temp.length-1];
+					System.out.println(c);
+					if (tempString.equals("scloop")) {
+						Runnable doAssist = new Runnable() {
+							@Override
+							public void run() {
+								txtpnCodeview.setText("SET R5 = 10\r\nSET R6 = 0\r\n@FOR\r\nADD R7 = R7 , 2\r\nLOOP R5, R6, @FOR");
+							}
+						};
+						SwingUtilities.invokeLater(doAssist);	
+					}else if(tempString.equals("scbranch")) {
+						Runnable doAssist = new Runnable() {
+							@Override
+							public void run() {
+								txtpnCodeview.setText("SET R5 = 10\r\n" + 
+										"@loop ADD R6 = R6,1\r\n" + 
+										"BNE R6, 10, @loop\r\n" + 
+										"ADD R10 = R10, 1\r\n" + 
+										"");
+							}
+						};
+						SwingUtilities.invokeLater(doAssist);
+					}else if(tempString.equals("scjumpandaly")) {
+						Runnable doAssist = new Runnable() {
+							@Override
+							public void run() {
+								txtpnCodeview.setText("J, @lable\r\n" + 
+										"ADD R5 = R5, 5\r\n" + 
+										"ADD R5 = R5, R5\r\n" + 
+										"@lable\r\n" + 
+										"ADD R6 = R6, 5\r\n" + 
+										"ADD R6 = R6, R6");
+							}
+						};
+						SwingUtilities.invokeLater(doAssist);
+					}else if(tempString.equals("scalu")) {
+						Runnable doAssist = new Runnable() {
+							@Override
+							public void run() {
+								txtpnCodeview.setText("SET R5 = 11     //-> 1011 \r\n" + 
+										"SET R6 = 10     //-> 1010\r\n" + 
+										"AND R7 = R5, R6 // R7 -> 1010\r\n" + 
+										"OR R8 = R5, R6   // R8 -> 1011\r\n" + 
+										"ADD R9 = R5, R6 // R9 -> 21");
+							}
+						};
+						SwingUtilities.invokeLater(doAssist);	
+					}
+
+
 				}
 			}
 
@@ -342,7 +364,7 @@ public class GUIInterface extends JFrame {
 
 		// =========================================================================================
 		JTextPane machineCodeArea = new JTextPane();
-		machineCodeArea.setFont(new Font("Tahoma", Font.PLAIN, 22));
+		machineCodeArea.setFont(new Font("Segoe UI Historic", Font.PLAIN, 22));
 		machineCodeArea.setText(null);
 		machineCodeArea.setEditable(false);
 		contentPane.add(machineCodeArea, BorderLayout.WEST);
@@ -362,7 +384,6 @@ public class GUIInterface extends JFrame {
 				updateRegisterFileTable(table, rf, pc);
 				lblPcvalue.setText("PC = 0");
 				machineCodeArea.setText("");
-				firstTime = true;
 				StyledDocument doc = (StyledDocument) rowLines.getDocument();
 				Style style = rowLines.addStyle("MyHilite", null);
 				StyleConstants.setBold(style, false);
@@ -423,7 +444,7 @@ public class GUIInterface extends JFrame {
 						if (machineCodeArea.getText().equals("")) {
 							machineCodeArea.setText(hexStr + "");
 						} else {
-							machineCodeArea.setText(machineCodeArea.getText() + "\r\n" + hexStr);
+							machineCodeArea.setText(machineCodeArea.getText() + "\r\n" + hexStr.toUpperCase());
 						}
 					} else if (MachineCodeOption.equals("Binary")) {
 						if (machineCodeArea.getText().equals("")) {
@@ -438,7 +459,7 @@ public class GUIInterface extends JFrame {
 					updateRegisterFileTable(table, rf, pc);
 				}
 
-				pc.setProgramCounter(0);
+				pc.reset();
 				instArray.clear();
 
 			}
@@ -505,7 +526,7 @@ public class GUIInterface extends JFrame {
 					int decimal = Integer.parseUnsignedInt(binaryString, 2);
 					String hexStr = Integer.toUnsignedString(decimal, 16);
 					if (MachineCodeOption.equals("Hex")) {
-						machineCodeArea.setText(machineCodeArea.getText() + "\r\n" + hexStr);
+						machineCodeArea.setText(machineCodeArea.getText() + "\r\n" + hexStr.toUpperCase());
 
 					} else if (MachineCodeOption.equals("Binary")) {
 
@@ -530,9 +551,9 @@ public class GUIInterface extends JFrame {
 				updateRegisterFileTable(table, rf, pc);
 
 				if (pc.getProgramCounter() == pc.getInstructionsList().size()) {
+					System.out.println("Here");
 					pc.reset();
 					rf.reset();
-					firstTime = true;
 					instArray.clear();
 				}
 

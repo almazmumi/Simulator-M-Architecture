@@ -300,7 +300,7 @@ public class Assembler {
 
 		
 		
-		Imm = IntToBinary(instArray.get(1));
+		Imm = instArray.get(1);
 		if(Imm.contains("@")) {
 			Imm = ExtRegister_26(Integer.toBinaryString(pc.getLableAddress(Imm)));
 		}else{
