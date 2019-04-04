@@ -77,6 +77,8 @@ public class GUIInterface extends JFrame {
 	private JTextPane rowLines;
 	private JInternalFrame dataSegmentIF;
 	private JInternalFrame textSegmentIF;
+	private JTable textSegmentTable;
+	private JTable dataSegmentTable;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -351,20 +353,62 @@ public class GUIInterface extends JFrame {
 		System.out.println(tabbedPane.getSize().height);
 		tabbedPane.addTab("Execute", null, executeTabDesktopPane, null);
 
-		textSegmentIF = new JInternalFrame("New JInternalFrame");
+		textSegmentIF = new JInternalFrame("Text Segment");
 		textSegmentIF.setBorder(new LineBorder(new Color(0, 0, 0)));
 		textSegmentIF.setMaximizable(true);
 		textSegmentIF.setBounds(0, 0, 1295, 350);
 		executeTabDesktopPane.add(textSegmentIF);
 
-		dataSegmentIF = new JInternalFrame("New JInternalFrame");
+		dataSegmentIF = new JInternalFrame("Data Segment");
 		dataSegmentIF.setBorder(new LineBorder(new Color(0, 0, 0)));
 		dataSegmentIF.setBounds(0, 350, 1295, 350);
 		executeTabDesktopPane.add(dataSegmentIF);
 		dataSegmentIF.setResizable(true);
 		dataSegmentIF.setMaximizable(true);
+		
+		JScrollPane scrollPane_1 = new JScrollPane();
+		dataSegmentIF.getContentPane().add(scrollPane_1, BorderLayout.CENTER);
+		
+		dataSegmentTable = new JTable();
+		dataSegmentTable.setModel(new DefaultTableModel(
+			new Object[][] {
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+			},
+			new String[] {
+				"Address", "New column", "New column", "New column", "New column"
+			}
+		));
+		dataSegmentTable.getColumnModel().getColumn(0).setPreferredWidth(85);
+		dataSegmentTable.getColumnModel().getColumn(1).setPreferredWidth(73);
+		dataSegmentTable.getColumnModel().getColumn(2).setPreferredWidth(111);
+		dataSegmentTable.getColumnModel().getColumn(3).setPreferredWidth(145);
+		scrollPane_1.setViewportView(dataSegmentTable);
 		textSegmentIF.setResizable(true);
 		textSegmentIF.setMaximizable(true);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		textSegmentIF.getContentPane().add(scrollPane, BorderLayout.CENTER);
+		
+		textSegmentTable = new JTable();
+		textSegmentTable.setModel(new DefaultTableModel(
+			new Object[][] {
+			},
+			new String[] {
+				"Address", "Code", "Basic", "Source Code"
+			}
+		));
+		textSegmentTable.getColumnModel().getColumn(0).setPreferredWidth(116);
+		textSegmentTable.getColumnModel().getColumn(1).setPreferredWidth(131);
+		textSegmentTable.getColumnModel().getColumn(2).setPreferredWidth(262);
+		textSegmentTable.getColumnModel().getColumn(3).setPreferredWidth(347);
+		scrollPane.setViewportView(textSegmentTable);
 		dataSegmentIF.setVisible(true);
 		textSegmentIF.setVisible(true);
 		
@@ -455,7 +499,7 @@ public class GUIInterface extends JFrame {
 					Style style = rowLines.addStyle("MyHilite", null);
 					StyleConstants.setBold(style, false);
 					doc.setCharacterAttributes(0, rowLines.getText().toString().length() - 1, style, true);
-//					 -----------------------------------------------------------------------------------
+					//-----------------------------------------------------------------------------------
 
 					/* Convert the text to array list of assembly instructions */
 
