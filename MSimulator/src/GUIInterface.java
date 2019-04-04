@@ -235,7 +235,6 @@ public class GUIInterface extends JFrame {
 		mnMachineCodeValue.add(rdbtnmntmHexMC);
 
 		ActionListener machineCodeOptionActionListeners = new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				JRadioButtonMenuItem aButton = (JRadioButtonMenuItem) e.getSource();
@@ -415,10 +414,10 @@ public class GUIInterface extends JFrame {
 				updateRegisterFileTable(table, rf, pc);
 				lblPcvalue.setText("PC = 0");
 				machineCodeArea.setText("");
-//				StyledDocument doc = (StyledDocument) rowLines.getDocument();
-//				Style style = rowLines.addStyle("MyHilite", null);
-//				StyleConstants.setBold(style, false);
-//				doc.setCharacterAttributes(0, rowLines.getText().toString().length() - 1, style, true);
+				StyledDocument doc = (StyledDocument) rowLines.getDocument();
+				Style style = rowLines.addStyle("MyHilite", null);
+				StyleConstants.setBold(style, false);
+				doc.setCharacterAttributes(0, rowLines.getText().toString().length() - 1, style, true);
 			}
 		});
 
@@ -434,69 +433,6 @@ public class GUIInterface extends JFrame {
 				
 				CodeRunningThread nnn = new CodeRunningThread();
 				nnn.start();
-//				pc.reset();
-//				rf.reset();
-//				mem.reset();
-//				machineCodeArea.setText("");
-//
-//				// To style the lines number
-////				StyledDocument doc = (StyledDocument) rowLines.getDocument();
-////				Style style = rowLines.addStyle("MyHilite", null);
-////				StyleConstants.setBold(style, false);
-////				doc.setCharacterAttributes(0, rowLines.getText().toString().length() - 1, style, true);
-//				// -----------------------------------------------------------------------------------
-//
-//				/* Convert the text to array list of assembly instructions */
-//
-//				// to replace all blank lines
-//				String[] a = inputCodeTextPane.getText().toString().replaceAll("(?m)^[ \t]*\r?\n", "")
-//						.split(System.getProperty("line.separator"));
-//				// ---------------------------------------------------------------------------------------------------------------
-//
-//				// to save all @lables in programCounter
-//				for (int i = 0; i < a.length; i++) {
-//					a[i] = a[i].split("\\//")[0];
-//					String temp = a[i].split(" ")[0];
-//					if (temp.contains("@")) {
-//						pc.addLableAddress(a[i].split(" ")[0], i);
-//						a[i] = a[i].replace(temp, "").trim().equals("") ? null : a[i].replace(temp, "").trim();
-//					}
-//					if (a[i] != null) {
-//						instArray.add(a[i]);
-//					}
-//				}
-//
-//				/* Convert assembly language into machine code */
-//				Assembler.SetInstructionInPC(pc, instArray);
-//
-//				// Execute the instruction listmachineCodeArea.setText("");
-//				while (pc.getProgramCounter() < pc.getInstructionsList().size()) {
-//					
-//					/* Print Machine Code Binary */
-//					String binaryString = pc.getInstructionsList().get(pc.getProgramCounter()).getInstructionBinary();
-//					int decimal = Integer.parseUnsignedInt(binaryString, 2);
-//					String hexStr = Integer.toUnsignedString(decimal, 16);
-//					if (MachineCodeOption.equals("Hex")) {
-//						if (machineCodeArea.getText().equals("")) {
-//							machineCodeArea.setText(hexStr + "");
-//						} else {
-//							machineCodeArea.setText(machineCodeArea.getText() + "\r\n" + hexStr.toUpperCase());
-//						}
-//					} else if (MachineCodeOption.equals("Binary")) {
-//						if (machineCodeArea.getText().equals("")) {
-//							machineCodeArea.setText(binaryString + "");
-//						} else {
-//							machineCodeArea.setText(machineCodeArea.getText() + "\r\n" + binaryString);
-//						}
-//					}
-//
-//					// Execute Instruction
-//					(pc.getInstructionsList().get(pc.getProgramCounter())).execute(pc, rf, mem);
-//					updateRegisterFileTable(table, rf, pc);
-//				}
-//
-//				pc.reset();
-//				instArray.clear();
 
 			}
 		});
@@ -512,12 +448,12 @@ public class GUIInterface extends JFrame {
 					mem.reset();
 					machineCodeArea.setText("");
 
-//					// To style the lines number
-//					StyledDocument doc = (StyledDocument) rowLines.getDocument();
-//					Style style = rowLines.addStyle("MyHilite", null);
-//					StyleConstants.setBold(style, false);
-//					doc.setCharacterAttributes(0, rowLines.getText().toString().length() - 1, style, true);
-					// -----------------------------------------------------------------------------------
+					// To style the lines number
+					StyledDocument doc = (StyledDocument) rowLines.getDocument();
+					Style style = rowLines.addStyle("MyHilite", null);
+					StyleConstants.setBold(style, false);
+					doc.setCharacterAttributes(0, rowLines.getText().toString().length() - 1, style, true);
+//					 -----------------------------------------------------------------------------------
 
 					/* Convert the text to array list of assembly instructions */
 
@@ -573,15 +509,15 @@ public class GUIInterface extends JFrame {
 				}
 
 				lblPcvalue.setText("PC = " + pc.getProgramCounter());
-//				StyledDocument doc = (StyledDocument) rowLines.getDocument();
-//				int start = pc.getProgramCounter() * 2;
-//				int end = start + 2;
-//				Style style = rowLines.addStyle("MyHilite", null);
-//
-//				StyleConstants.setBold(style, false);
-//				doc.setCharacterAttributes(0, rowLines.getText().toString().length() - 1, style, true);
-//				StyleConstants.setBold(style, true);
-//				doc.setCharacterAttributes(start, end - start, style, true);
+				StyledDocument doc = (StyledDocument) rowLines.getDocument();
+				int start = pc.getProgramCounter() * 2;
+				int end = start + 2;
+				Style style = rowLines.addStyle("MyHilite", null);
+
+				StyleConstants.setBold(style, false);
+				doc.setCharacterAttributes(0, rowLines.getText().toString().length() - 1, style, true);
+				StyleConstants.setBold(style, true);
+				doc.setCharacterAttributes(start, end - start, style, true);
 
 				(pc.getInstructionsList().get(pc.getProgramCounter())).execute(pc, rf, mem);
 				updateRegisterFileTable(table, rf, pc);
