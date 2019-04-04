@@ -75,6 +75,8 @@ public class GUIInterface extends JFrame {
 	private JSplitPane editTabSplitPane;
 	private JTextPane inputCodeTextPane;
 	private JTextPane rowLines;
+	private JInternalFrame dataSegmentIF;
+	private JInternalFrame textSegmentIF;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -349,13 +351,13 @@ public class GUIInterface extends JFrame {
 		System.out.println(tabbedPane.getSize().height);
 		tabbedPane.addTab("Execute", null, executeTabDesktopPane, null);
 
-		JInternalFrame textSegmentIF = new JInternalFrame("New JInternalFrame");
+		textSegmentIF = new JInternalFrame("New JInternalFrame");
 		textSegmentIF.setBorder(new LineBorder(new Color(0, 0, 0)));
 		textSegmentIF.setMaximizable(true);
 		textSegmentIF.setBounds(0, 0, 1295, 350);
 		executeTabDesktopPane.add(textSegmentIF);
 
-		JInternalFrame dataSegmentIF = new JInternalFrame("New JInternalFrame");
+		dataSegmentIF = new JInternalFrame("New JInternalFrame");
 		dataSegmentIF.setBorder(new LineBorder(new Color(0, 0, 0)));
 		dataSegmentIF.setBounds(0, 350, 1295, 350);
 		executeTabDesktopPane.add(dataSegmentIF);
