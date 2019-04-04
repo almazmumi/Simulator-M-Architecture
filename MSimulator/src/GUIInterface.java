@@ -370,32 +370,17 @@ public class GUIInterface extends JFrame {
 		dataSegmentIF.getContentPane().add(scrollPane_1, BorderLayout.CENTER);
 		
 		dataSegmentTable = new JTable();
-		dataSegmentTable.setModel(new DefaultTableModel(
-			new Object[][] {
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-			},
-			new String[] {
-				"Address", "New column", "New column", "New column", "New column"
-			}
-		) {
-			boolean[] columnEditables = new boolean[] {
-				false, false, false, false, false
-			};
-			public boolean isCellEditable(int row, int column) {
-				return columnEditables[column];
-			}
-		});
+		Object[][] RowS = new Object[100][4];
+	String[] ColS=	new String[] {
+			"Address", "+0", "+8", "+16", "+24"
+		};
+		dataSegmentTable.setModel(new DefaultTableModel(RowS,ColS
+
+		));
 		dataSegmentTable.getColumnModel().getColumn(0).setPreferredWidth(85);
 		dataSegmentTable.getColumnModel().getColumn(1).setPreferredWidth(73);
 		dataSegmentTable.getColumnModel().getColumn(2).setPreferredWidth(111);
-		dataSegmentTable.getColumnModel().getColumn(3).setPreferredWidth(68);
+		dataSegmentTable.getColumnModel().getColumn(3).setPreferredWidth(145);
 		scrollPane_1.setViewportView(dataSegmentTable);
 		textSegmentIF.setResizable(true);
 		textSegmentIF.setMaximizable(true);
@@ -406,19 +391,11 @@ public class GUIInterface extends JFrame {
 		textSegmentTable = new JTable();
 		textSegmentTable.setModel(new DefaultTableModel(
 			new Object[][] {
-				{null, null, null, null},
 			},
 			new String[] {
 				"Address", "Code", "Basic", "Source Code"
 			}
-		) {
-			boolean[] columnEditables = new boolean[] {
-				false, false, false, false
-			};
-			public boolean isCellEditable(int row, int column) {
-				return columnEditables[column];
-			}
-		});
+		));
 		textSegmentTable.getColumnModel().getColumn(0).setPreferredWidth(116);
 		textSegmentTable.getColumnModel().getColumn(1).setPreferredWidth(131);
 		textSegmentTable.getColumnModel().getColumn(2).setPreferredWidth(262);
