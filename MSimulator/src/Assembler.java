@@ -74,12 +74,12 @@ public class Assembler {
 				|| instructionFormat.get(instArray.get(0).toUpperCase()).equals('I')) {
 
 			// here we check if it's R type or I type
-			if ((!instArray.get(2).contains("R") || !instArray.get(3).contains("R")
+			if ((!instArray.get(2).toUpperCase().contains("R") || !instArray.get(3).toUpperCase().contains("R")
 					|| instructionFormat.get(instArray.get(0).toUpperCase()).equals('I'))
-					&& !(instArray.get(1).contains("R") && instArray.get(2).contains("R")
-							&& !instArray.get(3).contains("R") && instArray.size() == 5)) {
+					&& !(instArray.get(1).toUpperCase().contains("R") && instArray.get(2).toUpperCase().contains("R")
+							&& !instArray.get(3).toUpperCase().contains("R") && instArray.size() == 5)) {
 				// I type
-				if (!instArray.get(2).contains("RET")) {
+				if (!instArray.get(2).toUpperCase().contains("RET")) {
 					instArray.set(0, instArray.get(0).toUpperCase() + "I");
 				}
 				return parseIType();
@@ -93,7 +93,7 @@ public class Assembler {
 
 		} else if (instructionFormat.get(instArray.get(0).toUpperCase()).equals('B')) {
 
-			if ((!instArray.get(1).contains("R") || !instArray.get(2).contains("R")
+			if ((!instArray.get(1).toUpperCase().contains("R") || !instArray.get(2).toUpperCase().contains("R")
 					|| instructionFormat.get(instArray.get(0).toUpperCase()).equals('I'))
 					&& !instArray.get(0).toUpperCase().contains("LOOP")) {
 				// I type
