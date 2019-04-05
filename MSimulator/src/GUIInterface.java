@@ -11,6 +11,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.UndoableEditListener;
 import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
+import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import java.awt.Font;
@@ -27,6 +28,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.text.AttributeSet;
@@ -86,6 +88,9 @@ public class GUIInterface extends JFrame {
 	private JButton traceButton;
 	private JButton resetButton;
 	private JLabel lblPcvalue;
+	private JTabbedPane tabbedPane;
+	private ExecutingThread ex = new ExecutingThread();
+	private AbstractButton assembleButton;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -290,11 +295,19 @@ public class GUIInterface extends JFrame {
 			}
 		});
 		
+		assembleButton = new JButton("Assemble");
+		
+		
+		assembleButton.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		buttonPanel.add(assembleButton);
+		
 		runButton = new JButton("Run");
+		runButton.setEnabled(false);
 		runButton.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		buttonPanel.add(runButton);
 
 		traceButton = new JButton("Trace");
+		traceButton.setEnabled(false);
 		traceButton.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		buttonPanel.add(traceButton);
 
@@ -325,15 +338,51 @@ public class GUIInterface extends JFrame {
 		registerFilePane.setViewportView(registerFileTable);
 		registerFileTable.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		registerFileTable.setModel(new DefaultTableModel(
-				new Object[][] { { "R0", "R0", "0" }, { "R1", "R1", "0" }, { "R2", "R2", "0" }, { "R3", "R3", "0" },
-						{ "R4", "R4", "0" }, { "R5", "R5", "0" }, { "R6", "R6", "0" }, { "R7", "R7", "0" },
-						{ "R8", "R8", "0" }, { "R9", "R9", "0" }, { "R10", "T0", "0" }, { "R11", "T1", "0" },
-						{ "R12", "T2", "0" }, { "R13", "T3", "0" }, { "R14", "T4", "0" }, { "R15", "T5", "0" },
-						{ "R16", "T6", "0" }, { "R17", "T7", "0" }, { "R18", "T8", "0" }, { "R19", "T9", "0" },
-						{ "R20", "S0", "0" }, { "R21", "S1", "0" }, { "R22", "S2", "0" }, { "R23", "S3", "0" },
-						{ "R24", "S4", "0" }, { "R25", "S5", "0" }, { "R26", "S6", "0" }, { "R27", "S7", "0" },
-						{ "R28", "S8", "0" }, { "R29", "FP", "0" }, { "R30", "SP", "0" }, { "R31", "LR", "0" }, },
-				new String[] { "R#", "R Name", "Register Number" }));
+			new Object[][] {
+				{"R0", "R0", "0"},
+				{"R1", "R1", "0"},
+				{"R2", "R2", "0"},
+				{"R3", "R3", "0"},
+				{"R4", "R4", "0"},
+				{"R5", "R5", "0"},
+				{"R6", "R6", "0"},
+				{"R7", "R7", "0"},
+				{"R8", "R8", "0"},
+				{"R9", "R9", "0"},
+				{"R10", "T0", "0"},
+				{"R11", "T1", "0"},
+				{"R12", "T2", "0"},
+				{"R13", "T3", "0"},
+				{"R14", "T4", "0"},
+				{"R15", "T5", "0"},
+				{"R16", "T6", "0"},
+				{"R17", "T7", "0"},
+				{"R18", "T8", "0"},
+				{"R19", "T9", "0"},
+				{"R20", "S0", "0"},
+				{"R21", "S1", "0"},
+				{"R22", "S2", "0"},
+				{"R23", "S3", "0"},
+				{"R24", "S4", "0"},
+				{"R25", "S5", "0"},
+				{"R26", "S6", "0"},
+				{"R27", "S7", "0"},
+				{"R28", "S8", "0"},
+				{"R29", "FP", "0"},
+				{"R30", "SP", "0"},
+				{"R31", "LR", "0"},
+			},
+			new String[] {
+				"R#", "R Name", "Register Number"
+			}
+		) {
+			boolean[] columnEditables = new boolean[] {
+				false, false, true
+			};
+			public boolean isCellEditable(int row, int column) {
+				return columnEditables[column];
+			}
+		});
 		registerFileTable.getColumnModel().getColumn(0).setPreferredWidth(50);
 		registerFileTable.getColumnModel().getColumn(0).setMinWidth(50);
 		registerFileTable.getColumnModel().getColumn(2).setPreferredWidth(100);
@@ -348,7 +397,7 @@ public class GUIInterface extends JFrame {
 		secondSplitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
 
 		// TabbedPane
-		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		secondSplitPane.setLeftComponent(tabbedPane);
 
@@ -374,7 +423,7 @@ public class GUIInterface extends JFrame {
 
 		
 		
-		// TabbedPane, Execute ( TextSegment, DataSegment )
+		//TabbedPane, Execute ( TextSegment, DataSegment )
 		JDesktopPane executeTabDesktopPane = new JDesktopPane();
 		executeTabDesktopPane.setBackground(Color.WHITE);
 		executeTabDesktopPane.setSize(tabbedPane.getSize());
@@ -392,12 +441,11 @@ public class GUIInterface extends JFrame {
 
 		JScrollPane scrollPane = new JScrollPane();
 		textSegmentIF.getContentPane().add(scrollPane, BorderLayout.CENTER);
-
 		textSegmentTable = new JTable();
 		textSegmentTable.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		Object[][] textSegmentRows = new Object[1][3];
+		Object[][] textSegmentRows = new Object[0][3];
 
-		String[] textSegmentCols = new String[] { "Address", "Code", "Basic", "Source Code" };
+		String[] textSegmentCols = new String[] { "Address", "Code", "Assembly Code", "Status" };
 		textSegmentTable.setModel(new DefaultTableModel(textSegmentRows, textSegmentCols) {
 			public boolean isCellEditable(int row, int column) {
 				return false;
@@ -503,6 +551,11 @@ public class GUIInterface extends JFrame {
 				StyleConstants.setBold(style, false);
 				doc.setCharacterAttributes(0, rowLines.getText().toString().length() - 1, style, true);
 				
+				DefaultTableModel model = (DefaultTableModel) textSegmentTable.getModel();
+				while (model.getRowCount() > 0) {
+				    model.removeRow(0);
+				}
+				
 			}
 		});
 
@@ -514,8 +567,16 @@ public class GUIInterface extends JFrame {
 		runButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				ExecutingThread ex = new ExecutingThread();
-				ex.start();
+				
+				if(ex.isAlive() == false) {
+					runButton.setText("Stop");
+					ex.start();
+					
+				}else if(ex.isAlive() == true){
+					System.out.println("inte");
+					ex.interrupt();
+					
+				}
 
 			}
 		});
@@ -528,62 +589,8 @@ public class GUIInterface extends JFrame {
 		traceButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
+				
 				if (!pc.isItRunning()) {
-					/* Reinitialise the ProgramCounter and RegisterFile */
-					pc.reset();
-					rf.reset();
-					mem.reset();
-					machineCodeArea.setText("");
-
-					// To style the lines number
-					StyledDocument doc = (StyledDocument) rowLines.getDocument();
-					Style style = rowLines.addStyle("MyHilite", null);
-					StyleConstants.setBold(style, false);
-					doc.setCharacterAttributes(0, rowLines.getText().toString().length() - 1, style, true);
-					// -----------------------------------------------------------------------------------
-
-					/* Convert the text to array list of assembly instructions */
-
-					String dataSegment = "";
-					String textSegment = "";
-					String inputAssemplyCode = inputCodeTextPane.getText().toString();
-					if(inputAssemplyCode.toLowerCase().contains(".data") && inputAssemplyCode.toLowerCase().contains(".text")) {
-						if(inputAssemplyCode.indexOf(".data") < inputAssemplyCode.indexOf(".text") ){
-							dataSegment = inputAssemplyCode.split(".text")[0].replace(".data\r\n", "").trim();
-							textSegment = inputAssemplyCode.split(".text")[1];
-						}else {
-							textSegment = inputAssemplyCode.split(".data")[0].replace(".text\r\n", "").trim();
-							dataSegment = inputAssemplyCode.split(".data")[1];
-						}
-					}else if(inputAssemplyCode.toLowerCase().contains(".data")) {
-						dataSegment = inputCodeTextPane.getText().toString();
-					}else{
-						textSegment = inputCodeTextPane.getText().toString();
-					}
-					
-
-					
-					
-					// to replace all blank lines
-					String[] a = textSegment.replaceAll("(?m)^[ \t]*\r?\n", "").split(System.getProperty("line.separator"));
-					// ---------------------------------------------------------------------------------------------------------------
-
-					// to save all @lables in programCounter
-					for (int i = 0; i < a.length; i++) {
-						a[i] = a[i].split("\\//")[0];
-						String temp = a[i].split(" ")[0];
-						if (temp.contains("@")) {
-							pc.addLableAddress(a[i].split(" ")[0], i);
-							a[i] = a[i].replace(temp, "").trim().equals("") ? null : a[i].replace(temp, "").trim();
-						}
-						if (a[i] != null) {
-							instArray.add(a[i]);
-						}
-					}
-
-					/* Convert assembly language into machine code */
-					Assembler.SetInstructionInPC(pc, instArray, textSegmentTable);
 
 					/* Print Machine Code Binary */
 					String binaryString = pc.getInstructionsList().get(pc.getProgramCounter()).getInstructionBinary();
@@ -629,8 +636,89 @@ public class GUIInterface extends JFrame {
 
 			}
 		});
+		
+		
+		assembleButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				pc.reset();
+				rf.reset();
+				mem.reset();
+				instArray.clear();
+				updateRegisterFileTable(registerFileTable, rf, pc);
+				updateDataMemoryTable(dataSegmentTable, mem);
+				lblPcvalue.setText("PC = 0");
+				machineCodeArea.setText("");
+				StyledDocument doc = (StyledDocument) rowLines.getDocument();
+				Style style = rowLines.addStyle("MyHilite", null);
+				StyleConstants.setBold(style, false);
+				doc.setCharacterAttributes(0, rowLines.getText().toString().length() - 1, style, true);
+				
+				DefaultTableModel model = (DefaultTableModel) textSegmentTable.getModel();
+				while (model.getRowCount() > 0) {
+				    model.removeRow(0);
+				}
+				
+				runButton.setEnabled(true);
+				traceButton.setEnabled(true);
+				/* Reinitialise the ProgramCounter and RegisterFile */
+				pc.reset();
+				rf.reset();
+				mem.reset();
+				machineCodeArea.setText("");
 
-		// =========================================================================================
+				
+
+
+				/* Convert the text to array list of assembly instructions */
+
+				String dataSegment = "";
+				String textSegment = "";
+				String inputAssemplyCode = inputCodeTextPane.getText().toString();
+				if(inputAssemplyCode.toLowerCase().contains(".data") && inputAssemplyCode.toLowerCase().contains(".text")) {
+					if(inputAssemplyCode.indexOf(".data") < inputAssemplyCode.indexOf(".text") ){
+						dataSegment = inputAssemplyCode.split(".text")[0].replace(".data\r\n", "").trim();
+						textSegment = inputAssemplyCode.split(".text")[1];
+					}else {
+						textSegment = inputAssemplyCode.split(".data")[0].replace(".text\r\n", "").trim();
+						dataSegment = inputAssemplyCode.split(".data")[1];
+					}
+				}else if(inputAssemplyCode.toLowerCase().contains(".data")) {
+					dataSegment = inputCodeTextPane.getText().toString();
+				}else{
+					textSegment = inputCodeTextPane.getText().toString();
+				}
+				
+				
+				// to replace all blank lines
+				String[] a = textSegment.replaceAll("(?m)^[ \t]*\r?\n", "")
+						.split(System.getProperty("line.separator"));
+				// ---------------------------------------------------------------------------------------------------------------
+				
+			
+				
+				tabbedPane.setSelectedIndex(1);
+				// to save all @lables in programCounter
+				for (int i = 0; i < a.length; i++) {
+					a[i] = a[i].split("\\//")[0];
+					String temp = a[i].split(" ")[0];
+					if (temp.contains("@")) {
+						pc.addLableAddress(a[i].split(" ")[0], i);
+						a[i] = a[i].replace(temp, "").trim().equals("") ? null : a[i].replace(temp, "").trim();
+					}
+					if (a[i] != null) {
+						instArray.add(a[i]);
+					}
+				}
+
+				/* Convert assembly language into machine code */
+				Assembler.fetchAssemblyInstruction(pc, instArray, textSegmentTable);
+				
+				
+			}
+		});
+		
+		
+		
 	}
 
 	private void updateDataMemoryTable(JTable t, DataMemory MemoryS) {
@@ -687,21 +775,6 @@ public class GUIInterface extends JFrame {
 			}
 	}
 
-	class GradeRenderer extends JLabel implements TableCellRenderer {
-
-		public GradeRenderer() {
-			super.setOpaque(true);
-		}
-
-		@Override
-		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
-				int row, int column) {
-			setBackground(Color.YELLOW);
-
-			return this;
-		}
-
-	}
 
 	class ExecutingThread extends Thread {
 		private Thread t;
@@ -709,67 +782,16 @@ public class GUIInterface extends JFrame {
 		private int count = 0;
 
 		public void run() {
-			/* Reinitialise the ProgramCounter and RegisterFile */
-			pc.reset();
-			rf.reset();
-			mem.reset();
-			machineCodeArea.setText("");
 
-			
-			// To style the lines number
-			StyledDocument doc = (StyledDocument) rowLines.getDocument();
-			Style style = rowLines.addStyle("MyHilite", null);
-			StyleConstants.setBold(style, false);
-			doc.setCharacterAttributes(0, rowLines.getText().toString().length() - 1, style, true);
-			// -----------------------------------------------------------------------------------
-
-			/* Convert the text to array list of assembly instructions */
-
-			String dataSegment = "";
-			String textSegment = "";
-			String inputAssemplyCode = inputCodeTextPane.getText().toString();
-			if(inputAssemplyCode.toLowerCase().contains(".data") && inputAssemplyCode.toLowerCase().contains(".text")) {
-				if(inputAssemplyCode.indexOf(".data") < inputAssemplyCode.indexOf(".text") ){
-					dataSegment = inputAssemplyCode.split(".text")[0].replace(".data\r\n", "").trim();
-					textSegment = inputAssemplyCode.split(".text")[1];
-				}else {
-					textSegment = inputAssemplyCode.split(".data")[0].replace(".text\r\n", "").trim();
-					dataSegment = inputAssemplyCode.split(".data")[1];
-				}
-			}else if(inputAssemplyCode.toLowerCase().contains(".data")) {
-				dataSegment = inputCodeTextPane.getText().toString();
-			}else{
-				textSegment = inputCodeTextPane.getText().toString();
-			}
-			
-			
-			// to replace all blank lines
-			String[] a = textSegment.replaceAll("(?m)^[ \t]*\r?\n", "")
-					.split(System.getProperty("line.separator"));
-			// ---------------------------------------------------------------------------------------------------------------
-
-			
-			
-			// to save all @lables in programCounter
-			for (int i = 0; i < a.length; i++) {
-				a[i] = a[i].split("\\//")[0];
-				String temp = a[i].split(" ")[0];
-				if (temp.contains("@")) {
-					pc.addLableAddress(a[i].split(" ")[0], i);
-					a[i] = a[i].replace(temp, "").trim().equals("") ? null : a[i].replace(temp, "").trim();
-				}
-				if (a[i] != null) {
-					instArray.add(a[i]);
-				}
-			}
-
-			/* Convert assembly language into machine code */
-			Assembler.SetInstructionInPC(pc, instArray, textSegmentTable);
-			DefaultTableModel model = (DefaultTableModel) textSegmentTable.getModel();
-			textSegmentTable.setDefaultRenderer(getClass(), new GradeRenderer());
-			// Execute the instruction listmachineCodeArea.setText("");
+			assembleButton.setEnabled(false);
+			count = 0;
 			while (pc.getProgramCounter() < pc.getInstructionsList().size()) {
+				if(pc.getProgramCounter() >= 1)
+					textSegmentTable.getModel().setValueAt("", pc.getProgramCounter()-1, 3);
+				textSegmentTable.getModel().setValueAt("Executed", pc.getProgramCounter(), 3);
 
+				
+				
 				/* Print Machine Code Binary */
 				String binaryString = pc.getInstructionsList().get(pc.getProgramCounter()).getInstructionBinary();
 				int decimal = Integer.parseUnsignedInt(binaryString, 2);
@@ -795,6 +817,7 @@ public class GUIInterface extends JFrame {
 				if (frequencySpeed != -1 && count == frequencySpeed) {
 					try {
 						Thread.sleep(1000);
+						count = 0;
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -802,19 +825,34 @@ public class GUIInterface extends JFrame {
 				} else {
 					count++;
 				}
+				
+				if(Thread.currentThread().isInterrupted()) {
+					System.out.println("stopped");
+					return;
+				}
 			}
-
+			// =================================================================================================
+			
+			
 			pc.reset();
 			instArray.clear();
-			count = 0;
-
+			
+			runButton.setText("Start");
+			runButton.setEnabled(false);
+			assembleButton.setEnabled(true);
 		}
+
+		
 
 		public void start() {
 			if (t == null) {
 				t = new Thread(this, threadName);
 				t.start();
+				
 			}
 		}
 	}
+	
+		
+	
 }

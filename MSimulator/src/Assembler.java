@@ -40,14 +40,14 @@ public class Assembler {
 		instructions = instructions.replace(",", " ");
 
 		StringTokenizer st = new StringTokenizer(instructions, " ");
-		int k = 0;
+		
 		while (st.hasMoreTokens()) {
 			instArray.add(st.nextToken());
 		}
 
 	}
 
-	public static void SetInstructionInPC(ProgramCounter pc, ArrayList<String> In, JTable textSegmentTable) {
+	public static void fetchAssemblyInstruction(ProgramCounter pc, ArrayList<String> In, JTable textSegmentTable) {
 		DefaultTableModel model = (DefaultTableModel) textSegmentTable.getModel();
 		while (model.getRowCount() > 0) {
 		    model.removeRow(0);
@@ -60,19 +60,19 @@ public class Assembler {
 			Instruction Instruction_In;
 			if (instructionFormat.get(instArray.get(0).toUpperCase()).equals('I')) {
 				Instruction_In = new IInstruction(i, In.get(i), Inst);
-				model.addRow(new Object[]{"Address", "0x" + hexStr.toUpperCase(), In.get(i)});
+				model.addRow(new Object[]{"Address", "0x"+hexStr.toUpperCase(), In.get(i)});
 				pc.getInstructionsList().add(Instruction_In);
 			} else if (instructionFormat.get(instArray.get(0).toUpperCase()).equals('J')) {
 				Instruction_In = new JInstruction(i, In.get(i), Inst);
-				model.addRow(new Object[]{"Address", "0x" + hexStr.toUpperCase(), In.get(i)});
+				model.addRow(new Object[]{"Address", "0x"+hexStr.toUpperCase(), In.get(i)});
 				pc.getInstructionsList().add(Instruction_In);
 			} else if (instructionFormat.get(instArray.get(0).toUpperCase()).equals('R')) {
 				Instruction_In = new RInstruction(i, In.get(i), Inst);
-				model.addRow(new Object[]{"Address", "0x" + hexStr.toUpperCase(), In.get(i)});
+				model.addRow(new Object[]{"Address", "0x"+hexStr.toUpperCase(), In.get(i)});
 				pc.getInstructionsList().add(Instruction_In);
 			} else if (instructionFormat.get(instArray.get(0).toUpperCase()).equals('B')) {
 				Instruction_In = new BInstruction(i, In.get(i), Inst);
-				model.addRow(new Object[]{"Address", "0x" + hexStr.toUpperCase(), In.get(i)});
+				model.addRow(new Object[]{"Address", "0x"+hexStr.toUpperCase(), In.get(i)});
 				pc.getInstructionsList().add(Instruction_In);
 			}
 
@@ -324,7 +324,18 @@ public class Assembler {
 	}
 
 	private static String Register(String S) {
-		return S.substring(1);
+		System.out.println(S);
+		if(S.substring(0).toLowerCase().contains("r")) {
+			return S.substring(1);
+		}else if(S.substring(0).toLowerCase().contains("t")) {
+			System.out.println("1" + S.substring(1));
+			return "1" + S.substring(1);
+		}else if(S.substring(0).toLowerCase().contains("s")) {
+			return "2" + S.substring(1);
+		}else{
+			return S.substring(1);
+		}
+		
 	}
 
 	private static String IntToBinary(String S) {

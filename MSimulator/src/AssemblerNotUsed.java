@@ -21,8 +21,7 @@ public class AssemblerNotUsed {
 		
 		ArrayList<String> instructions = new ArrayList<String>();
 		instructions.add( "add r5 = r5, 5");
-		ProgramCounter pc = new ProgramCounter();
-//		g = fetchInstruction(pc, instructions);
+
 		
 		//B=====================================================================================================================
 		
