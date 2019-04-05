@@ -65,7 +65,7 @@ public class GUIInterface extends JFrame {
 	private ArrayList<String> instArray;
 	private JPanel contentPane;
 	private JTable table;
-
+	private String BaseDataAddress="40004000";
 	private String RegistersOption = "Decimal";
 
 	private String MachineCodeOption = "Binary";
@@ -370,7 +370,7 @@ public class GUIInterface extends JFrame {
 		dataSegmentIF.getContentPane().add(scrollPane_1, BorderLayout.CENTER);
 		
 		dataSegmentTable = new JTable();
-		Object[][] RowS = new Object[100][4];
+		Object[][] RowS = new Object[100][5];
 	String[] ColS=	new String[] {
 			"Address", "+0", "+8", "+16", "+24"
 		};
@@ -450,6 +450,7 @@ public class GUIInterface extends JFrame {
 				mem.reset();
 				instArray.clear();
 				updateRegisterFileTable(table, rf, pc);
+				updateDataMemoryTable(dataSegmentTable,mem);
 				lblPcvalue.setText("PC = 0");
 				machineCodeArea.setText("");
 				StyledDocument doc = (StyledDocument) rowLines.getDocument();
@@ -485,7 +486,7 @@ public class GUIInterface extends JFrame {
 					rf.reset();
 					mem.reset();
 					machineCodeArea.setText("");
-
+					
 					// To style the lines number
 					StyledDocument doc = (StyledDocument) rowLines.getDocument();
 					Style style = rowLines.addStyle("MyHilite", null);
@@ -559,11 +560,12 @@ public class GUIInterface extends JFrame {
 
 				(pc.getInstructionsList().get(pc.getProgramCounter())).execute(pc, rf, mem);
 				updateRegisterFileTable(table, rf, pc);
-
+				updateDataMemoryTable(dataSegmentTable,mem);
 				if (pc.getProgramCounter() == pc.getInstructionsList().size()) {
 					System.out.println("Here");
 					pc.reset();
 					rf.reset();
+					mem.reset();
 					instArray.clear();
 				}
 
@@ -571,6 +573,47 @@ public class GUIInterface extends JFrame {
 		});
 
 		// =========================================================================================
+	}
+	
+	private void updateDataMemoryTable(JTable t, DataMemory MemoryS ) {
+		int BaseTemp = Integer.parseInt(BaseDataAddress, 16);
+		for(int i =0 ;i<100;i++) {
+			t.getModel().setValueAt(Integer.toString(BaseTemp,16), i, 0);	
+			for(int j=0;j<4;j++) {
+				t.getModel().setValueAt(Convert_8_Addresses_to_hex(MemoryS,i*32+j*8), i, j+1);	
+			}
+			BaseTemp=BaseTemp+32;
+		}
+		
+	}
+	private String Convert_8_Addresses_to_hex(DataMemory MemoryS,int Baddress) {
+		String [] StringMemory = new String[8];
+		int TemValue=0;
+		String DataHex="";
+		TemValue=((int)MemoryS.getData(Baddress+(7)));
+		System.out.print(MemoryS.getData(65));
+		for(int i=0;i<7;i++) {
+		
+			TemValue=TemValue*16+((int)MemoryS.getData(Baddress+(6-i)));
+		}
+
+
+		
+		return PaddingToLeft(Integer.toString(TemValue,16));
+	}
+	private String PaddingToLeft(String S) {
+		if(S.length()<16) {
+			int l =S.length();
+			for (int i =0 ;i<16-l;i++) {
+				S="0"+S;
+				
+			}
+			
+			return S;
+			
+		}
+			else
+				return S;
 	}
 
 	private void updateRegisterFileTable(JTable t, RegisterFile r, ProgramCounter pc) {
@@ -664,6 +707,7 @@ class CodeRunningThread extends Thread {
 				// Execute Instruction
 				(pc.getInstructionsList().get(pc.getProgramCounter())).execute(pc, rf, mem);
 				updateRegisterFileTable(table, rf, pc);
+				updateDataMemoryTable(dataSegmentTable,mem);
 				if(frequencySpeed != -1 && count == frequencySpeed) {
 					try {
 						Thread.sleep(1000);
