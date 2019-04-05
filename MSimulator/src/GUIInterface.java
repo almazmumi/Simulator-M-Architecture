@@ -1,5 +1,6 @@
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -27,6 +28,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
@@ -65,7 +67,7 @@ public class GUIInterface extends JFrame {
 	private ArrayList<String> instArray;
 	private JPanel contentPane;
 	private JTable table;
-	private String BaseDataAddress="40004000";
+	private String BaseDataAddress = "40004000";
 	private String RegistersOption = "Decimal";
 
 	private String MachineCodeOption = "Binary";
@@ -162,14 +164,14 @@ public class GUIInterface extends JFrame {
 		JMenu mnEditView = new JMenu("Edit view");
 		mnEditView.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		mnEdit.add(mnEditView);
-		
+
 		JCheckBoxMenuItem chckbxmntmMachineCode = new JCheckBoxMenuItem("Machine code");
 		chckbxmntmMachineCode.setSelected(true);
 		chckbxmntmMachineCode.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent arg0) {
-				if(chckbxmntmMachineCode.isSelected()){
+				if (chckbxmntmMachineCode.isSelected()) {
 					editTabSplitPane.setRightComponent(machineCodeArea);
-				}else{
+				} else {
 					editTabSplitPane.setRightComponent(null);
 				}
 			}
@@ -260,37 +262,35 @@ public class GUIInterface extends JFrame {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		
+
 		JPanel panel = new JPanel();
 		buttonPanel.add(panel);
 		panel.setLayout(new GridLayout(2, 1, 0, 0));
 		JLabel lblRunSpeedAt = new JLabel("Frequency Speed, maximum");
-		
-		
-		
+
 		lblRunSpeedAt.setHorizontalAlignment(SwingConstants.CENTER);
 		lblRunSpeedAt.setFont(new Font("Tahoma", Font.PLAIN, 19));
 		panel.add(lblRunSpeedAt);
-		
+
 		JSlider slider = new JSlider();
 		slider.setMinimum(1);
-		
-				slider.setValue(30);
-				slider.setPaintTicks(true);
-				slider.setMajorTickSpacing(5);
-				slider.setMaximum(30);
-				panel.add(slider);
-				slider.addChangeListener(new ChangeListener() {
-					public void stateChanged(ChangeEvent arg0) {
-						if(slider.getValue() == 30) {
-							lblRunSpeedAt.setText("Frequency Speed, maximum");
-							frequencySpeed = -1;
-						}else{
-							lblRunSpeedAt.setText("Frequency Speed, " + slider.getValue() + " inst/sec");
-							frequencySpeed = slider.getValue();
-						}
-					}
-				});
+
+		slider.setValue(30);
+		slider.setPaintTicks(true);
+		slider.setMajorTickSpacing(5);
+		slider.setMaximum(30);
+		panel.add(slider);
+		slider.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent arg0) {
+				if (slider.getValue() == 30) {
+					lblRunSpeedAt.setText("Frequency Speed, maximum");
+					frequencySpeed = -1;
+				} else {
+					lblRunSpeedAt.setText("Frequency Speed, " + slider.getValue() + " inst/sec");
+					frequencySpeed = slider.getValue();
+				}
+			}
+		});
 		// =========================================================================================
 
 		// =========================================================================================
@@ -365,18 +365,127 @@ public class GUIInterface extends JFrame {
 		executeTabDesktopPane.add(dataSegmentIF);
 		dataSegmentIF.setResizable(true);
 		dataSegmentIF.setMaximizable(true);
-		
+
 		JScrollPane scrollPane_1 = new JScrollPane();
 		dataSegmentIF.getContentPane().add(scrollPane_1, BorderLayout.CENTER);
-		
+
 		dataSegmentTable = new JTable();
 		Object[][] RowS = new Object[100][5];
-	String[] ColS=	new String[] {
-			"Address", "+0", "+8", "+16", "+24"
-		};
-		dataSegmentTable.setModel(new DefaultTableModel(RowS,ColS
-
-		));
+		String[] ColS = new String[] { "Address", "+0", "+8", "+16", "+24" };
+		dataSegmentTable.setModel(new DefaultTableModel(
+			new Object[][] {
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+			},
+			new String[] {
+				"Address", "+0", "+8", "+16", "+24"
+			}
+		) {
+			boolean[] columnEditables = new boolean[] {
+				false, false, false, false, false
+			};
+			public boolean isCellEditable(int row, int column) {
+				return columnEditables[column];
+			}
+		});
 		dataSegmentTable.getColumnModel().getColumn(0).setPreferredWidth(85);
 		dataSegmentTable.getColumnModel().getColumn(1).setPreferredWidth(73);
 		dataSegmentTable.getColumnModel().getColumn(2).setPreferredWidth(111);
@@ -384,18 +493,28 @@ public class GUIInterface extends JFrame {
 		scrollPane_1.setViewportView(dataSegmentTable);
 		textSegmentIF.setResizable(true);
 		textSegmentIF.setMaximizable(true);
-		
+
 		JScrollPane scrollPane = new JScrollPane();
 		textSegmentIF.getContentPane().add(scrollPane, BorderLayout.CENTER);
-		
+
 		textSegmentTable = new JTable();
-		textSegmentTable.setModel(new DefaultTableModel(
+		textSegmentTable.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		textSegmentTable.setModel(
+				new DefaultTableModel(
 			new Object[][] {
+				{null, null, null, null},
 			},
 			new String[] {
 				"Address", "Code", "Basic", "Source Code"
 			}
-		));
+		) {
+			boolean[] columnEditables = new boolean[] {
+				false, false, false, false
+			};
+			public boolean isCellEditable(int row, int column) {
+				return columnEditables[column];
+			}
+		});
 		textSegmentTable.getColumnModel().getColumn(0).setPreferredWidth(116);
 		textSegmentTable.getColumnModel().getColumn(1).setPreferredWidth(131);
 		textSegmentTable.getColumnModel().getColumn(2).setPreferredWidth(262);
@@ -403,12 +522,10 @@ public class GUIInterface extends JFrame {
 		scrollPane.setViewportView(textSegmentTable);
 		dataSegmentIF.setVisible(true);
 		textSegmentIF.setVisible(true);
-		
-		
+
 		JScrollPane registerFilePane = new JScrollPane();
 		firstSplitPane.setRightComponent(registerFilePane);
-		
-		
+
 		// =========================================================================================
 
 		// =========================================================================================
@@ -450,7 +567,7 @@ public class GUIInterface extends JFrame {
 				mem.reset();
 				instArray.clear();
 				updateRegisterFileTable(table, rf, pc);
-				updateDataMemoryTable(dataSegmentTable,mem);
+				updateDataMemoryTable(dataSegmentTable, mem);
 				lblPcvalue.setText("PC = 0");
 				machineCodeArea.setText("");
 				StyledDocument doc = (StyledDocument) rowLines.getDocument();
@@ -467,9 +584,7 @@ public class GUIInterface extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				/* Reinitialise the ProgramCounter and RegisterFile */
-				
-				
-				
+
 				CodeRunningThread nnn = new CodeRunningThread();
 				nnn.start();
 
@@ -486,13 +601,13 @@ public class GUIInterface extends JFrame {
 					rf.reset();
 					mem.reset();
 					machineCodeArea.setText("");
-					
+
 					// To style the lines number
 					StyledDocument doc = (StyledDocument) rowLines.getDocument();
 					Style style = rowLines.addStyle("MyHilite", null);
 					StyleConstants.setBold(style, false);
 					doc.setCharacterAttributes(0, rowLines.getText().toString().length() - 1, style, true);
-					//-----------------------------------------------------------------------------------
+					// -----------------------------------------------------------------------------------
 
 					/* Convert the text to array list of assembly instructions */
 
@@ -515,7 +630,7 @@ public class GUIInterface extends JFrame {
 					}
 
 					/* Convert assembly language into machine code */
-					Assembler.SetInstructionInPC(pc, instArray);
+					Assembler.SetInstructionInPC(pc, instArray,textSegmentTable);
 
 					/* Print Machine Code Binary */
 					String binaryString = pc.getInstructionsList().get(pc.getProgramCounter()).getInstructionBinary();
@@ -560,7 +675,7 @@ public class GUIInterface extends JFrame {
 
 				(pc.getInstructionsList().get(pc.getProgramCounter())).execute(pc, rf, mem);
 				updateRegisterFileTable(table, rf, pc);
-				updateDataMemoryTable(dataSegmentTable,mem);
+				updateDataMemoryTable(dataSegmentTable, mem);
 				if (pc.getProgramCounter() == pc.getInstructionsList().size()) {
 					System.out.println("Here");
 					pc.reset();
@@ -574,46 +689,49 @@ public class GUIInterface extends JFrame {
 
 		// =========================================================================================
 	}
+
 	
-	private void updateDataMemoryTable(JTable t, DataMemory MemoryS ) {
+
+
+	
+	private void updateDataMemoryTable(JTable t, DataMemory MemoryS) {
 		int BaseTemp = Integer.parseInt(BaseDataAddress, 16);
-		for(int i =0 ;i<100;i++) {
-			t.getModel().setValueAt(Integer.toString(BaseTemp,16), i, 0);	
-			for(int j=0;j<4;j++) {
-				t.getModel().setValueAt(Convert_8_Addresses_to_hex(MemoryS,i*32+j*8), i, j+1);	
+		for (int i = 0; i < 100; i++) {
+			t.getModel().setValueAt(Integer.toString(BaseTemp, 16), i, 0);
+			for (int j = 0; j < 4; j++) {
+				t.getModel().setValueAt(Convert_8_Addresses_to_hex(MemoryS, i * 32 + j * 8), i, j + 1);
 			}
-			BaseTemp=BaseTemp+32;
+			BaseTemp = BaseTemp + 32;
 		}
-		
+
 	}
-	private String Convert_8_Addresses_to_hex(DataMemory MemoryS,int Baddress) {
-		String [] StringMemory = new String[8];
-		int TemValue=0;
-		String DataHex="";
-		TemValue=((int)MemoryS.getData(Baddress+(7)));
+
+	private String Convert_8_Addresses_to_hex(DataMemory MemoryS, int Baddress) {
+		String[] StringMemory = new String[8];
+		int TemValue = 0;
+		String DataHex = "";
+		TemValue = ((int) MemoryS.getData(Baddress + (7)));
 		System.out.print(MemoryS.getData(65));
-		for(int i=0;i<7;i++) {
-		
-			TemValue=TemValue*16+((int)MemoryS.getData(Baddress+(6-i)));
+		for (int i = 0; i < 7; i++) {
+
+			TemValue = TemValue * 16 + ((int) MemoryS.getData(Baddress + (6 - i)));
 		}
 
-
-		
-		return PaddingToLeft(Integer.toString(TemValue,16));
+		return PaddingToLeft(Integer.toString(TemValue, 16));
 	}
+
 	private String PaddingToLeft(String S) {
-		if(S.length()<16) {
-			int l =S.length();
-			for (int i =0 ;i<16-l;i++) {
-				S="0"+S;
-				
+		if (S.length() < 16) {
+			int l = S.length();
+			for (int i = 0; i < 16 - l; i++) {
+				S = "0" + S;
+
 			}
-			
+
 			return S;
-			
-		}
-			else
-				return S;
+
+		} else
+			return S;
 	}
 
 	private void updateRegisterFileTable(JTable t, RegisterFile r, ProgramCounter pc) {
@@ -632,21 +750,33 @@ public class GUIInterface extends JFrame {
 			}
 	}
 
+	
+	class GradeRenderer extends JLabel implements TableCellRenderer
+	{
+	 
+	    public GradeRenderer()
+	    {
+	        super.setOpaque(true);
+	    }
+	     
+	    @Override
+	    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+	        boolean hasFocus, int row, int column)
+	    {
+	        setBackground(Color.YELLOW);
+	         
+	        return this;
+	    }
+	     
+	}
+	
+	
+	class CodeRunningThread extends Thread {
+		private Thread t;
+		private String threadName = "runningCodeThread";
+		private int count = 0;
 
-
-
-class CodeRunningThread extends Thread {
-	   private Thread t;
-	   private String threadName="runningCodeThread";
-	   private int count = 0; 
-	   
-	   CodeRunningThread() {
-	      
-	      System.out.println("Creating " +  threadName );
-	   }
-	   
-	   public void run() {
-	      System.out.println("Running " +  threadName );
+		public void run() {
 			/* Reinitialise the ProgramCounter and RegisterFile */
 			pc.reset();
 			rf.reset();
@@ -681,8 +811,9 @@ class CodeRunningThread extends Thread {
 			}
 
 			/* Convert assembly language into machine code */
-			Assembler.SetInstructionInPC(pc, instArray);
-
+			Assembler.SetInstructionInPC(pc, instArray,textSegmentTable);
+			DefaultTableModel model = (DefaultTableModel) textSegmentTable.getModel();
+				textSegmentTable.setDefaultRenderer(getClass(), new GradeRenderer());
 			// Execute the instruction listmachineCodeArea.setText("");
 			while (pc.getProgramCounter() < pc.getInstructionsList().size()) {
 				
@@ -707,15 +838,15 @@ class CodeRunningThread extends Thread {
 				// Execute Instruction
 				(pc.getInstructionsList().get(pc.getProgramCounter())).execute(pc, rf, mem);
 				updateRegisterFileTable(table, rf, pc);
-				updateDataMemoryTable(dataSegmentTable,mem);
-				if(frequencySpeed != -1 && count == frequencySpeed) {
+				updateDataMemoryTable(dataSegmentTable, mem);
+				if (frequencySpeed != -1 && count == frequencySpeed) {
 					try {
 						Thread.sleep(1000);
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-				}else {
+				} else {
 					count++;
 				}
 			}
@@ -724,14 +855,16 @@ class CodeRunningThread extends Thread {
 			instArray.clear();
 			count = 0;
 
-	   }
-	   
-	   public void start () {
-	      System.out.println("Starting " +  threadName );
-	      if (t == null) {
-	         t = new Thread (this, threadName);
-	         t.start ();
-	      }
-	   }
+		}
+
+
+
+		public void start() {
+			System.out.println("Starting " + threadName);
+			if (t == null) {
+				t = new Thread(this, threadName);
+				t.start();
+			}
+		}
 	}
 }

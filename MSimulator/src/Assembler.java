@@ -6,6 +6,9 @@ import java.util.HashMap;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+
 public class Assembler {
 
 	// TODO - Make an error exception
@@ -44,23 +47,32 @@ public class Assembler {
 
 	}
 
-	public static void SetInstructionInPC(ProgramCounter pc, ArrayList<String> In) {
-		
+	public static void SetInstructionInPC(ProgramCounter pc, ArrayList<String> In, JTable textSegmentTable) {
+		DefaultTableModel model = (DefaultTableModel) textSegmentTable.getModel();
+		while (model.getRowCount() > 0) {
+		    model.removeRow(0);
+		}
 		for (int i = 0; i < In.size(); i++) {
 			InstructionFetch(In.get(i));
 			String Inst = getMachineCode(pc);
+			int decimal = Integer.parseUnsignedInt(Inst, 2);
+			String hexStr = Integer.toUnsignedString(decimal, 16);
 			Instruction Instruction_In;
 			if (instructionFormat.get(instArray.get(0).toUpperCase()).equals('I')) {
 				Instruction_In = new IInstruction(i, In.get(i), Inst);
+				model.addRow(new Object[]{"Address", "0x" + hexStr.toUpperCase(), In.get(i)});
 				pc.getInstructionsList().add(Instruction_In);
 			} else if (instructionFormat.get(instArray.get(0).toUpperCase()).equals('J')) {
 				Instruction_In = new JInstruction(i, In.get(i), Inst);
+				model.addRow(new Object[]{"Address", "0x" + hexStr.toUpperCase(), In.get(i)});
 				pc.getInstructionsList().add(Instruction_In);
 			} else if (instructionFormat.get(instArray.get(0).toUpperCase()).equals('R')) {
 				Instruction_In = new RInstruction(i, In.get(i), Inst);
+				model.addRow(new Object[]{"Address", "0x" + hexStr.toUpperCase(), In.get(i)});
 				pc.getInstructionsList().add(Instruction_In);
 			} else if (instructionFormat.get(instArray.get(0).toUpperCase()).equals('B')) {
 				Instruction_In = new BInstruction(i, In.get(i), Inst);
+				model.addRow(new Object[]{"Address", "0x" + hexStr.toUpperCase(), In.get(i)});
 				pc.getInstructionsList().add(Instruction_In);
 			}
 
