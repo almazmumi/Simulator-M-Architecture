@@ -690,10 +690,10 @@ public class GUIInterface extends JFrame {
 		// =========================================================================================
 	}
 
-	
 
 
-	
+
+
 	private void updateDataMemoryTable(JTable t, DataMemory MemoryS) {
 		int BaseTemp = Integer.parseInt(BaseDataAddress, 16);
 		for (int i = 0; i < 100; i++) {
@@ -705,19 +705,19 @@ public class GUIInterface extends JFrame {
 		}
 
 	}
+	private String Convert_8_Addresses_to_hex(DataMemory MemoryS,int Baddress) {
+		String [] StringMemory = new String[8];
+		long TemValue= 0;
+		String DataHex="";
+		TemValue=(long) ((int)MemoryS.getData(Baddress+(7)));
 
-	private String Convert_8_Addresses_to_hex(DataMemory MemoryS, int Baddress) {
-		String[] StringMemory = new String[8];
-		int TemValue = 0;
-		String DataHex = "";
-		TemValue = ((int) MemoryS.getData(Baddress + (7)));
-		System.out.print(MemoryS.getData(65));
-		for (int i = 0; i < 7; i++) {
+		for(int i=0;i<7;i++) {
 
-			TemValue = TemValue * 16 + ((int) MemoryS.getData(Baddress + (6 - i)));
+			TemValue=TemValue*256+((int)MemoryS.getData(Baddress+(6-i)));
+
 		}
 
-		return PaddingToLeft(Integer.toString(TemValue, 16));
+		return PaddingToLeft(Long.toHexString(TemValue));
 	}
 
 	private String PaddingToLeft(String S) {
@@ -732,6 +732,10 @@ public class GUIInterface extends JFrame {
 
 		} else
 			return S;
+
+		}
+			else
+				return S.substring(0,16);
 	}
 
 	private void updateRegisterFileTable(JTable t, RegisterFile r, ProgramCounter pc) {
@@ -750,27 +754,27 @@ public class GUIInterface extends JFrame {
 			}
 	}
 
-	
+
 	class GradeRenderer extends JLabel implements TableCellRenderer
 	{
-	 
+
 	    public GradeRenderer()
 	    {
 	        super.setOpaque(true);
 	    }
-	     
+
 	    @Override
 	    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
 	        boolean hasFocus, int row, int column)
 	    {
 	        setBackground(Color.YELLOW);
-	         
+
 	        return this;
 	    }
-	     
+
 	}
-	
-	
+
+
 	class CodeRunningThread extends Thread {
 		private Thread t;
 		private String threadName = "runningCodeThread";
@@ -816,7 +820,7 @@ public class GUIInterface extends JFrame {
 				textSegmentTable.setDefaultRenderer(getClass(), new GradeRenderer());
 			// Execute the instruction listmachineCodeArea.setText("");
 			while (pc.getProgramCounter() < pc.getInstructionsList().size()) {
-				
+
 				/* Print Machine Code Binary */
 				String binaryString = pc.getInstructionsList().get(pc.getProgramCounter()).getInstructionBinary();
 				int decimal = Integer.parseUnsignedInt(binaryString, 2);
