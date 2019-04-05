@@ -372,120 +372,13 @@ public class GUIInterface extends JFrame {
 		dataSegmentTable = new JTable();
 		Object[][] RowS = new Object[100][5];
 		String[] ColS = new String[] { "Address", "+0", "+8", "+16", "+24" };
-		dataSegmentTable.setModel(new DefaultTableModel(
-			new Object[][] {
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-			},
-			new String[] {
-				"Address", "+0", "+8", "+16", "+24"
-			}
-		) {
-			boolean[] columnEditables = new boolean[] {
-				false, false, false, false, false
-			};
-			public boolean isCellEditable(int row, int column) {
-				return columnEditables[column];
+
+		dataSegmentTable.setModel(new DefaultTableModel(RowS, ColS) {
+			public boolean isCellEditable(int row, int col) {
+				return false;
 			}
 		});
+
 		dataSegmentTable.getColumnModel().getColumn(0).setPreferredWidth(85);
 		dataSegmentTable.getColumnModel().getColumn(1).setPreferredWidth(73);
 		dataSegmentTable.getColumnModel().getColumn(2).setPreferredWidth(111);
@@ -499,22 +392,15 @@ public class GUIInterface extends JFrame {
 
 		textSegmentTable = new JTable();
 		textSegmentTable.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		textSegmentTable.setModel(
-				new DefaultTableModel(
-			new Object[][] {
-				{null, null, null, null},
-			},
-			new String[] {
-				"Address", "Code", "Basic", "Source Code"
-			}
-		) {
-			boolean[] columnEditables = new boolean[] {
-				false, false, false, false
-			};
+		Object[][] textSegmentRows = new Object[1][3];
+
+		String[] textSegmentCols = new String[] { "Address", "Code", "Basic", "Source Code" };
+		textSegmentTable.setModel(new DefaultTableModel(textSegmentRows, textSegmentCols) {
 			public boolean isCellEditable(int row, int column) {
-				return columnEditables[column];
+				return false;
 			}
 		});
+
 		textSegmentTable.getColumnModel().getColumn(0).setPreferredWidth(116);
 		textSegmentTable.getColumnModel().getColumn(1).setPreferredWidth(131);
 		textSegmentTable.getColumnModel().getColumn(2).setPreferredWidth(262);
@@ -630,7 +516,7 @@ public class GUIInterface extends JFrame {
 					}
 
 					/* Convert assembly language into machine code */
-					Assembler.SetInstructionInPC(pc, instArray,textSegmentTable);
+					Assembler.SetInstructionInPC(pc, instArray, textSegmentTable);
 
 					/* Print Machine Code Binary */
 					String binaryString = pc.getInstructionsList().get(pc.getProgramCounter()).getInstructionBinary();
@@ -690,10 +576,6 @@ public class GUIInterface extends JFrame {
 		// =========================================================================================
 	}
 
-
-
-
-
 	private void updateDataMemoryTable(JTable t, DataMemory MemoryS) {
 		int BaseTemp = Integer.parseInt(BaseDataAddress, 16);
 		for (int i = 0; i < 100; i++) {
@@ -705,15 +587,16 @@ public class GUIInterface extends JFrame {
 		}
 
 	}
-	private String Convert_8_Addresses_to_hex(DataMemory MemoryS,int Baddress) {
-		String [] StringMemory = new String[8];
-		long TemValue= 0;
-		String DataHex="";
-		TemValue=(long) ((int)MemoryS.getData(Baddress+(7)));
 
-		for(int i=0;i<7;i++) {
+	private String Convert_8_Addresses_to_hex(DataMemory MemoryS, int Baddress) {
+		String[] StringMemory = new String[8];
+		long TemValue = 0;
+		String DataHex = "";
+		TemValue = (long) ((int) MemoryS.getData(Baddress + (7)));
 
-			TemValue=TemValue*256+((int)MemoryS.getData(Baddress+(6-i)));
+		for (int i = 0; i < 7; i++) {
+
+			TemValue = TemValue * 256 + ((int) MemoryS.getData(Baddress + (6 - i)));
 
 		}
 
@@ -725,17 +608,12 @@ public class GUIInterface extends JFrame {
 			int l = S.length();
 			for (int i = 0; i < 16 - l; i++) {
 				S = "0" + S;
-
 			}
-
 			return S;
 
-		} else
-			return S;
-
+		} else {
+			return S.substring(0, 16);
 		}
-			else
-				return S.substring(0,16);
 	}
 
 	private void updateRegisterFileTable(JTable t, RegisterFile r, ProgramCounter pc) {
@@ -754,26 +632,21 @@ public class GUIInterface extends JFrame {
 			}
 	}
 
+	class GradeRenderer extends JLabel implements TableCellRenderer {
 
-	class GradeRenderer extends JLabel implements TableCellRenderer
-	{
+		public GradeRenderer() {
+			super.setOpaque(true);
+		}
 
-	    public GradeRenderer()
-	    {
-	        super.setOpaque(true);
-	    }
+		@Override
+		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+				int row, int column) {
+			setBackground(Color.YELLOW);
 
-	    @Override
-	    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
-	        boolean hasFocus, int row, int column)
-	    {
-	        setBackground(Color.YELLOW);
-
-	        return this;
-	    }
+			return this;
+		}
 
 	}
-
 
 	class CodeRunningThread extends Thread {
 		private Thread t;
@@ -815,9 +688,9 @@ public class GUIInterface extends JFrame {
 			}
 
 			/* Convert assembly language into machine code */
-			Assembler.SetInstructionInPC(pc, instArray,textSegmentTable);
+			Assembler.SetInstructionInPC(pc, instArray, textSegmentTable);
 			DefaultTableModel model = (DefaultTableModel) textSegmentTable.getModel();
-				textSegmentTable.setDefaultRenderer(getClass(), new GradeRenderer());
+			textSegmentTable.setDefaultRenderer(getClass(), new GradeRenderer());
 			// Execute the instruction listmachineCodeArea.setText("");
 			while (pc.getProgramCounter() < pc.getInstructionsList().size()) {
 
@@ -860,8 +733,6 @@ public class GUIInterface extends JFrame {
 			count = 0;
 
 		}
-
-
 
 		public void start() {
 			System.out.println("Starting " + threadName);
