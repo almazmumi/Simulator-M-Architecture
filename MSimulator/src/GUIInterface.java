@@ -588,18 +588,17 @@ public class GUIInterface extends JFrame {
 	}
 	private String Convert_8_Addresses_to_hex(DataMemory MemoryS,int Baddress) {
 		String [] StringMemory = new String[8];
-		int TemValue=0;
+		long TemValue= 0;
 		String DataHex="";
-		TemValue=((int)MemoryS.getData(Baddress+(7)));
-		System.out.print(MemoryS.getData(65));
+		TemValue=(long) ((int)MemoryS.getData(Baddress+(7)));
+		
 		for(int i=0;i<7;i++) {
-		
-			TemValue=TemValue*16+((int)MemoryS.getData(Baddress+(6-i)));
+
+			TemValue=TemValue*256+((int)MemoryS.getData(Baddress+(6-i)));
+			
 		}
-
-
 		
-		return PaddingToLeft(Integer.toString(TemValue,16));
+		return PaddingToLeft(Long.toHexString(TemValue));
 	}
 	private String PaddingToLeft(String S) {
 		if(S.length()<16) {
@@ -613,9 +612,9 @@ public class GUIInterface extends JFrame {
 			
 		}
 			else
-				return S;
+				return S.substring(0,16);
 	}
-
+	
 	private void updateRegisterFileTable(JTable t, RegisterFile r, ProgramCounter pc) {
 		if (RegistersOption.equals("Decimal"))
 			for (int i = 0; i < 32; i++) {
