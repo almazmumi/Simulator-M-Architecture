@@ -124,10 +124,10 @@ public class BInstruction extends Instruction {
 
 	
 	private void JR() {
-		pc.setProgramCounter(rf.getRegister(b));
+		pc.setProgramCounter((int)rf.getRegister(b));
 	}
 	private void JALR() {
-		pc.setProgramCounter(rf.getRegister(b));
+		pc.setProgramCounter((int)rf.getRegister(b));
 		rf.setRegister(b, pc.getProgramCounter());
 	}
 	

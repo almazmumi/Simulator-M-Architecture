@@ -1,21 +1,21 @@
 
 public class RegisterFile {
-	static int[] registersFile;
+	static long[] registersFile;
 	
 	public RegisterFile(){
 		// Register files are an array of 31 string(Binary Value)
-		registersFile = new int[32];	
+		registersFile = new long[32];	
 	}
 	
-	public int getRegister(int RegisterNumber) {
+	public long getRegister(int RegisterNumber) {
 		return registersFile[RegisterNumber];
 	}
 	
-	public void setRegister(int RegisterNumber, int newValue) {
+	public void setRegister(int RegisterNumber, long newValue) {
 		registersFile[RegisterNumber] = newValue;
 	}
 	
-	public int[] getRegistersFile() {
+	public long[] getRegistersFile() {
 		return registersFile;
 	}
 	
