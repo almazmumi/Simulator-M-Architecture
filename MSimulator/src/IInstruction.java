@@ -16,7 +16,12 @@ public class IInstruction extends Instruction {
 		b = Integer.parseInt(instructionBinary.substring(11, 16), 2);
 		String fS = instructionBinary.substring(16, 20);
 		f = Integer.parseInt(fS, 2);
+		System.out.print(instructionBinary);
 		imm12 = Integer.parseInt(instructionBinary.substring(20, 32), 2);
+		if(imm12>=2048) {
+		imm12=(int) (imm12-Math.pow(2,12));
+		System.out.print(imm12);
+		}
 		String opcodeS = instructionBinary.substring(0, 6);
 		int opcode = Integer.parseInt(opcodeS, 2);
 		setInstructionOpcode(opcode);
@@ -125,7 +130,7 @@ public class IInstruction extends Instruction {
 	 * ALU INTSTRUCTIONS (I-FORMAT)
 	 */
 	private void ADD() {
-		registerFile.setRegister(b, registerFile.getRegister(a) + imm12);
+		registerFile.setRegister(b, registerFile.getRegister(a) + (imm12));
 	}
 
 	private void AND() {
@@ -408,6 +413,8 @@ public class IInstruction extends Instruction {
 	}
 
 	private void SD() {
+		System.out.println();
+		
 		String Byte = Long.toBinaryString(registerFile.getRegister(b));
 		String[] Bytes = new String[8];
 		String d = "";
@@ -417,6 +424,7 @@ public class IInstruction extends Instruction {
 		}
 
 		Byte = d + Byte;
+		System.out.print(Byte);
 		Bytes[7] = Byte.substring(0, 8);
 		Bytes[6] = Byte.substring(8, 16);
 		Bytes[5] = Byte.substring(16, 24);
@@ -426,11 +434,13 @@ public class IInstruction extends Instruction {
 		Bytes[1] = Byte.substring(48, 56);
 		Bytes[0] = Byte.substring(56, 64);
 
-		for (int i = 0; i < 7; i++) {
-			char Data = (char) Long.parseLong(Bytes[i], 2);
+		for (int i = 0; i < 8; i++) {
+			char Data = (char) Integer.parseInt(Bytes[i], 2);
 			int Address = imm12 + (int)registerFile.getRegister(a) + i;
 			Mem.addData(Address, Data);
 		}
+		
+		Mem.ListElemnts();
 
 	}
 
@@ -450,7 +460,13 @@ public class IInstruction extends Instruction {
 			d = d + Z;
 		}
 		Byte = d + Byte;
-		registerFile.setRegister(b, Long.parseLong(Byte, 2));
+		if(Byte.charAt(0)=='0')
+		registerFile.setRegister(b, Long.parseLong(Byte.substring(1), 2));
+		else
+		{
+			registerFile.setRegister(b,Long.parseLong(Byte.substring(1), 2)+Long.MIN_VALUE);
+			
+		}
 
 	}
 
@@ -476,7 +492,13 @@ public class IInstruction extends Instruction {
 			d = d + Z;
 		}
 		Byte = d + Byte;
-		registerFile.setRegister(b, Long.parseLong(Byte, 2));
+		if(Byte.charAt(0)=='0')
+		registerFile.setRegister(b, Long.parseLong(Byte.substring(1), 2));
+		else
+		{
+			registerFile.setRegister(b,Long.parseLong(Byte.substring(1), 2)+Long.MIN_VALUE);
+			
+		}
 
 	}
 
@@ -504,22 +526,28 @@ public class IInstruction extends Instruction {
 			d = d + Z;
 		}
 		Byte = d + Byte;
-		registerFile.setRegister(b, Long.parseLong(Byte, 2));
+		if(Byte.charAt(0)=='0')
+		registerFile.setRegister(b, Long.parseLong(Byte.substring(1), 2));
+		else
+		{
+			registerFile.setRegister(b,Long.parseLong(Byte.substring(1), 2)+Long.MIN_VALUE);
+			
+		}
 	}
 
 	private void LD() {
-		String[] Bytes = new String[2];
+		String[] Bytes = new String[8];
 		int Address = imm12 + (int)registerFile.getRegister(a);
-
+		System.out.print(Address);
 		String Byte = "";
-		Bytes[0] = Long.toBinaryString((int) Mem.getData(Address));
-		Bytes[1] = Long.toBinaryString((int) Mem.getData(Address + 1));
-		Bytes[2] = Long.toBinaryString((int) Mem.getData(Address + 2));
-		Bytes[3] = Long.toBinaryString((int) Mem.getData(Address + 3));
-		Bytes[4] = Long.toBinaryString((int) Mem.getData(Address));
-		Bytes[5] = Long.toBinaryString((int) Mem.getData(Address + 1));
-		Bytes[6] = Long.toBinaryString((int) Mem.getData(Address + 2));
-		Bytes[7] = Long.toBinaryString((int) Mem.getData(Address + 3));
+		Bytes[0] = Integer.toBinaryString((int) Mem.getData(Address));
+		Bytes[1] = Integer.toBinaryString((int) Mem.getData(Address + 1));
+		Bytes[2] = Integer.toBinaryString((int) Mem.getData(Address + 2));
+		Bytes[3] = Integer.toBinaryString((int) Mem.getData(Address + 3));
+		Bytes[4] = Integer.toBinaryString((int) Mem.getData(Address + 4));
+		Bytes[5] = Integer.toBinaryString((int) Mem.getData(Address + 5));
+		Bytes[6] = Integer.toBinaryString((int) Mem.getData(Address + 6));
+		Bytes[7] = Integer.toBinaryString((int) Mem.getData(Address + 7));
 
 		for (int j = 0; j < Bytes.length; j++) {
 			for (int i = 0; i < 8 - Bytes[j].length(); i++) {
@@ -527,8 +555,13 @@ public class IInstruction extends Instruction {
 			}
 			Byte = Bytes[j] + Byte;
 		}
-
-		registerFile.setRegister(b, Long.parseLong(Byte, 2));
+		if(Byte.charAt(0)=='0')
+		registerFile.setRegister(b, Long.parseLong(Byte.substring(1), 2));
+		else
+		{
+			registerFile.setRegister(b,Long.parseLong(Byte.substring(1), 2)+Long.MIN_VALUE);
+			
+		}
 
 	}
 

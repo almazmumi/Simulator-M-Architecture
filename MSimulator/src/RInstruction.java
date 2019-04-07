@@ -458,7 +458,12 @@ public class RInstruction extends Instruction {
 			ss = ss + Z;
 		}
 		Byte = d + Byte;
-		registerFile.setRegister(d, Integer.parseInt(Byte, 2));
+		if(Byte.charAt(0)=='0')
+		registerFile.setRegister(b, Long.parseLong(Byte.substring(1), 2));
+		else
+		{
+			registerFile.setRegister(b,Long.parseLong(Byte.substring(1), 2)+Long.MIN_VALUE);
+		}
 
 	}
 
@@ -484,7 +489,12 @@ public class RInstruction extends Instruction {
 			ss = ss + Z;
 		}
 		Byte = ss + Byte;
-		registerFile.setRegister(d, Integer.parseInt(Byte, 2));
+		if(Byte.charAt(0)=='0')
+		registerFile.setRegister(b, Long.parseLong(Byte.substring(1), 2));
+		else
+		{
+			registerFile.setRegister(b,Long.parseLong(Byte.substring(1), 2)+Long.MIN_VALUE);
+		}
 
 	}
 
@@ -512,7 +522,12 @@ public class RInstruction extends Instruction {
 			ss = ss + Z;
 		}
 		Byte = ss + Byte;
-		registerFile.setRegister(d, Integer.parseInt(Byte, 2));
+		if(Byte.charAt(0)=='0')
+		registerFile.setRegister(b, Long.parseLong(Byte.substring(1), 2));
+		else
+		{
+			registerFile.setRegister(b,Long.parseLong(Byte.substring(1), 2)+Long.MIN_VALUE);
+		}
 	}
 
 	private void LD() {
@@ -536,7 +551,12 @@ public class RInstruction extends Instruction {
 			Byte = Bytes[j] + Byte;
 		}
 
-		registerFile.setRegister(d, Integer.parseInt(Byte, 2));
+		if(Byte.charAt(0)=='0')
+		registerFile.setRegister(b, Long.parseLong(Byte.substring(1), 2));
+		else
+		{
+			registerFile.setRegister(b,Long.parseLong(Byte.substring(1), 2)+Long.MIN_VALUE);
+		}
 
 	}
 
