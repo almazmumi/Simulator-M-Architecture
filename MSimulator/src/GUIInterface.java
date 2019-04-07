@@ -74,7 +74,6 @@ public class GUIInterface extends JFrame {
 
 	private String MachineCodeOption = "Binary";
 	private int frequencySpeed = -1;
-	private JPanel textCodeArea;
 	private JTextPane machineCodeArea;
 	private JSplitPane editTabSplitPane;
 	private JTextPane inputCodeTextPane;
@@ -89,9 +88,10 @@ public class GUIInterface extends JFrame {
 	private JButton resetButton;
 	private JLabel lblPcvalue;
 	private JTabbedPane tabbedPane;
-	private ExecutingThread ex = new ExecutingThread();
+	private Thread ex = new Thread(new ExecutingThread());
 	private AbstractButton assembleButton;
-
+	private AbstractButton stopButton;
+	private boolean terminateFlag;
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -305,6 +305,12 @@ public class GUIInterface extends JFrame {
 		runButton.setEnabled(false);
 		runButton.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		buttonPanel.add(runButton);
+		
+		stopButton = new JButton("Stop");
+		
+		stopButton.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		stopButton.setEnabled(false);
+		buttonPanel.add(stopButton);
 
 		traceButton = new JButton("Trace");
 		traceButton.setEnabled(false);
@@ -561,26 +567,24 @@ public class GUIInterface extends JFrame {
 
 		instArray = new ArrayList<String>();
 
+		
+		
 		// =========================================================================================
 		// Run Button
 		// =========================================================================================
 		runButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
-				if(ex.isAlive() == false) {
-					runButton.setText("Stop");
-					ex.start();
-					
-				}else if(ex.isAlive() == true){
-					System.out.println("inte");
-					ex.interrupt();
-					
-				}
-
+				ex = new Thread(new ExecutingThread());
+				runButton.setEnabled(false);
+				stopButton.setEnabled(true);
+				ex.start();
 			}
 		});
 
+		
+		
+		
 		
 		// =========================================================================================
 		// Trace Button
@@ -627,7 +631,6 @@ public class GUIInterface extends JFrame {
 				updateRegisterFileTable(registerFileTable, rf, pc);
 				updateDataMemoryTable(dataSegmentTable, mem);
 				if (pc.getProgramCounter() == pc.getInstructionsList().size()) {
-					System.out.println("Here");
 					pc.reset();
 					rf.reset();
 					mem.reset();
@@ -637,6 +640,13 @@ public class GUIInterface extends JFrame {
 			}
 		});
 		
+		stopButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				stopButton.setEnabled(false);
+				runButton.setEnabled(false);
+				terminateFlag = true;
+			}
+		});
 		
 		assembleButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -767,31 +777,30 @@ public class GUIInterface extends JFrame {
 		else if (RegistersOption.equals("Hex"))
 			for (int i = 0; i < 32; i++) {
 
-				t.getModel().setValueAt(Integer.toString(r.getRegister(i), 16).toUpperCase(), i, 2);
+				t.getModel().setValueAt(Long.toString(r.getRegister(i), 16).toUpperCase(), i, 2);
 			}
 		else if (RegistersOption.equals("Binary"))
 			for (int i = 0; i < 32; i++) {
-				t.getModel().setValueAt(Integer.toBinaryString(r.getRegister(i)), i, 2);
+				t.getModel().setValueAt(Long.toBinaryString(r.getRegister(i)), i, 2);
 			}
 	}
 
 
-	class ExecutingThread extends Thread {
-		private Thread t;
-		private String threadName = "runningCodeThread";
-		private int count = 0;
-
+	 class ExecutingThread implements Runnable {
+		private int count;
+		
+		
+		public void terminate() {
+			terminateFlag = true;
+		}
 		public void run() {
-
 			assembleButton.setEnabled(false);
-			count = 0;
-			while (pc.getProgramCounter() < pc.getInstructionsList().size()) {
+			count=1;
+			while (!terminateFlag && pc.getProgramCounter() < pc.getInstructionsList().size()) {
 				if(pc.getProgramCounter() >= 1)
 					textSegmentTable.getModel().setValueAt("", pc.getProgramCounter()-1, 3);
 				textSegmentTable.getModel().setValueAt("Executed", pc.getProgramCounter(), 3);
 
-				
-				
 				/* Print Machine Code Binary */
 				String binaryString = pc.getInstructionsList().get(pc.getProgramCounter()).getInstructionBinary();
 				int decimal = Integer.parseUnsignedInt(binaryString, 2);
@@ -814,43 +823,33 @@ public class GUIInterface extends JFrame {
 				(pc.getInstructionsList().get(pc.getProgramCounter())).execute(pc, rf, mem);
 				updateRegisterFileTable(registerFileTable, rf, pc);
 				updateDataMemoryTable(dataSegmentTable, mem);
+				
+				
+				// Determine the frequency speed
 				if (frequencySpeed != -1 && count == frequencySpeed) {
 					try {
 						Thread.sleep(1000);
-						count = 0;
+						count = 1;
 					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				} else {
 					count++;
 				}
 				
-				if(Thread.currentThread().isInterrupted()) {
-					System.out.println("stopped");
-					return;
-				}
+			
 			}
 			// =================================================================================================
 			
-			
+			terminateFlag = false;
 			pc.reset();
 			instArray.clear();
-			
-			runButton.setText("Start");
-			runButton.setEnabled(false);
 			assembleButton.setEnabled(true);
+			stopButton.setEnabled(false);
 		}
 
-		
 
-		public void start() {
-			if (t == null) {
-				t = new Thread(this, threadName);
-				t.start();
-				
-			}
-		}
+
 	}
 	
 		

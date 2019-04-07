@@ -324,7 +324,7 @@ public class Assembler {
 	}
 
 	private static String Register(String S) {
-		System.out.println(S);
+		
 		if(S.substring(0).toLowerCase().contains("r")) {
 			return S.substring(1);
 		}else if(S.substring(0).toLowerCase().contains("t")) {
