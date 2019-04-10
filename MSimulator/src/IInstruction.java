@@ -1,3 +1,8 @@
+import java.io.IOError;
+
+import javax.swing.JEditorPane;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 public class IInstruction extends Instruction {
 
@@ -9,18 +14,17 @@ public class IInstruction extends Instruction {
 	private int r;
 	DataMemory Mem;
 	RegisterFile registerFile;
-
+	JEditorPane iOEditorPane;
 	public IInstruction(int instructionNumber, String instructionText, String instructionBinary) {
 		super(instructionNumber, instructionText, instructionBinary);
 		a = Integer.parseInt(instructionBinary.substring(6, 11), 2);
 		b = Integer.parseInt(instructionBinary.substring(11, 16), 2);
 		String fS = instructionBinary.substring(16, 20);
 		f = Integer.parseInt(fS, 2);
-		System.out.print(instructionBinary);
 		imm12 = Integer.parseInt(instructionBinary.substring(20, 32), 2);
-		if(imm12>=2048) {
-		imm12=(int) (imm12-Math.pow(2,12));
-		System.out.print(imm12);
+		if (imm12 >= 2048) {
+			imm12 = (int) (imm12 - Math.pow(2, 12));
+			System.out.print(imm12);
 		}
 		String opcodeS = instructionBinary.substring(0, 6);
 		int opcode = Integer.parseInt(opcodeS, 2);
@@ -44,10 +48,13 @@ public class IInstruction extends Instruction {
 		return imm12;
 	}
 
-	public void execute(ProgramCounter pc, RegisterFile r, DataMemory M) {
+	public void execute(ProgramCounter pc, RegisterFile r, DataMemory M, JEditorPane iOEditorPane) {
 		registerFile = r;
 		Mem = M;
-		if (getInstrcutionOpcode() == 32 && f == 0) {
+		this.iOEditorPane = iOEditorPane;
+		if(getInstrcutionOpcode() == 60 && f == 0) {
+			SCALL();
+		}else if (getInstrcutionOpcode() == 32 && f == 0) {
 			ADD();
 		} else if (getInstrcutionOpcode() == 32 && f == 1) {
 			NADD();
@@ -124,6 +131,74 @@ public class IInstruction extends Instruction {
 		}
 
 		pc.setProgramCounter(pc.getProgramCounter() + 1);
+	}
+
+	private void SCALL() {
+		int sizeOfInput = iOEditorPane.getText().toString().length();
+		switch (imm12) {
+		case 0:
+			char c = (char)registerFile.getRegister(0);
+			iOEditorPane.setText(iOEditorPane.getText().length()>1?iOEditorPane.getText() + "\r\n" + c:c+"");
+			break;
+		case 1:
+			int i = (int)registerFile.getRegister(0);
+			iOEditorPane.setText(iOEditorPane.getText().length()>1?iOEditorPane.getText() + "\r\n" + i:i+"");
+			break;
+		case 2:
+			float f = (float)registerFile.getRegister(0);
+			iOEditorPane.setText(iOEditorPane.getText().length()>1?iOEditorPane.getText() + "\r\n" + f:f+"");
+			break;
+		case 3:
+			//TODO
+			break;
+		case 4:
+			int ii = (int)registerFile.getRegister(0);
+			char cc = (char)Mem.getData(ii);
+			if(cc != '\0') {
+				iOEditorPane.setText(iOEditorPane.getText().length()>1?iOEditorPane.getText() + "\r\n" + cc:cc+"");
+			}else{
+				break;
+			}
+			ii++;
+			while(Mem.getData(ii) != '\0') {
+				cc = (char)Mem.getData(ii);
+				iOEditorPane.setText(iOEditorPane.getText().length()>0?iOEditorPane.getText() + cc:cc+"");
+				ii++;
+			}
+			
+			break;
+		case 5:
+			while(iOEditorPane.getText().toString().length() == sizeOfInput);
+//			while(iOEditorPane.getText().toString().charAt(iOEditorPane.getText().toString().length()-1) != '\n') {
+//				System.out.println(iOEditorPane.getText().toString().charAt(iOEditorPane.getText().toString().length()-1));
+//			}
+			char t = iOEditorPane.getText().toString().charAt(iOEditorPane.getText().toString().length()-1);
+			registerFile.setRegister(0, (int)t);
+			break;
+			
+		case 6:
+			while(iOEditorPane.getText().toString().length() == sizeOfInput);
+//			while(iOEditorPane.getText().toString().charAt(iOEditorPane.getText().toString().length()-1) != '\n') {
+//				System.out.println(iOEditorPane.getText().toString().charAt(iOEditorPane.getText().toString().length()-1));
+//			}
+			char temp = iOEditorPane.getText().toString().charAt(iOEditorPane.getText().toString().length()-1);
+			registerFile.setRegister(0, Character.getNumericValue(temp));
+			break;
+			
+		case 9:
+			int bufferSize = (int)registerFile.getRegister(1);
+			int memoryIndex = (int)registerFile.getRegister(0);
+			for (int j = 0; j < bufferSize; j++) {
+				while(iOEditorPane.getText().toString().length() == sizeOfInput);
+				char tempp = iOEditorPane.getText().toString().charAt(iOEditorPane.getText().toString().length()-1);
+				Mem.addData(memoryIndex, tempp);
+				sizeOfInput++;
+				memoryIndex++;
+			}
+
+			break;
+		}
+		
 	}
 
 	/*
@@ -360,10 +435,8 @@ public class IInstruction extends Instruction {
 
 		Byte = d + Byte;
 		Byte = Byte.substring(56, 64);
-		System.out.println(Byte);
-		System.out.println(Long.parseLong(Byte, 2));
 		char Data = (char) Long.parseLong(Byte, 2);
-		int Address = imm12 + (int)registerFile.getRegister(a);
+		int Address = imm12 + (int) registerFile.getRegister(a);
 		Mem.addData(Address, Data);
 
 	}
@@ -385,7 +458,7 @@ public class IInstruction extends Instruction {
 		for (int i = 0; i < 2; i++) {
 
 			char Data = (char) Long.parseLong(Bytes[i], 2);
-			int Address = imm12 + (int)registerFile.getRegister(a) + i;
+			int Address = imm12 + (int) registerFile.getRegister(a) + i;
 			Mem.addData(Address, Data);
 		}
 	}
@@ -406,15 +479,14 @@ public class IInstruction extends Instruction {
 		Bytes[0] = Byte.substring(56, 64);
 		for (int i = 0; i < 4; i++) {
 			char Data = (char) Long.parseLong(Bytes[i], 2);
-			int Address = imm12 + (int)registerFile.getRegister(a) + i;
+			int Address = imm12 + (int) registerFile.getRegister(a) + i;
 			Mem.addData(Address, Data);
 		}
 
 	}
 
 	private void SD() {
-		System.out.println();
-		
+
 		String Byte = Long.toBinaryString(registerFile.getRegister(b));
 		String[] Bytes = new String[8];
 		String d = "";
@@ -424,7 +496,6 @@ public class IInstruction extends Instruction {
 		}
 
 		Byte = d + Byte;
-		System.out.print(Byte);
 		Bytes[7] = Byte.substring(0, 8);
 		Bytes[6] = Byte.substring(8, 16);
 		Bytes[5] = Byte.substring(16, 24);
@@ -436,17 +507,17 @@ public class IInstruction extends Instruction {
 
 		for (int i = 0; i < 8; i++) {
 			char Data = (char) Integer.parseInt(Bytes[i], 2);
-			int Address = imm12 + (int)registerFile.getRegister(a) + i;
+			int Address = imm12 + (int) registerFile.getRegister(a) + i;
 			Mem.addData(Address, Data);
 		}
-		
+
 		Mem.ListElemnts();
 
 	}
 
 	private void LB() {
 
-		int Address = imm12 + (int)registerFile.getRegister(a);
+		int Address = imm12 + (int) registerFile.getRegister(a);
 
 		String Byte = Long.toBinaryString((int) Mem.getData(Address));
 
@@ -460,19 +531,18 @@ public class IInstruction extends Instruction {
 			d = d + Z;
 		}
 		Byte = d + Byte;
-		if(Byte.charAt(0)=='0')
-		registerFile.setRegister(b, Long.parseLong(Byte.substring(1), 2));
-		else
-		{
-			registerFile.setRegister(b,Long.parseLong(Byte.substring(1), 2)+Long.MIN_VALUE);
-			
+		if (Byte.charAt(0) == '0')
+			registerFile.setRegister(b, Long.parseLong(Byte.substring(1), 2));
+		else {
+			registerFile.setRegister(b, Long.parseLong(Byte.substring(1), 2) + Long.MIN_VALUE);
+
 		}
 
 	}
 
 	private void LH() {
 		String[] Bytes = new String[2];
-		int Address = imm12 + (int)registerFile.getRegister(a);
+		int Address = imm12 + (int) registerFile.getRegister(a);
 
 		String Byte = "";
 		Bytes[0] = Long.toBinaryString((int) Mem.getData(Address));
@@ -492,19 +562,18 @@ public class IInstruction extends Instruction {
 			d = d + Z;
 		}
 		Byte = d + Byte;
-		if(Byte.charAt(0)=='0')
-		registerFile.setRegister(b, Long.parseLong(Byte.substring(1), 2));
-		else
-		{
-			registerFile.setRegister(b,Long.parseLong(Byte.substring(1), 2)+Long.MIN_VALUE);
-			
+		if (Byte.charAt(0) == '0')
+			registerFile.setRegister(b, Long.parseLong(Byte.substring(1), 2));
+		else {
+			registerFile.setRegister(b, Long.parseLong(Byte.substring(1), 2) + Long.MIN_VALUE);
+
 		}
 
 	}
 
 	private void LW() {
 		String[] Bytes = new String[4];
-		int Address = imm12 + (int)registerFile.getRegister(a);
+		int Address = imm12 + (int) registerFile.getRegister(a);
 
 		String Byte = "";
 		Bytes[0] = Long.toBinaryString((int) Mem.getData(Address));
@@ -526,19 +595,17 @@ public class IInstruction extends Instruction {
 			d = d + Z;
 		}
 		Byte = d + Byte;
-		if(Byte.charAt(0)=='0')
-		registerFile.setRegister(b, Long.parseLong(Byte.substring(1), 2));
-		else
-		{
-			registerFile.setRegister(b,Long.parseLong(Byte.substring(1), 2)+Long.MIN_VALUE);
-			
+		if (Byte.charAt(0) == '0')
+			registerFile.setRegister(b, Long.parseLong(Byte.substring(1), 2));
+		else {
+			registerFile.setRegister(b, Long.parseLong(Byte.substring(1), 2) + Long.MIN_VALUE);
+
 		}
 	}
 
 	private void LD() {
 		String[] Bytes = new String[8];
-		int Address = imm12 + (int)registerFile.getRegister(a);
-		System.out.print(Address);
+		int Address = imm12 + (int) registerFile.getRegister(a);
 		String Byte = "";
 		Bytes[0] = Integer.toBinaryString((int) Mem.getData(Address));
 		Bytes[1] = Integer.toBinaryString((int) Mem.getData(Address + 1));
@@ -555,19 +622,18 @@ public class IInstruction extends Instruction {
 			}
 			Byte = Bytes[j] + Byte;
 		}
-		if(Byte.charAt(0)=='0')
-		registerFile.setRegister(b, Long.parseLong(Byte.substring(1), 2));
-		else
-		{
-			registerFile.setRegister(b,Long.parseLong(Byte.substring(1), 2)+Long.MIN_VALUE);
-			
+		if (Byte.charAt(0) == '0')
+			registerFile.setRegister(b, Long.parseLong(Byte.substring(1), 2));
+		else {
+			registerFile.setRegister(b, Long.parseLong(Byte.substring(1), 2) + Long.MIN_VALUE);
+
 		}
 
 	}
 
 	private void LBU() {
 
-		int Address = imm12 + (int)registerFile.getRegister(a);
+		int Address = imm12 + (int) registerFile.getRegister(a);
 
 		String Byte = Long.toBinaryString((int) Mem.getData(Address));
 
@@ -581,14 +647,13 @@ public class IInstruction extends Instruction {
 			d = d + Z;
 		}
 		Byte = d + Byte;
-		System.out.print(Byte);
 		registerFile.setRegister(b, Long.parseLong(Byte.trim(), 2));
 
 	}
 
 	private void LHU() {
 		String[] Bytes = new String[2];
-		int Address = imm12 + (int)registerFile.getRegister(a);
+		int Address = imm12 + (int) registerFile.getRegister(a);
 
 		String Byte = "";
 		Bytes[0] = Long.toBinaryString((int) Mem.getData(Address));
@@ -614,7 +679,7 @@ public class IInstruction extends Instruction {
 
 	private void LWU() {
 		String[] Bytes = new String[4];
-		int Address = imm12 + (int)registerFile.getRegister(a);
+		int Address = imm12 + (int) registerFile.getRegister(a);
 
 		String Byte = "";
 		Bytes[0] = Long.toBinaryString((int) Mem.getData(Address));
@@ -641,7 +706,7 @@ public class IInstruction extends Instruction {
 
 	private void LDU() {
 		String[] Bytes = new String[2];
-		int Address = imm12 + (int)registerFile.getRegister(a);
+		int Address = imm12 + (int) registerFile.getRegister(a);
 
 		String Byte = "";
 		Bytes[0] = Long.toBinaryString((int) Mem.getData(Address));

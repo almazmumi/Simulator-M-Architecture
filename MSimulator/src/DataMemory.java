@@ -28,7 +28,7 @@ public class DataMemory {
 	static void ListElemnts() {
 		for (int i = 0; i < 10; i++) {
 
-			System.out.println("Address[" + i + "]= " + (int) MemoryArray[i]);
+//			System.out.println("Address[" + i + "]= " + (int) MemoryArray[i]);
 		}
 	}
 	

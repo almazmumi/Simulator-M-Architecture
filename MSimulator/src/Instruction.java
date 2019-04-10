@@ -1,3 +1,4 @@
+import javax.swing.JEditorPane;
 
 public class Instruction {
 	private int instructionNumber;
@@ -50,10 +51,13 @@ public class Instruction {
 		this.instructionBinary = instructionBinary;
 	}
 	
+	public void execute(ProgramCounter pc, RegisterFile r, DataMemory M, JEditorPane iOEditorPane) {
+		System.out.println("noooo");
+	}
+	
 	public void execute(ProgramCounter pc, RegisterFile r, DataMemory M) {
 		System.out.println("noooo");
 	}
-
 
 	public boolean isExecuting() {
 		return isExecuting;

@@ -98,6 +98,9 @@ public class GUIInterface extends JFrame {
 	private AbstractButton stopButton;
 	private boolean terminateFlag;
 	private JTabbedPane tabbedPane;
+	private JEditorPane IOEditorPane;
+	private JScrollPane IOEditorScrollViewPane;
+
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -300,20 +303,19 @@ public class GUIInterface extends JFrame {
 				}
 			}
 		});
-		
+
 		assembleButton = new JButton("Assemble");
-		
-		
+
 		assembleButton.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		buttonPanel.add(assembleButton);
-		
+
 		runButton = new JButton("Run");
 		runButton.setEnabled(false);
 		runButton.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		buttonPanel.add(runButton);
-		
+
 		stopButton = new JButton("Stop");
-		
+
 		stopButton.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		stopButton.setEnabled(false);
 		buttonPanel.add(stopButton);
@@ -332,17 +334,14 @@ public class GUIInterface extends JFrame {
 		lblPcvalue.setFont(new Font("Tahoma", Font.PLAIN, 19));
 		buttonPanel.add(lblPcvalue);
 		// =========================================================================================
-		
-		
-		
-		
+
 		// =========================================================================================
 		// Parent Split Pane ( ChildSplitPane , RegisterFilePane)
 		// =========================================================================================
 		JSplitPane parentSplitPane = new JSplitPane();
 		parentSplitPane.setResizeWeight(0.9);
 		contentPane.add(parentSplitPane, BorderLayout.CENTER);
-		
+
 		// RegisterFilePane
 		JScrollPane registerFilePane = new JScrollPane();
 		parentSplitPane.setRightComponent(registerFilePane);
@@ -350,47 +349,17 @@ public class GUIInterface extends JFrame {
 		registerFilePane.setViewportView(registerFileTable);
 		registerFileTable.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		registerFileTable.setModel(new DefaultTableModel(
-			new Object[][] {
-				{"R0", "R0", "0"},
-				{"R1", "R1", "0"},
-				{"R2", "R2", "0"},
-				{"R3", "R3", "0"},
-				{"R4", "R4", "0"},
-				{"R5", "R5", "0"},
-				{"R6", "R6", "0"},
-				{"R7", "R7", "0"},
-				{"R8", "R8", "0"},
-				{"R9", "R9", "0"},
-				{"R10", "T0", "0"},
-				{"R11", "T1", "0"},
-				{"R12", "T2", "0"},
-				{"R13", "T3", "0"},
-				{"R14", "T4", "0"},
-				{"R15", "T5", "0"},
-				{"R16", "T6", "0"},
-				{"R17", "T7", "0"},
-				{"R18", "T8", "0"},
-				{"R19", "T9", "0"},
-				{"R20", "S0", "0"},
-				{"R21", "S1", "0"},
-				{"R22", "S2", "0"},
-				{"R23", "S3", "0"},
-				{"R24", "S4", "0"},
-				{"R25", "S5", "0"},
-				{"R26", "S6", "0"},
-				{"R27", "S7", "0"},
-				{"R28", "S8", "0"},
-				{"R29", "FP", "0"},
-				{"R30", "SP", "0"},
-				{"R31", "LR", "0"},
-			},
-			new String[] {
-				"R#", "R Name", "Register Number"
-			}
-		) {
-			boolean[] columnEditables = new boolean[] {
-				false, false, true
-			};
+				new Object[][] { { "R0", "R0", "0" }, { "R1", "R1", "0" }, { "R2", "R2", "0" }, { "R3", "R3", "0" },
+						{ "R4", "R4", "0" }, { "R5", "R5", "0" }, { "R6", "R6", "0" }, { "R7", "R7", "0" },
+						{ "R8", "R8", "0" }, { "R9", "R9", "0" }, { "R10", "T0", "0" }, { "R11", "T1", "0" },
+						{ "R12", "T2", "0" }, { "R13", "T3", "0" }, { "R14", "T4", "0" }, { "R15", "T5", "0" },
+						{ "R16", "T6", "0" }, { "R17", "T7", "0" }, { "R18", "T8", "0" }, { "R19", "T9", "0" },
+						{ "R20", "S0", "0" }, { "R21", "S1", "0" }, { "R22", "S2", "0" }, { "R23", "S3", "0" },
+						{ "R24", "S4", "0" }, { "R25", "S5", "0" }, { "R26", "S6", "0" }, { "R27", "S7", "0" },
+						{ "R28", "S8", "0" }, { "R29", "FP", "0" }, { "R30", "SP", "0" }, { "R31", "LR", "0" }, },
+				new String[] { "R#", "R Name", "Register Number" }) {
+			boolean[] columnEditables = new boolean[] { false, false, true };
+
 			public boolean isCellEditable(int row, int column) {
 				return columnEditables[column];
 			}
@@ -400,151 +369,129 @@ public class GUIInterface extends JFrame {
 		registerFileTable.getColumnModel().getColumn(2).setPreferredWidth(100);
 		registerFileTable.getColumnModel().getColumn(2).setMinWidth(90);
 		registerFileTable.setRowHeight(28);
-		
+
 		JSplitPane splitPane = new JSplitPane();
 		splitPane.setResizeWeight(0.8);
 		splitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
 		parentSplitPane.setLeftComponent(splitPane);
-		
+
 		JPanel panel_1 = new JPanel();
 		splitPane.setRightComponent(panel_1);
-		GridBagLayout gbl_panel_1 = new GridBagLayout();
-		gbl_panel_1.columnWidths = new int[]{81, 388, 0};
-		gbl_panel_1.rowHeights = new int[]{88, 0};
-		gbl_panel_1.columnWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
-		gbl_panel_1.rowWeights = new double[]{0.0, Double.MIN_VALUE};
-		panel_1.setLayout(gbl_panel_1);
+		panel_1.setLayout(new BorderLayout(0, 0));
+
+		JButton clearButton = new JButton("CLEAR");
+		clearButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				IOEditorPane.setText("");
+			}
+		});
+		clearButton.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		panel_1.add(clearButton, BorderLayout.SOUTH);
 		
-		JButton btnClear = new JButton("CLEAR");
-		btnClear.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		GridBagConstraints gbc_btnClear = new GridBagConstraints();
-		gbc_btnClear.weightx = 1.0;
-		gbc_btnClear.anchor = GridBagConstraints.NORTH;
-		gbc_btnClear.insets = new Insets(0, 0, 0, 5);
-		gbc_btnClear.gridx = 0;
-		gbc_btnClear.gridy = 0;
-		panel_1.add(btnClear, gbc_btnClear);
+		IOEditorScrollViewPane = new JScrollPane();
+		panel_1.add(IOEditorScrollViewPane);
 		
-		JEditorPane editorPane_1 = new JEditorPane();
-		editorPane_1.setFont(new Font("Tahoma", Font.PLAIN, 22));
-		GridBagConstraints gbc_editorPane_1 = new GridBagConstraints();
-		gbc_editorPane_1.weighty = 1.0;
-		gbc_editorPane_1.weightx = 1.0;
-		gbc_editorPane_1.fill = GridBagConstraints.BOTH;
-		gbc_editorPane_1.gridx = 1;
-		gbc_editorPane_1.gridy = 0;
-		panel_1.add(editorPane_1, gbc_editorPane_1);
-		
+		IOEditorPane = new JEditorPane();
+		IOEditorScrollViewPane.setViewportView(IOEditorPane);
+		IOEditorPane.setFont(new Font("Tahoma", Font.PLAIN, 22));
+
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		splitPane.setLeftComponent(tabbedPane);
-				
-						// TabbedPane, Edit
-						editTabSplitPane = new JSplitPane();
-						tabbedPane.addTab("Edit", null, editTabSplitPane, null);
-						editTabSplitPane.setResizeWeight(0.999);
-						machineCodeArea = new JTextPane();
-						machineCodeArea.setFont(new Font("Segoe UI Historic", Font.PLAIN, 22));
-						editTabSplitPane.setRightComponent(machineCodeArea);
-						JScrollPane editorPane = new JScrollPane();
-						editTabSplitPane.setLeftComponent(editorPane);
-						inputCodeTextPane = new JTextPane();
-						inputCodeTextPane.setFont(new Font("Segoe UI Historic", Font.PLAIN, 22));
-						editorPane.setViewportView(inputCodeTextPane);
-						rowLines = new JTextPane();
-						rowLines.setText(
-								"1\r\n2\r\n3\r\n4\r\n5\r\n6\r\n7\r\n8\r\n9\r\n10\r\n11\r\n12\r\n13\r\n14\r\n15\r\n16\r\n17\r\n18\r\n19\r\n20\r\n21\r\n22\r\n23\r\n24\r\n25");
-						rowLines.setFont(new Font("Segoe UI Historic", Font.PLAIN, 22));
-						rowLines.setEnabled(false);
-						rowLines.setEditable(false);
-						editorPane.setRowHeaderView(rowLines);
-		
-				
-				
-				//TabbedPane, Execute ( TextSegment, DataSegment )
-				JDesktopPane executeTabDesktopPane = new JDesktopPane();
-				tabbedPane.addTab("Execute", null, executeTabDesktopPane, null);
-				executeTabDesktopPane.setBackground(Color.WHITE);
-				
-				
-				//TextSegment
-				textSegmentIF = new JInternalFrame("Text Segment");
-				textSegmentIF.setBorder(new LineBorder(new Color(0, 0, 0)));
-				textSegmentIF.setMaximizable(true);
-				textSegmentIF.setBounds(0, 0, 1295, 350);
-				executeTabDesktopPane.add(textSegmentIF);
-				textSegmentIF.setResizable(true);
-				textSegmentIF.setMaximizable(true);
-				Object[][] textSegmentRows = new Object[0][3];
-				String[] textSegmentCols = new String[] { "Address", "Code", "Assembly Code", "Status" };
-				Object[][] dataSegmentRows = new Object[100][5];
-				String[] dataSegmentCols = new String[] { "Address", "+0", "+8", "+16", "+24" };
-				JScrollPane scrollPane = new JScrollPane();
-				textSegmentIF.getContentPane().add(scrollPane, BorderLayout.CENTER);
-				textSegmentTable = new JTable();
-				textSegmentTable.setFont(new Font("Tahoma", Font.PLAIN, 16));
-				textSegmentTable.setModel(new DefaultTableModel(textSegmentRows, textSegmentCols) {
-					public boolean isCellEditable(int row, int column) {
-						return false;
-					}
-				});
-				
-				//		textSegmentTable.getColumnModel().getColumn(0).setPreferredWidth(116);
-				//		textSegmentTable.getColumnModel().getColumn(1).setPreferredWidth(131);
-				//		textSegmentTable.getColumnModel().getColumn(2).setPreferredWidth(262);
-				//		textSegmentTable.getColumnModel().getColumn(3).setPreferredWidth(347);
-				scrollPane.setViewportView(textSegmentTable);
-				textSegmentIF.setVisible(true);
-						
-						
-						
-						
-				//DataSegment
-				dataSegmentIF = new JInternalFrame("Data Segment");
-				dataSegmentIF.setBorder(new LineBorder(new Color(0, 0, 0)));
-				dataSegmentIF.setBounds(0, 350, 1295, 350);
-				executeTabDesktopPane.add(dataSegmentIF);
-				dataSegmentIF.setResizable(true);
-				dataSegmentIF.setMaximizable(true);
-				
-						
-						JScrollPane dataSegmentScrollPane = new JScrollPane();
-						dataSegmentIF.getContentPane().add(dataSegmentScrollPane, BorderLayout.CENTER);
-						
-								dataSegmentTable = new JTable();
-								
-										dataSegmentTable.setModel(new DefaultTableModel(dataSegmentRows, dataSegmentCols) {
-											public boolean isCellEditable(int row, int col) {
-												return false;
-											}
-										});
-										
-										//		dataSegmentTable.getColumnModel().getColumn(0).setPreferredWidth(85);
-										//		dataSegmentTable.getColumnModel().getColumn(1).setPreferredWidth(73);
-										//		dataSegmentTable.getColumnModel().getColumn(2).setPreferredWidth(111);
-										//		dataSegmentTable.getColumnModel().getColumn(3).setPreferredWidth(145);
-												dataSegmentScrollPane.setViewportView(dataSegmentTable);
-												dataSegmentIF.setVisible(true);
 
-		//==================================================================================================
+		// TabbedPane, Edit
+		editTabSplitPane = new JSplitPane();
+		tabbedPane.addTab("Edit", null, editTabSplitPane, null);
+		editTabSplitPane.setResizeWeight(0.999);
+		machineCodeArea = new JTextPane();
+		machineCodeArea.setFont(new Font("Segoe UI Historic", Font.PLAIN, 22));
+		editTabSplitPane.setRightComponent(machineCodeArea);
+		JScrollPane editorPane = new JScrollPane();
+		editTabSplitPane.setLeftComponent(editorPane);
+		inputCodeTextPane = new JTextPane();
+		inputCodeTextPane.setFont(new Font("Segoe UI Historic", Font.PLAIN, 22));
+		editorPane.setViewportView(inputCodeTextPane);
+		rowLines = new JTextPane();
+		rowLines.setText(
+				"1\r\n2\r\n3\r\n4\r\n5\r\n6\r\n7\r\n8\r\n9\r\n10\r\n11\r\n12\r\n13\r\n14\r\n15\r\n16\r\n17\r\n18\r\n19\r\n20\r\n21\r\n22\r\n23\r\n24\r\n25");
+		rowLines.setFont(new Font("Segoe UI Historic", Font.PLAIN, 22));
+		rowLines.setEnabled(false);
+		rowLines.setEditable(false);
+		editorPane.setRowHeaderView(rowLines);
+
+		// TabbedPane, Execute ( TextSegment, DataSegment )
+		JDesktopPane executeTabDesktopPane = new JDesktopPane();
+		tabbedPane.addTab("Execute", null, executeTabDesktopPane, null);
+		executeTabDesktopPane.setBackground(Color.WHITE);
+
+		// TextSegment
+		textSegmentIF = new JInternalFrame("Text Segment");
+		textSegmentIF.setBorder(new LineBorder(new Color(0, 0, 0)));
+		textSegmentIF.setMaximizable(true);
+		textSegmentIF.setBounds(0, 0, 1295, 350);
+		executeTabDesktopPane.add(textSegmentIF);
+		textSegmentIF.setResizable(true);
+		textSegmentIF.setMaximizable(true);
+		Object[][] textSegmentRows = new Object[0][3];
+		String[] textSegmentCols = new String[] { "Address", "Code", "Assembly Code", "Status" };
+		Object[][] dataSegmentRows = new Object[100][5];
+		String[] dataSegmentCols = new String[] { "Address", "+0", "+8", "+16", "+24" };
+		JScrollPane scrollPane = new JScrollPane();
+		textSegmentIF.getContentPane().add(scrollPane, BorderLayout.CENTER);
+		textSegmentTable = new JTable();
+		textSegmentTable.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		textSegmentTable.setModel(new DefaultTableModel(textSegmentRows, textSegmentCols) {
+			public boolean isCellEditable(int row, int column) {
+				return false;
+			}
+		});
+
+		// textSegmentTable.getColumnModel().getColumn(0).setPreferredWidth(116);
+		// textSegmentTable.getColumnModel().getColumn(1).setPreferredWidth(131);
+		// textSegmentTable.getColumnModel().getColumn(2).setPreferredWidth(262);
+		// textSegmentTable.getColumnModel().getColumn(3).setPreferredWidth(347);
+		scrollPane.setViewportView(textSegmentTable);
+		textSegmentIF.setVisible(true);
+
+		// DataSegment
+		dataSegmentIF = new JInternalFrame("Data Segment");
+		dataSegmentIF.setBorder(new LineBorder(new Color(0, 0, 0)));
+		dataSegmentIF.setBounds(0, 350, 1295, 350);
+		executeTabDesktopPane.add(dataSegmentIF);
+		dataSegmentIF.setResizable(true);
+		dataSegmentIF.setMaximizable(true);
+
+		JScrollPane dataSegmentScrollPane = new JScrollPane();
+		dataSegmentIF.getContentPane().add(dataSegmentScrollPane, BorderLayout.CENTER);
+
+		dataSegmentTable = new JTable();
+
+		dataSegmentTable.setModel(new DefaultTableModel(dataSegmentRows, dataSegmentCols) {
+			public boolean isCellEditable(int row, int col) {
+				return false;
+			}
+		});
+
+		// dataSegmentTable.getColumnModel().getColumn(0).setPreferredWidth(85);
+		// dataSegmentTable.getColumnModel().getColumn(1).setPreferredWidth(73);
+		// dataSegmentTable.getColumnModel().getColumn(2).setPreferredWidth(111);
+		// dataSegmentTable.getColumnModel().getColumn(3).setPreferredWidth(145);
+		dataSegmentScrollPane.setViewportView(dataSegmentTable);
+		dataSegmentIF.setVisible(true);
+
+		// ==================================================================================================
 	}
 
 	public GUIInterface() {
 		setExtendedState(Frame.MAXIMIZED_BOTH);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		
 		// =========================================================================================
 		// Initialise the GUI Components
 		// =========================================================================================
 		initiliseGUI();
 		// =========================================================================================
 
-		
-		
-		
-		
-		
 		// =========================================================================================
 		// Initialise the hash map for all instructions type (ADD, J, JAL, SUB, ...)
 		// =========================================================================================
@@ -556,7 +503,6 @@ public class GUIInterface extends JFrame {
 		}
 		// =========================================================================================
 
-
 		// =========================================================================================
 		// Initialise the program counter, registerFile and dataMemory.
 		// =========================================================================================
@@ -565,10 +511,6 @@ public class GUIInterface extends JFrame {
 		mem = new DataMemory();
 		// =========================================================================================
 
-		
-		
-		
-		
 		// =========================================================================================
 		// Reset Button
 		// =========================================================================================
@@ -586,19 +528,17 @@ public class GUIInterface extends JFrame {
 				Style style = rowLines.addStyle("MyHilite", null);
 				StyleConstants.setBold(style, false);
 				doc.setCharacterAttributes(0, rowLines.getText().toString().length() - 1, style, true);
-				
+
 				DefaultTableModel model = (DefaultTableModel) textSegmentTable.getModel();
 				while (model.getRowCount() > 0) {
-				    model.removeRow(0);
+					model.removeRow(0);
 				}
-				
+
 			}
 		});
 
 		instArray = new ArrayList<String>();
 
-		
-		
 		// =========================================================================================
 		// Run Button
 		// =========================================================================================
@@ -612,10 +552,6 @@ public class GUIInterface extends JFrame {
 			}
 		});
 
-		
-		
-		
-		
 		// =========================================================================================
 		// Trace Button
 		// =========================================================================================
@@ -623,7 +559,7 @@ public class GUIInterface extends JFrame {
 		traceButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+
 				if (!pc.isItRunning()) {
 
 					/* Print Machine Code Binary */
@@ -669,7 +605,7 @@ public class GUIInterface extends JFrame {
 
 			}
 		});
-		
+
 		stopButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				stopButton.setEnabled(false);
@@ -677,7 +613,7 @@ public class GUIInterface extends JFrame {
 				terminateFlag = true;
 			}
 		});
-		
+
 		assembleButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				pc.reset();
@@ -692,12 +628,12 @@ public class GUIInterface extends JFrame {
 				Style style = rowLines.addStyle("MyHilite", null);
 				StyleConstants.setBold(style, false);
 				doc.setCharacterAttributes(0, rowLines.getText().toString().length() - 1, style, true);
-				
+
 				DefaultTableModel model = (DefaultTableModel) textSegmentTable.getModel();
 				while (model.getRowCount() > 0) {
-				    model.removeRow(0);
+					model.removeRow(0);
 				}
-				
+
 				runButton.setEnabled(true);
 				traceButton.setEnabled(true);
 				/* Reinitialise the ProgramCounter and RegisterFile */
@@ -706,36 +642,30 @@ public class GUIInterface extends JFrame {
 				mem.reset();
 				machineCodeArea.setText("");
 
-				
-
-
 				/* Convert the text to array list of assembly instructions */
 
 				String dataSegment = "";
 				String textSegment = "";
 				String inputAssemplyCode = inputCodeTextPane.getText().toString();
-				if(inputAssemplyCode.toLowerCase().contains(".data") && inputAssemplyCode.toLowerCase().contains(".text")) {
-					if(inputAssemplyCode.indexOf(".data") < inputAssemplyCode.indexOf(".text") ){
+				if (inputAssemplyCode.toLowerCase().contains(".data")
+						&& inputAssemplyCode.toLowerCase().contains(".text")) {
+					if (inputAssemplyCode.indexOf(".data") < inputAssemplyCode.indexOf(".text")) {
 						dataSegment = inputAssemplyCode.split(".text")[0].replace(".data\r\n", "").trim();
 						textSegment = inputAssemplyCode.split(".text")[1];
-					}else {
+					} else {
 						textSegment = inputAssemplyCode.split(".data")[0].replace(".text\r\n", "").trim();
 						dataSegment = inputAssemplyCode.split(".data")[1];
 					}
-				}else if(inputAssemplyCode.toLowerCase().contains(".data")) {
+				} else if (inputAssemplyCode.toLowerCase().contains(".data")) {
 					dataSegment = inputCodeTextPane.getText().toString();
-				}else{
+				} else {
 					textSegment = inputCodeTextPane.getText().toString();
 				}
-				
-				
+
 				// to replace all blank lines
-				String[] a = textSegment.replaceAll("(?m)^[ \t]*\r?\n", "")
-						.split(System.getProperty("line.separator"));
+				String[] a = textSegment.replaceAll("(?m)^[ \t]*\r?\n", "").split(System.getProperty("line.separator"));
 				// ---------------------------------------------------------------------------------------------------------------
-				
-			
-				
+
 				tabbedPane.setSelectedIndex(1);
 				// to save all @lables in programCounter
 				for (int i = 0; i < a.length; i++) {
@@ -752,13 +682,10 @@ public class GUIInterface extends JFrame {
 
 				/* Convert assembly language into machine code */
 				Assembler.fetchAssemblyInstruction(pc, instArray, textSegmentTable);
-				
-				
+
 			}
 		});
-		
-		
-		
+
 	}
 
 	private void updateDataMemoryTable(JTable t, DataMemory MemoryS) {
@@ -815,20 +742,19 @@ public class GUIInterface extends JFrame {
 			}
 	}
 
-
-	 class ExecutingThread implements Runnable {
+	class ExecutingThread implements Runnable {
 		private int count;
-		
-		
+
 		public void terminate() {
 			terminateFlag = true;
 		}
+
 		public void run() {
 			assembleButton.setEnabled(false);
-			count=1;
+			count = 1;
 			while (!terminateFlag && pc.getProgramCounter() < pc.getInstructionsList().size()) {
-				if(pc.getProgramCounter() >= 1)
-					textSegmentTable.getModel().setValueAt("", pc.getProgramCounter()-1, 3);
+				if (pc.getProgramCounter() >= 1)
+					textSegmentTable.getModel().setValueAt("", pc.getProgramCounter() - 1, 3);
 				textSegmentTable.getModel().setValueAt("Executed", pc.getProgramCounter(), 3);
 
 				/* Print Machine Code Binary */
@@ -850,11 +776,13 @@ public class GUIInterface extends JFrame {
 				}
 
 				// Execute Instruction
-				(pc.getInstructionsList().get(pc.getProgramCounter())).execute(pc, rf, mem);
+				if((pc.getInstructionsList().get(pc.getProgramCounter())).getClass().getName().equals("IInstruction")) 
+					(pc.getInstructionsList().get(pc.getProgramCounter())).execute(pc, rf, mem, IOEditorPane);
+				else
+					(pc.getInstructionsList().get(pc.getProgramCounter())).execute(pc, rf, mem);
 				updateRegisterFileTable(registerFileTable, rf, pc);
 				updateDataMemoryTable(dataSegmentTable, mem);
-				
-				
+
 				// Determine the frequency speed
 				if (frequencySpeed != -1 && count == frequencySpeed) {
 					try {
@@ -866,11 +794,10 @@ public class GUIInterface extends JFrame {
 				} else {
 					count++;
 				}
-				
-			
+
 			}
 			// =================================================================================================
-			
+
 			terminateFlag = false;
 			pc.reset();
 			instArray.clear();
@@ -878,10 +805,6 @@ public class GUIInterface extends JFrame {
 			stopButton.setEnabled(false);
 		}
 
-
-
 	}
-	
-		
-	
+
 }
