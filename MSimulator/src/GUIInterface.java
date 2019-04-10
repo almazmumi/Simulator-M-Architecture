@@ -57,6 +57,12 @@ import javax.swing.JSlider;
 import java.awt.GridLayout;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
+import java.awt.Frame;
+import java.awt.FlowLayout;
+import javax.swing.JEditorPane;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
 
 @SuppressWarnings("serial")
 public class GUIInterface extends JFrame {
@@ -87,11 +93,11 @@ public class GUIInterface extends JFrame {
 	private JButton traceButton;
 	private JButton resetButton;
 	private JLabel lblPcvalue;
-	private JTabbedPane tabbedPane;
 	private Thread ex = new Thread(new ExecutingThread());
 	private AbstractButton assembleButton;
 	private AbstractButton stopButton;
 	private boolean terminateFlag;
+	private JTabbedPane tabbedPane;
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -395,112 +401,136 @@ public class GUIInterface extends JFrame {
 		registerFileTable.getColumnModel().getColumn(2).setMinWidth(90);
 		registerFileTable.setRowHeight(28);
 		
+		JSplitPane splitPane = new JSplitPane();
+		splitPane.setResizeWeight(0.8);
+		splitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
+		parentSplitPane.setLeftComponent(splitPane);
 		
-		// Child Split Pane ( TabbedPane(Edit,Execute), InputOutputDisplay)
-		JSplitPane secondSplitPane = new JSplitPane();
-		secondSplitPane.setResizeWeight(0.8);
-		parentSplitPane.setLeftComponent(secondSplitPane);
-		secondSplitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
-
-		// TabbedPane
+		JPanel panel_1 = new JPanel();
+		splitPane.setRightComponent(panel_1);
+		GridBagLayout gbl_panel_1 = new GridBagLayout();
+		gbl_panel_1.columnWidths = new int[]{81, 388, 0};
+		gbl_panel_1.rowHeights = new int[]{88, 0};
+		gbl_panel_1.columnWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
+		gbl_panel_1.rowWeights = new double[]{0.0, Double.MIN_VALUE};
+		panel_1.setLayout(gbl_panel_1);
+		
+		JButton btnClear = new JButton("CLEAR");
+		btnClear.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		GridBagConstraints gbc_btnClear = new GridBagConstraints();
+		gbc_btnClear.weightx = 1.0;
+		gbc_btnClear.anchor = GridBagConstraints.NORTH;
+		gbc_btnClear.insets = new Insets(0, 0, 0, 5);
+		gbc_btnClear.gridx = 0;
+		gbc_btnClear.gridy = 0;
+		panel_1.add(btnClear, gbc_btnClear);
+		
+		JEditorPane editorPane_1 = new JEditorPane();
+		editorPane_1.setFont(new Font("Tahoma", Font.PLAIN, 22));
+		GridBagConstraints gbc_editorPane_1 = new GridBagConstraints();
+		gbc_editorPane_1.weighty = 1.0;
+		gbc_editorPane_1.weightx = 1.0;
+		gbc_editorPane_1.fill = GridBagConstraints.BOTH;
+		gbc_editorPane_1.gridx = 1;
+		gbc_editorPane_1.gridy = 0;
+		panel_1.add(editorPane_1, gbc_editorPane_1);
+		
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		secondSplitPane.setLeftComponent(tabbedPane);
-
-		// TabbedPane, Edit
-		editTabSplitPane = new JSplitPane();
-		editTabSplitPane.setResizeWeight(0.999);
-		tabbedPane.addTab("Edit", null, editTabSplitPane, null);
-		machineCodeArea = new JTextPane();
-		machineCodeArea.setFont(new Font("Segoe UI Historic", Font.PLAIN, 22));
-		editTabSplitPane.setRightComponent(machineCodeArea);
-		JScrollPane editorPane = new JScrollPane();
-		editTabSplitPane.setLeftComponent(editorPane);
-		inputCodeTextPane = new JTextPane();
-		inputCodeTextPane.setFont(new Font("Segoe UI Historic", Font.PLAIN, 22));
-		editorPane.setViewportView(inputCodeTextPane);
-		rowLines = new JTextPane();
-		rowLines.setText(
-				"1\r\n2\r\n3\r\n4\r\n5\r\n6\r\n7\r\n8\r\n9\r\n10\r\n11\r\n12\r\n13\r\n14\r\n15\r\n16\r\n17\r\n18\r\n19\r\n20\r\n21\r\n22\r\n23\r\n24\r\n25");
-		rowLines.setFont(new Font("Segoe UI Historic", Font.PLAIN, 22));
-		rowLines.setEnabled(false);
-		rowLines.setEditable(false);
-		editorPane.setRowHeaderView(rowLines);
-
+		splitPane.setLeftComponent(tabbedPane);
+				
+						// TabbedPane, Edit
+						editTabSplitPane = new JSplitPane();
+						tabbedPane.addTab("Edit", null, editTabSplitPane, null);
+						editTabSplitPane.setResizeWeight(0.999);
+						machineCodeArea = new JTextPane();
+						machineCodeArea.setFont(new Font("Segoe UI Historic", Font.PLAIN, 22));
+						editTabSplitPane.setRightComponent(machineCodeArea);
+						JScrollPane editorPane = new JScrollPane();
+						editTabSplitPane.setLeftComponent(editorPane);
+						inputCodeTextPane = new JTextPane();
+						inputCodeTextPane.setFont(new Font("Segoe UI Historic", Font.PLAIN, 22));
+						editorPane.setViewportView(inputCodeTextPane);
+						rowLines = new JTextPane();
+						rowLines.setText(
+								"1\r\n2\r\n3\r\n4\r\n5\r\n6\r\n7\r\n8\r\n9\r\n10\r\n11\r\n12\r\n13\r\n14\r\n15\r\n16\r\n17\r\n18\r\n19\r\n20\r\n21\r\n22\r\n23\r\n24\r\n25");
+						rowLines.setFont(new Font("Segoe UI Historic", Font.PLAIN, 22));
+						rowLines.setEnabled(false);
+						rowLines.setEditable(false);
+						editorPane.setRowHeaderView(rowLines);
 		
-		
-		//TabbedPane, Execute ( TextSegment, DataSegment )
-		JDesktopPane executeTabDesktopPane = new JDesktopPane();
-		executeTabDesktopPane.setBackground(Color.WHITE);
-		executeTabDesktopPane.setSize(tabbedPane.getSize());
-		tabbedPane.addTab("Execute", null, executeTabDesktopPane, null);
-		
-		
-		//TextSegment
-		textSegmentIF = new JInternalFrame("Text Segment");
-		textSegmentIF.setBorder(new LineBorder(new Color(0, 0, 0)));
-		textSegmentIF.setMaximizable(true);
-		textSegmentIF.setBounds(0, 0, 1295, 350);
-		executeTabDesktopPane.add(textSegmentIF);
-		textSegmentIF.setResizable(true);
-		textSegmentIF.setMaximizable(true);
+				
+				
+				//TabbedPane, Execute ( TextSegment, DataSegment )
+				JDesktopPane executeTabDesktopPane = new JDesktopPane();
+				tabbedPane.addTab("Execute", null, executeTabDesktopPane, null);
+				executeTabDesktopPane.setBackground(Color.WHITE);
+				
+				
+				//TextSegment
+				textSegmentIF = new JInternalFrame("Text Segment");
+				textSegmentIF.setBorder(new LineBorder(new Color(0, 0, 0)));
+				textSegmentIF.setMaximizable(true);
+				textSegmentIF.setBounds(0, 0, 1295, 350);
+				executeTabDesktopPane.add(textSegmentIF);
+				textSegmentIF.setResizable(true);
+				textSegmentIF.setMaximizable(true);
+				Object[][] textSegmentRows = new Object[0][3];
+				String[] textSegmentCols = new String[] { "Address", "Code", "Assembly Code", "Status" };
+				Object[][] dataSegmentRows = new Object[100][5];
+				String[] dataSegmentCols = new String[] { "Address", "+0", "+8", "+16", "+24" };
+				JScrollPane scrollPane = new JScrollPane();
+				textSegmentIF.getContentPane().add(scrollPane, BorderLayout.CENTER);
+				textSegmentTable = new JTable();
+				textSegmentTable.setFont(new Font("Tahoma", Font.PLAIN, 16));
+				textSegmentTable.setModel(new DefaultTableModel(textSegmentRows, textSegmentCols) {
+					public boolean isCellEditable(int row, int column) {
+						return false;
+					}
+				});
+				
+				//		textSegmentTable.getColumnModel().getColumn(0).setPreferredWidth(116);
+				//		textSegmentTable.getColumnModel().getColumn(1).setPreferredWidth(131);
+				//		textSegmentTable.getColumnModel().getColumn(2).setPreferredWidth(262);
+				//		textSegmentTable.getColumnModel().getColumn(3).setPreferredWidth(347);
+				scrollPane.setViewportView(textSegmentTable);
+				textSegmentIF.setVisible(true);
+						
+						
+						
+						
+				//DataSegment
+				dataSegmentIF = new JInternalFrame("Data Segment");
+				dataSegmentIF.setBorder(new LineBorder(new Color(0, 0, 0)));
+				dataSegmentIF.setBounds(0, 350, 1295, 350);
+				executeTabDesktopPane.add(dataSegmentIF);
+				dataSegmentIF.setResizable(true);
+				dataSegmentIF.setMaximizable(true);
+				
+						
+						JScrollPane dataSegmentScrollPane = new JScrollPane();
+						dataSegmentIF.getContentPane().add(dataSegmentScrollPane, BorderLayout.CENTER);
+						
+								dataSegmentTable = new JTable();
+								
+										dataSegmentTable.setModel(new DefaultTableModel(dataSegmentRows, dataSegmentCols) {
+											public boolean isCellEditable(int row, int col) {
+												return false;
+											}
+										});
+										
+										//		dataSegmentTable.getColumnModel().getColumn(0).setPreferredWidth(85);
+										//		dataSegmentTable.getColumnModel().getColumn(1).setPreferredWidth(73);
+										//		dataSegmentTable.getColumnModel().getColumn(2).setPreferredWidth(111);
+										//		dataSegmentTable.getColumnModel().getColumn(3).setPreferredWidth(145);
+												dataSegmentScrollPane.setViewportView(dataSegmentTable);
+												dataSegmentIF.setVisible(true);
 
-		JScrollPane scrollPane = new JScrollPane();
-		textSegmentIF.getContentPane().add(scrollPane, BorderLayout.CENTER);
-		textSegmentTable = new JTable();
-		textSegmentTable.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		Object[][] textSegmentRows = new Object[0][3];
-
-		String[] textSegmentCols = new String[] { "Address", "Code", "Assembly Code", "Status" };
-		textSegmentTable.setModel(new DefaultTableModel(textSegmentRows, textSegmentCols) {
-			public boolean isCellEditable(int row, int column) {
-				return false;
-			}
-		});
-
-		textSegmentTable.getColumnModel().getColumn(0).setPreferredWidth(116);
-		textSegmentTable.getColumnModel().getColumn(1).setPreferredWidth(131);
-		textSegmentTable.getColumnModel().getColumn(2).setPreferredWidth(262);
-		textSegmentTable.getColumnModel().getColumn(3).setPreferredWidth(347);
-		scrollPane.setViewportView(textSegmentTable);
-		textSegmentIF.setVisible(true);
-		
-		
-		
-		
-		//DataSegment
-		dataSegmentIF = new JInternalFrame("Data Segment");
-		dataSegmentIF.setBorder(new LineBorder(new Color(0, 0, 0)));
-		dataSegmentIF.setBounds(0, 350, 1295, 350);
-		executeTabDesktopPane.add(dataSegmentIF);
-		dataSegmentIF.setResizable(true);
-		dataSegmentIF.setMaximizable(true);
-
-		
-		JScrollPane dataSegmentScrollPane = new JScrollPane();
-		dataSegmentIF.getContentPane().add(dataSegmentScrollPane, BorderLayout.CENTER);
-
-		dataSegmentTable = new JTable();
-		Object[][] dataSegmentRows = new Object[100][5];
-		String[] dataSegmentCols = new String[] { "Address", "+0", "+8", "+16", "+24" };
-
-		dataSegmentTable.setModel(new DefaultTableModel(dataSegmentRows, dataSegmentCols) {
-			public boolean isCellEditable(int row, int col) {
-				return false;
-			}
-		});
-
-		dataSegmentTable.getColumnModel().getColumn(0).setPreferredWidth(85);
-		dataSegmentTable.getColumnModel().getColumn(1).setPreferredWidth(73);
-		dataSegmentTable.getColumnModel().getColumn(2).setPreferredWidth(111);
-		dataSegmentTable.getColumnModel().getColumn(3).setPreferredWidth(145);
-		dataSegmentScrollPane.setViewportView(dataSegmentTable);
-		dataSegmentIF.setVisible(true);
 		//==================================================================================================
 	}
 
 	public GUIInterface() {
-		setExtendedState(JFrame.MAXIMIZED_BOTH);
+		setExtendedState(Frame.MAXIMIZED_BOTH);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		
