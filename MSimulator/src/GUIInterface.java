@@ -17,6 +17,8 @@ import javax.swing.JButton;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.beans.PropertyVetoException;
 import java.io.FileNotFoundException;
 import java.io.LineNumberReader;
@@ -63,6 +65,7 @@ import javax.swing.JEditorPane;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.awt.Point;
 
 @SuppressWarnings("serial")
 public class GUIInterface extends JFrame {
@@ -76,7 +79,7 @@ public class GUIInterface extends JFrame {
 	private JPanel contentPane;
 	private JTable registerFileTable;
 	private String BaseDataAddress = "40004000";
-	private String RegistersOption = "Decimal";
+	private String RegistersOption[];
 
 	private String MachineCodeOption = "Binary";
 	private int frequencySpeed = -1;
@@ -230,7 +233,10 @@ public class GUIInterface extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				JRadioButtonMenuItem aButton = (JRadioButtonMenuItem) e.getSource();
-				RegistersOption = aButton.getText();
+				for (int i = 0; i < RegistersOption.length; i++) {
+					RegistersOption[i] = aButton.getText();
+				}
+				
 				updateRegisterFileTable(registerFileTable, rf, pc);
 
 			}
@@ -349,17 +355,47 @@ public class GUIInterface extends JFrame {
 		registerFilePane.setViewportView(registerFileTable);
 		registerFileTable.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		registerFileTable.setModel(new DefaultTableModel(
-				new Object[][] { { "R0", "R0", "0" }, { "R1", "R1", "0" }, { "R2", "R2", "0" }, { "R3", "R3", "0" },
-						{ "R4", "R4", "0" }, { "R5", "R5", "0" }, { "R6", "R6", "0" }, { "R7", "R7", "0" },
-						{ "R8", "R8", "0" }, { "R9", "R9", "0" }, { "R10", "T0", "0" }, { "R11", "T1", "0" },
-						{ "R12", "T2", "0" }, { "R13", "T3", "0" }, { "R14", "T4", "0" }, { "R15", "T5", "0" },
-						{ "R16", "T6", "0" }, { "R17", "T7", "0" }, { "R18", "T8", "0" }, { "R19", "T9", "0" },
-						{ "R20", "S0", "0" }, { "R21", "S1", "0" }, { "R22", "S2", "0" }, { "R23", "S3", "0" },
-						{ "R24", "S4", "0" }, { "R25", "S5", "0" }, { "R26", "S6", "0" }, { "R27", "S7", "0" },
-						{ "R28", "S8", "0" }, { "R29", "FP", "0" }, { "R30", "SP", "0" }, { "R31", "LR", "0" }, },
-				new String[] { "R#", "R Name", "Register Number" }) {
-			boolean[] columnEditables = new boolean[] { false, false, true };
-
+			new Object[][] {
+				{"R0", "R0", "0"},
+				{"R1", "R1", "0"},
+				{"R2", "R2", "0"},
+				{"R3", "R3", "0"},
+				{"R4", "R4", "0"},
+				{"R5", "R5", "0"},
+				{"R6", "R6", "0"},
+				{"R7", "R7", "0"},
+				{"R8", "R8", "0"},
+				{"R9", "R9", "0"},
+				{"R10", "T0", "0"},
+				{"R11", "T1", "0"},
+				{"R12", "T2", "0"},
+				{"R13", "T3", "0"},
+				{"R14", "T4", "0"},
+				{"R15", "T5", "0"},
+				{"R16", "T6", "0"},
+				{"R17", "T7", "0"},
+				{"R18", "T8", "0"},
+				{"R19", "T9", "0"},
+				{"R20", "S0", "0"},
+				{"R21", "S1", "0"},
+				{"R22", "S2", "0"},
+				{"R23", "S3", "0"},
+				{"R24", "S4", "0"},
+				{"R25", "S5", "0"},
+				{"R26", "S6", "0"},
+				{"R27", "S7", "0"},
+				{"R28", "S8", "0"},
+				{"R29", "FP", "0"},
+				{"R30", "SP", "0"},
+				{"R31", "LR", "0"},
+			},
+			new String[] {
+				"R#", "R Name", "Register Number"
+			}
+		) {
+			boolean[] columnEditables = new boolean[] {
+				false, false, false
+			};
 			public boolean isCellEditable(int row, int column) {
 				return columnEditables[column];
 			}
@@ -368,6 +404,25 @@ public class GUIInterface extends JFrame {
 		registerFileTable.getColumnModel().getColumn(0).setMinWidth(50);
 		registerFileTable.getColumnModel().getColumn(2).setPreferredWidth(100);
 		registerFileTable.getColumnModel().getColumn(2).setMinWidth(90);
+		
+		registerFileTable.addMouseListener(new MouseAdapter() {
+		    public void mousePressed(MouseEvent mouseEvent) {
+		        JTable table =(JTable) mouseEvent.getSource();
+		        Point point = mouseEvent.getPoint();
+		        int row = table.rowAtPoint(point);
+		        if (mouseEvent.getClickCount() == 2 && table.getSelectedRow() != -1) {
+		        	if(RegistersOption[table.getSelectedRow()].equals("Decimal")) {
+		        		RegistersOption[table.getSelectedRow()] = "Hex";
+		        	}else if(RegistersOption[table.getSelectedRow()].equals("Hex")) {
+		        		RegistersOption[table.getSelectedRow()] = "Binary";
+		        	}else if(RegistersOption[table.getSelectedRow()].equals("Binary")) {
+		        		RegistersOption[table.getSelectedRow()] = "Decimal";
+		        	}
+		            
+		            updateRegisterFileTable(registerFileTable, rf, pc);
+		        }
+		    }
+		});
 		registerFileTable.setRowHeight(28);
 
 		JSplitPane splitPane = new JSplitPane();
@@ -511,6 +566,14 @@ public class GUIInterface extends JFrame {
 		mem = new DataMemory();
 		// =========================================================================================
 
+		
+		
+		RegistersOption = new String[32];
+		
+		for (int i = 0; i < RegistersOption.length; i++) {
+			RegistersOption[i] = "Decimal";
+		}
+		
 		// =========================================================================================
 		// Reset Button
 		// =========================================================================================
@@ -616,6 +679,7 @@ public class GUIInterface extends JFrame {
 
 		assembleButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				IOEditorPane.setText("");
 				pc.reset();
 				rf.reset();
 				mem.reset();
@@ -727,19 +791,30 @@ public class GUIInterface extends JFrame {
 	}
 
 	private void updateRegisterFileTable(JTable t, RegisterFile r, ProgramCounter pc) {
-		if (RegistersOption.equals("Decimal"))
-			for (int i = 0; i < 32; i++) {
+		for (int i = 0; i < 32; i++) {
+			if (RegistersOption[i].equals("Decimal")) {
 				t.getModel().setValueAt(r.getRegister(i), i, 2);
-			}
-		else if (RegistersOption.equals("Hex"))
-			for (int i = 0; i < 32; i++) {
-
+			}else if(RegistersOption[i].equals("Hex")) {
 				t.getModel().setValueAt(Long.toString(r.getRegister(i), 16).toUpperCase(), i, 2);
-			}
-		else if (RegistersOption.equals("Binary"))
-			for (int i = 0; i < 32; i++) {
+			}else if(RegistersOption[i].equals("Binary")) {
 				t.getModel().setValueAt(Long.toBinaryString(r.getRegister(i)), i, 2);
 			}
+		}
+		
+		
+//		if (RegistersOption.equals("Decimal"))
+//			for (int i = 0; i < 32; i++) {
+//				t.getModel().setValueAt(r.getRegister(i), i, 2);
+//			}
+//		else if (RegistersOption.equals("Hex"))
+//			for (int i = 0; i < 32; i++) {
+//
+//				t.getModel().setValueAt(Long.toString(r.getRegister(i), 16).toUpperCase(), i, 2);
+//			}
+//		else if (RegistersOption.equals("Binary"))
+//			for (int i = 0; i < 32; i++) {
+//				t.getModel().setValueAt(Long.toBinaryString(r.getRegister(i)), i, 2);
+//			}
 	}
 
 	class ExecutingThread implements Runnable {
