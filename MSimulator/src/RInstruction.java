@@ -531,7 +531,7 @@ public class RInstruction extends Instruction {
 	}
 
 	private void LD() {
-		String[] Bytes = new String[2];
+		String[] Bytes = new String[8];
 		int Address = (int)((registerFile.getRegister(b) << x) + registerFile.getRegister(a));
 
 		String Byte = "";
@@ -539,10 +539,10 @@ public class RInstruction extends Instruction {
 		Bytes[1] = Integer.toBinaryString((int) Mem.getData(Address + 1));
 		Bytes[2] = Integer.toBinaryString((int) Mem.getData(Address + 2));
 		Bytes[3] = Integer.toBinaryString((int) Mem.getData(Address + 3));
-		Bytes[4] = Integer.toBinaryString((int) Mem.getData(Address));
-		Bytes[5] = Integer.toBinaryString((int) Mem.getData(Address + 1));
-		Bytes[6] = Integer.toBinaryString((int) Mem.getData(Address + 2));
-		Bytes[7] = Integer.toBinaryString((int) Mem.getData(Address + 3));
+		Bytes[4] = Integer.toBinaryString((int) Mem.getData(Address+4));
+		Bytes[5] = Integer.toBinaryString((int) Mem.getData(Address + 5));
+		Bytes[6] = Integer.toBinaryString((int) Mem.getData(Address + 6));
+		Bytes[7] = Integer.toBinaryString((int) Mem.getData(Address + 7));
 
 		for (int j = 0; j < Bytes.length; j++) {
 			for (int i = 0; i < 8 - Bytes[j].length(); i++) {
@@ -576,7 +576,7 @@ public class RInstruction extends Instruction {
 			ss = ss + Z;
 		}
 		Byte = d + Byte;
-		registerFile.setRegister(d, Integer.parseInt(Byte, 2));
+		registerFile.setRegister(d, Long.parseInt(Byte, 2));
 
 	}
 
@@ -602,7 +602,7 @@ public class RInstruction extends Instruction {
 			ss = ss + Z;
 		}
 		Byte = ss + Byte;
-		registerFile.setRegister(d, Integer.parseInt(Byte, 2));
+		registerFile.setRegister(d, Long.parseInt(Byte, 2));
 
 	}
 
@@ -630,11 +630,11 @@ public class RInstruction extends Instruction {
 			ss = ss + Z;
 		}
 		Byte = ss + Byte;
-		registerFile.setRegister(d, Integer.parseInt(Byte, 2));
+		registerFile.setRegister(d, Long.parseInt(Byte, 2));
 	}
 
 	private void LDU() {
-		String[] Bytes = new String[2];
+		String[] Bytes = new String[8];
 		int Address = (int)((registerFile.getRegister(b) << x) + registerFile.getRegister(a));
 
 		String Byte = "";
@@ -642,10 +642,10 @@ public class RInstruction extends Instruction {
 		Bytes[1] = Integer.toBinaryString((int) Mem.getData(Address + 1));
 		Bytes[2] = Integer.toBinaryString((int) Mem.getData(Address + 2));
 		Bytes[3] = Integer.toBinaryString((int) Mem.getData(Address + 3));
-		Bytes[4] = Integer.toBinaryString((int) Mem.getData(Address));
-		Bytes[5] = Integer.toBinaryString((int) Mem.getData(Address + 1));
-		Bytes[6] = Integer.toBinaryString((int) Mem.getData(Address + 2));
-		Bytes[7] = Integer.toBinaryString((int) Mem.getData(Address + 3));
+		Bytes[4] = Integer.toBinaryString((int) Mem.getData(Address+4));
+		Bytes[5] = Integer.toBinaryString((int) Mem.getData(Address + 5));
+		Bytes[6] = Integer.toBinaryString((int) Mem.getData(Address + 6));
+		Bytes[7] = Integer.toBinaryString((int) Mem.getData(Address + 7));
 
 		for (int j = 0; j < Bytes.length; j++) {
 			for (int i = 0; i < 8 - Bytes[j].length(); i++) {
@@ -654,7 +654,7 @@ public class RInstruction extends Instruction {
 			Byte = Bytes[j] + Byte;
 		}
 
-		registerFile.setRegister(d, Integer.parseInt(Byte, 2));
+		registerFile.setRegister(d, Long.parseInt(Byte, 2));
 
 	}
 
