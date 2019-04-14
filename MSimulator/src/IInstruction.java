@@ -524,12 +524,7 @@ public class IInstruction extends Instruction {
 			Byte = "0" + Byte;
 		}
 
-		String d = "";
-		String Z = Byte.substring(1, 2);
-		for (int i = 0; i < 64 - Byte.length(); i++) {
-			d = d + Z;
-		}
-		Byte = d + Byte;
+
 		if (Byte.charAt(0) == '0')
 			registerFile.setRegister(b, Long.parseLong(Byte.substring(1), 2));
 		else {

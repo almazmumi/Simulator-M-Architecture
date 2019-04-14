@@ -452,12 +452,7 @@ public class RInstruction extends Instruction {
 			Byte = "0" + Byte;
 		}
 
-		String ss = "";
-		String Z = Byte.substring(0, 1);
-		for (int i = 0; i < 64 - Byte.length(); i++) {
-			ss = ss + Z;
-		}
-		Byte = d + Byte;
+
 		if(Byte.charAt(0)=='0')
 		registerFile.setRegister(d, Long.parseLong(Byte.substring(1), 2));
 		else
