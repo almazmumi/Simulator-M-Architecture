@@ -12,8 +12,25 @@ public class BInstruction extends Instruction {
 		super(instructionNumber, instructionText, instructionBinary);
 		a = Integer.parseInt(instructionBinary.substring(6, 11),2);
 		b = Integer.parseInt(instructionBinary.substring(11, 16),2);
-		offset = Integer.parseInt(instructionBinary.substring(16, 32),2);
+		System.out.println(Integer.parseInt(instructionBinary.substring(16, 32),2));
+		System.out.println("Bitoffeset:"+instructionBinary.substring(16, 32));
+
+		offset = ReturnSigned(instructionBinary.substring(16, 32));
+		System.out.println("/offeset:"+offset);
 		setInstructionOpcode(Integer.parseInt(instructionBinary.substring(0,6), 2));
+	}
+	public int ReturnSigned(String S) {
+		int signed;
+		int number;
+		if(S.charAt(0)=='1') {
+			signed = -32768;
+			
+		}else {
+			signed=0;
+		}
+		number =Integer.parseInt(S.substring(1),2);
+		
+		return number+signed;
 	}
 	
 	
@@ -72,7 +89,7 @@ public class BInstruction extends Instruction {
 	// TODO Unsigned 
 	private void BGEUI() {
 		if(rf.getRegister(a) >= b) {
-			pc.setProgramCounter(offset);
+			pc.setProgramCounter(pc.getProgramCounter() + offset);
 		}else {
 			pc.incrementProgramCounter();
 		}
@@ -82,14 +99,14 @@ public class BInstruction extends Instruction {
 	// TODO Unsigned 
 	private void BLTUI() {
 		if(rf.getRegister(a) < b) {
-			pc.setProgramCounter(offset);
+			pc.setProgramCounter(pc.getProgramCounter() + offset);
 		}else {
 			pc.incrementProgramCounter();
 		}
 	}
 	private void BGEI() {
 		if(rf.getRegister(a) >= b) {
-			pc.setProgramCounter(offset);
+			pc.setProgramCounter(pc.getProgramCounter() + offset);
 		}else {
 			pc.incrementProgramCounter();
 		}
@@ -97,7 +114,7 @@ public class BInstruction extends Instruction {
 	}
 	private void BLTI() {
 		if(rf.getRegister(a) < b) {
-			pc.setProgramCounter(offset);
+			pc.setProgramCounter(pc.getProgramCounter() + offset);
 		}else {
 			pc.incrementProgramCounter();
 		}
@@ -105,7 +122,7 @@ public class BInstruction extends Instruction {
 	}
 	private void BNEI() {
 		if(rf.getRegister(a) != b) {
-			pc.setProgramCounter(offset);
+			pc.setProgramCounter(pc.getProgramCounter() + offset);
 		}else {
 			pc.incrementProgramCounter();
 		}
@@ -113,7 +130,7 @@ public class BInstruction extends Instruction {
 	}
 	private void BEQI() {
 		if(rf.getRegister(a) == b) {
-			pc.setProgramCounter(offset);
+			pc.setProgramCounter(pc.getProgramCounter() + offset);
 		}else {
 			pc.incrementProgramCounter();
 		}
@@ -136,7 +153,7 @@ public class BInstruction extends Instruction {
 		if(rf.getRegister(b) == rf.getRegister(a)) {
 			pc.incrementProgramCounter();
 		}else{
-			pc.setProgramCounter(offset);
+			pc.setProgramCounter(pc.getProgramCounter() + offset);
 		}
 	}
 	private void LOOP() {
@@ -144,7 +161,7 @@ public class BInstruction extends Instruction {
 		if(rf.getRegister(b) == rf.getRegister(a)) {
 			pc.incrementProgramCounter();
 		}else{
-			pc.setProgramCounter(offset);
+			pc.setProgramCounter(pc.getProgramCounter() + offset);
 		}
 		
 		
@@ -156,7 +173,7 @@ public class BInstruction extends Instruction {
 	// TODO Unsigned 
 	private void BGEU() {
 		if(rf.getRegister(a) >= rf.getRegister(b)) {
-			pc.setProgramCounter(offset);
+			pc.setProgramCounter(pc.getProgramCounter() + offset);
 		}else {
 			pc.incrementProgramCounter();
 		}
@@ -168,7 +185,7 @@ public class BInstruction extends Instruction {
 		
 		// Make Sure that is extended U not S signed
 		if(rf.getRegister(a) < rf.getRegister(b)) {
-			pc.setProgramCounter(offset);
+			pc.setProgramCounter(pc.getProgramCounter() + offset);
 		}else {
 			pc.incrementProgramCounter();
 		}
@@ -178,7 +195,7 @@ public class BInstruction extends Instruction {
 	
 	private void BGE() {
 		if(rf.getRegister(a) >= rf.getRegister(b)) {
-			pc.setProgramCounter(offset);
+			pc.setProgramCounter(pc.getProgramCounter() + offset);
 		}else {
 			pc.incrementProgramCounter();
 		}
@@ -186,7 +203,7 @@ public class BInstruction extends Instruction {
 	}
 	private void BLT() {
 		if(rf.getRegister(a) < rf.getRegister(b)) {
-			pc.setProgramCounter(offset);
+			pc.setProgramCounter(pc.getProgramCounter() + offset);
 		}else {
 			pc.incrementProgramCounter();
 		}
@@ -194,7 +211,7 @@ public class BInstruction extends Instruction {
 	}
 	private void BNE() {
 		if(rf.getRegister(a) != rf.getRegister(b)) {
-			pc.setProgramCounter(offset);
+			pc.setProgramCounter(pc.getProgramCounter() + offset);
 		}else {
 			pc.incrementProgramCounter();
 		}
@@ -202,7 +219,7 @@ public class BInstruction extends Instruction {
 	}
 	private void BEQ() {
 		if(rf.getRegister(a) == rf.getRegister(b)) {
-			pc.setProgramCounter(offset);
+			pc.setProgramCounter(pc.getProgramCounter() + offset);
 		}else {
 			pc.incrementProgramCounter();
 		}

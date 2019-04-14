@@ -746,7 +746,9 @@ public class GUIInterface extends JFrame {
 						a.remove(i);
 						i--;
 					}
-					else if (a.get(i) != null) {
+				}	
+				for (int i = 0; i < a.size(); i++) {
+					if (a.get(i) != null) {
 						instArray.add(a.get(i));
 					}
 				}

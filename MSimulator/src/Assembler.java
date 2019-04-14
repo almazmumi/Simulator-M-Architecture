@@ -53,7 +53,7 @@ public class Assembler {
 		}
 		for (int i = 0; i < In.size(); i++) {
 			InstructionFetch(In.get(i));
-			String Inst = getMachineCode(pc);
+			String Inst = getMachineCode(pc,i);
 			int decimal = Integer.parseUnsignedInt(Inst, 2);
 			String hexStr = Integer.toUnsignedString(decimal, 16);
 			Instruction Instruction_In;
@@ -79,7 +79,7 @@ public class Assembler {
 
 	}
 
-	public static String getMachineCode(ProgramCounter pc) {
+	public static String getMachineCode(ProgramCounter pc, int instructionInd) {
 		String Is = "";
 		if (instructionFormat.get(instArray.get(0).toUpperCase()).equals('R')
 				|| instructionFormat.get(instArray.get(0).toUpperCase()).equals('I')) {
@@ -112,9 +112,9 @@ public class Assembler {
 					&& !instArray.get(0).toUpperCase().contains("LOOP")) {
 				// I type
 				instArray.set(0, instArray.get(0).toUpperCase() + "I");
-				return parseBType(pc);
+				return parseBType(pc,instructionInd);
 			} else {
-				return parseBType(pc);
+				return parseBType(pc,instructionInd);
 			}
 
 		} else if (instructionFormat.get(instArray.get(0).toUpperCase()).equals('J')) {
@@ -304,7 +304,7 @@ public class Assembler {
 		return null;
 	}
 
-	private static String parseBType(ProgramCounter pc) {
+	private static String parseBType(ProgramCounter pc, int instructionInd) {
 		if (instructionCommand.get(instArray.get(0).toUpperCase()) > 7
 				&& instructionCommand.get(instArray.get(0).toUpperCase()) < 14) {
 			OP = ExtRegister_6(Integer.toBinaryString(instructionCommand.get(instArray.get(0).toUpperCase())));
@@ -314,7 +314,16 @@ public class Assembler {
 
 			Imm = instArray.get(3);
 			if (Imm.contains("@")) {
-				Imm = ExtRegister_16(Integer.toBinaryString(pc.getLableAddress(Imm)));
+//				int pccounter = pc.getProgramCounter();
+//				int lableAddress = pc.getLableAddress(Imm);
+				
+//				int off=Math.abs(pccounter < );
+				String S =Integer.toBinaryString(pc.getLableAddress(Imm) - instructionInd);
+				System.out.println("Branch offset " + (pc.getLableAddress(Imm) - instructionInd));
+				if(S.length()>16)
+				Imm = S.substring(S.length()-16);
+				else
+					Imm=ExtRegister_16(S);
 			} else {
 				Imm = ExtRegister_16(IntToBinary(instArray.get(3)));
 			}
@@ -332,8 +341,14 @@ public class Assembler {
 
 			Imm = instArray.get(3);
 			if (Imm.contains("@")) {
-				Imm = ExtRegister_16(Integer.toBinaryString(pc.getLableAddress(Imm)));
-			} else {
+				String S =Integer.toBinaryString( pc.getLableAddress(Imm)-instructionInd);
+				System.out.println("Branch offset " + (pc.getLableAddress(Imm) - instructionInd));
+
+				if(S.length()>16)
+				Imm = S.substring(S.length()-16);
+				else
+					Imm=ExtRegister_16(S);		
+				} else {
 				Imm = ExtRegister_16(IntToBinary(instArray.get(3)));
 			}
 
