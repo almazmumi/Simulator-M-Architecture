@@ -514,7 +514,6 @@ public class IInstruction extends Instruction {
 		Mem.ListElemnts();
 
 	}
-
 	private void LB() {
 
 		int Address = imm12 + (int) registerFile.getRegister(a);
@@ -647,7 +646,7 @@ public class IInstruction extends Instruction {
 			d = d + Z;
 		}
 		Byte = d + Byte;
-		registerFile.setRegister(b, Long.parseLong(Byte.trim(), 2));
+		registerFile.setRegister(b, Long.parseUnsignedLong(Byte.trim(), 2));
 
 	}
 
@@ -673,7 +672,7 @@ public class IInstruction extends Instruction {
 			d = d + Z;
 		}
 		Byte = d + Byte;
-		registerFile.setRegister(b, Long.parseLong(Byte, 2));
+		registerFile.setRegister(b, Long.parseUnsignedLong(Byte, 2));
 
 	}
 
@@ -701,11 +700,11 @@ public class IInstruction extends Instruction {
 			d = d + Z;
 		}
 		Byte = d + Byte;
-		registerFile.setRegister(b, Long.parseLong(Byte, 2));
+		registerFile.setRegister(b, Long.parseUnsignedLong(Byte, 2));
 	}
 
 	private void LDU() {
-		String[] Bytes = new String[2];
+		String[] Bytes = new String[8];
 		int Address = imm12 + (int) registerFile.getRegister(a);
 
 		String Byte = "";
@@ -725,8 +724,7 @@ public class IInstruction extends Instruction {
 			Byte = Bytes[j] + Byte;
 		}
 
-		registerFile.setRegister(b, Long.parseLong(Byte, 2));
+		registerFile.setRegister(b, Long.parseUnsignedLong(Byte, 2));
 
 	}
-
 }
