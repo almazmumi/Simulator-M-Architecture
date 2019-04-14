@@ -459,10 +459,10 @@ public class RInstruction extends Instruction {
 		}
 		Byte = d + Byte;
 		if(Byte.charAt(0)=='0')
-		registerFile.setRegister(b, Long.parseLong(Byte.substring(1), 2));
+		registerFile.setRegister(d, Long.parseLong(Byte.substring(1), 2));
 		else
 		{
-			registerFile.setRegister(b,Long.parseLong(Byte.substring(1), 2)+Long.MIN_VALUE);
+			registerFile.setRegister(d,Long.parseLong(Byte.substring(1), 2)+Long.MIN_VALUE);
 		}
 
 	}
@@ -490,10 +490,10 @@ public class RInstruction extends Instruction {
 		}
 		Byte = ss + Byte;
 		if(Byte.charAt(0)=='0')
-		registerFile.setRegister(b, Long.parseLong(Byte.substring(1), 2));
+		registerFile.setRegister(d, Long.parseLong(Byte.substring(1), 2));
 		else
 		{
-			registerFile.setRegister(b,Long.parseLong(Byte.substring(1), 2)+Long.MIN_VALUE);
+			registerFile.setRegister(d,Long.parseLong(Byte.substring(1), 2)+Long.MIN_VALUE);
 		}
 
 	}
@@ -523,10 +523,10 @@ public class RInstruction extends Instruction {
 		}
 		Byte = ss + Byte;
 		if(Byte.charAt(0)=='0')
-		registerFile.setRegister(b, Long.parseLong(Byte.substring(1), 2));
+		registerFile.setRegister(d, Long.parseLong(Byte.substring(1), 2));
 		else
 		{
-			registerFile.setRegister(b,Long.parseLong(Byte.substring(1), 2)+Long.MIN_VALUE);
+			registerFile.setRegister(d,Long.parseLong(Byte.substring(1), 2)+Long.MIN_VALUE);
 		}
 	}
 
@@ -552,10 +552,10 @@ public class RInstruction extends Instruction {
 		}
 
 		if(Byte.charAt(0)=='0')
-		registerFile.setRegister(b, Long.parseLong(Byte.substring(1), 2));
+		registerFile.setRegister(d, Long.parseLong(Byte.substring(1), 2));
 		else
 		{
-			registerFile.setRegister(b,Long.parseLong(Byte.substring(1), 2)+Long.MIN_VALUE);
+			registerFile.setRegister(d,Long.parseLong(Byte.substring(1), 2)+Long.MIN_VALUE);
 		}
 
 	}
@@ -642,7 +642,7 @@ public class RInstruction extends Instruction {
 		Bytes[1] = Integer.toBinaryString((int) Mem.getData(Address + 1));
 		Bytes[2] = Integer.toBinaryString((int) Mem.getData(Address + 2));
 		Bytes[3] = Integer.toBinaryString((int) Mem.getData(Address + 3));
-		Bytes[4] = Integer.toBinaryString((int) Mem.getData(Address+4));
+		Bytes[4] = Integer.toBinaryString((int) Mem.getData(Address + 4));
 		Bytes[5] = Integer.toBinaryString((int) Mem.getData(Address + 5));
 		Bytes[6] = Integer.toBinaryString((int) Mem.getData(Address + 6));
 		Bytes[7] = Integer.toBinaryString((int) Mem.getData(Address + 7));
