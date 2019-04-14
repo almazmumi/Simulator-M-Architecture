@@ -576,7 +576,7 @@ public class RInstruction extends Instruction {
 			ss = ss + Z;
 		}
 		Byte = d + Byte;
-		registerFile.setRegister(d, Long.parseInt(Byte, 2));
+		registerFile.setRegister(d, Long.parseLong(Byte, 2));
 
 	}
 
@@ -602,7 +602,7 @@ public class RInstruction extends Instruction {
 			ss = ss + Z;
 		}
 		Byte = ss + Byte;
-		registerFile.setRegister(d, Long.parseInt(Byte, 2));
+		registerFile.setRegister(d, Long.parseLong(Byte, 2));
 
 	}
 
@@ -630,7 +630,7 @@ public class RInstruction extends Instruction {
 			ss = ss + Z;
 		}
 		Byte = ss + Byte;
-		registerFile.setRegister(d, Long.parseInt(Byte, 2));
+		registerFile.setRegister(d, Long.parseLong(Byte, 2));
 	}
 
 	private void LDU() {
@@ -654,7 +654,7 @@ public class RInstruction extends Instruction {
 			Byte = Bytes[j] + Byte;
 		}
 
-		registerFile.setRegister(d, Long.parseInt(Byte, 2));
+		registerFile.setRegister(d, Long.parseLong(Byte, 2));
 
 	}
 
