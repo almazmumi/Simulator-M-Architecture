@@ -46,11 +46,16 @@ public class Assembler {
 
 	}
 
-	public static void fetchAssemblyInstruction(ProgramCounter pc, ArrayList<String> In, JTable textSegmentTable) {
+	public static void fetchAssemblyInstruction(ProgramCounter pc, ArrayList<String> In, JTable textSegmentTable, String baseTextAddress) {
 		DefaultTableModel model = (DefaultTableModel) textSegmentTable.getModel();
 		while (model.getRowCount() > 0) {
 			model.removeRow(0);
 		}
+		
+		
+		int BaseTemp = Integer.parseInt(baseTextAddress, 16);
+		
+		
 		for (int i = 0; i < In.size(); i++) {
 			InstructionFetch(In.get(i));
 			String Inst = getMachineCode(pc,i);
@@ -59,22 +64,22 @@ public class Assembler {
 			Instruction Instruction_In;
 			if (instructionFormat.get(instArray.get(0).toUpperCase()).equals('I')) {
 				Instruction_In = new IInstruction(i, In.get(i), Inst);
-				model.addRow(new Object[] { "Address", "0x" + hexStr.toUpperCase(), In.get(i) });
+				model.addRow(new Object[] { "0x" + Integer.toString(BaseTemp, 16), "0x" + hexStr.toUpperCase(), In.get(i) });
 				pc.getInstructionsList().add(Instruction_In);
 			} else if (instructionFormat.get(instArray.get(0).toUpperCase()).equals('J')) {
 				Instruction_In = new JInstruction(i, In.get(i), Inst);
-				model.addRow(new Object[] { "Address", "0x" + hexStr.toUpperCase(), In.get(i) });
+				model.addRow(new Object[] { "0x" + Integer.toString(BaseTemp, 16), "0x" + hexStr.toUpperCase(), In.get(i) });
 				pc.getInstructionsList().add(Instruction_In);
 			} else if (instructionFormat.get(instArray.get(0).toUpperCase()).equals('R')) {
 				Instruction_In = new RInstruction(i, In.get(i), Inst);
-				model.addRow(new Object[] { "Address", "0x" + hexStr.toUpperCase(), In.get(i) });
+				model.addRow(new Object[] { "0x" + Integer.toString(BaseTemp, 16), "0x" + hexStr.toUpperCase(), In.get(i) });
 				pc.getInstructionsList().add(Instruction_In);
 			} else if (instructionFormat.get(instArray.get(0).toUpperCase()).equals('B')) {
 				Instruction_In = new BInstruction(i, In.get(i), Inst);
-				model.addRow(new Object[] { "Address", "0x" + hexStr.toUpperCase(), In.get(i) });
+				model.addRow(new Object[] { "0x" + Integer.toString(BaseTemp, 16), "0x" + hexStr.toUpperCase(), In.get(i) });
 				pc.getInstructionsList().add(Instruction_In);
 			}
-
+			BaseTemp = BaseTemp + 32;
 		}
 
 	}
