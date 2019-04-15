@@ -1,6 +1,5 @@
 
 public class RInstruction extends Instruction {
-
 	private int a;
 	private int b;
 	private int x;
