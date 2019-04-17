@@ -338,21 +338,7 @@ public class IInstruction extends Instruction {
 		}
 	}
 
-	private void GT() {
-		GE();
-	}
 
-	private void LE() {
-		LT();
-	}
-
-	private void GTU() {
-		GEU();
-	}
-
-	private void LEU() {
-		LEU();
-	}
 	/*
 	 * ALU INTSTRUCTIONS (I-FORMAT)
 	 */
@@ -380,21 +366,7 @@ public class IInstruction extends Instruction {
 		registerFile.setRegister(b, x);
 	}
 
-	private void SHL() {
-		SHLR();
-	}
 
-	private void SHR() {
-		SHLR();
-	}
-
-	private void SAR() {
-		SALR();
-	}
-
-	private void ROL() {
-		ROR();
-	}
 	/*
 	 * ALU SHIFT AND ROTATE INTSTRUCTIONS (I-FORMAT)
 	 */

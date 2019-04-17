@@ -163,22 +163,6 @@ public class GUIInterface extends JFrame {
 		mntmExit.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		mnFile.add(mntmExit);
 
-		JMenu mnAssembler = new JMenu("Assembler");
-		mnAssembler.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-		menuBar.add(mnAssembler);
-
-		JMenuItem mntmGetBinaryCode = new JMenuItem("Get Binary Code");
-		mntmGetBinaryCode.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-		mnAssembler.add(mntmGetBinaryCode);
-
-		JMenu mnSimulation = new JMenu("Simulation");
-		mnSimulation.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-		menuBar.add(mnSimulation);
-
-		JMenuItem mntmGetStatistic = new JMenuItem("Get Statistic");
-		mntmGetStatistic.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-		mnSimulation.add(mntmGetStatistic);
-
 		JMenu mnEdit = new JMenu("Edit");
 		mnEdit.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		menuBar.add(mnEdit);
@@ -347,7 +331,7 @@ public class GUIInterface extends JFrame {
 		// Parent Split Pane ( ChildSplitPane , RegisterFilePane)
 		// =========================================================================================
 		JSplitPane parentSplitPane = new JSplitPane();
-		parentSplitPane.setResizeWeight(0.9);
+		parentSplitPane.setResizeWeight(0.99);
 		contentPane.add(parentSplitPane, BorderLayout.CENTER);
 
 		// RegisterFilePane
@@ -392,7 +376,7 @@ public class GUIInterface extends JFrame {
 				{"LR", "0"},
 			},
 			new String[] {
-				"R Name", "Register Number"
+				"Register Name", "Register Number"
 			}
 		) {
 			boolean[] columnEditables = new boolean[] {
@@ -474,6 +458,135 @@ public class GUIInterface extends JFrame {
 		rowLines.setEditable(false);
 		editorPane.setRowHeaderView(rowLines);
 
+		Document d = inputCodeTextPane.getDocument();
+
+		// To change the instruction name style
+		d.addDocumentListener(new DocumentListener() {
+
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+
+			}
+
+			@SuppressWarnings("unlikely-arg-type")
+			@Override
+			public void insertUpdate(DocumentEvent e) {
+				char c = inputCodeTextPane.getText().toString().charAt(inputCodeTextPane.getText().toString().length() - 1);
+				if (c == ' ') {
+
+					String[] temp = inputCodeTextPane.getText().toString().split(" ");
+					String tempString = temp[temp.length-1];
+					System.out.println(c);
+					if (tempString.equals(".scloop")) {
+						Runnable doAssist = new Runnable() {
+							@Override
+							public void run() {
+								inputCodeTextPane.setText("SET R5 = 10\r\n"+
+										"SET R6 = 0\r\n"+
+										"@FOR\r\nADD R7 = R7 , 2\r\n " +
+										"LOOP R5, R6, @FOR ");
+							}
+						};
+						SwingUtilities.invokeLater(doAssist);	
+					}else if(tempString.equals(".scbranch")) {
+						Runnable doAssist = new Runnable() {
+							@Override
+							public void run() {
+								inputCodeTextPane.setText("SET R5 = 10\r\n" + 
+										"@loop ADD R6 = R6,1\r\n" + 
+										"BNE R6, 10, @loop\r\n" + 
+										"ADD R10 = R10, 1 \r\n" + 
+										"");
+							}
+						};
+						SwingUtilities.invokeLater(doAssist);
+					}else if(tempString.equals(".scjumpandalu")) {
+						Runnable doAssist = new Runnable() {
+							@Override
+							public void run() {
+								inputCodeTextPane.setText("J, @lable\r\n" + 
+										"ADD R5 = R5, 5\r\n" + 
+										"ADD R5 = R5, R5\r\n" + 
+										"@lable\r\n" + 
+										"ADD R6 = R6, 5\r\n" + 
+										"ADD R6 = R6, R6");
+							}
+						};
+						SwingUtilities.invokeLater(doAssist);
+					}else if(tempString.equals(".scalu")) {
+						Runnable doAssist = new Runnable() {
+							@Override
+							public void run() {
+								inputCodeTextPane.setText("SET R5 = 11     //-> 1011 \r\n" + 
+										"SET R6 = 10     //-> 1010\r\n" + 
+										"AND R7 = R5, R6 // R7 -> 1010\r\n" + 
+										"OR R8 = R5, R6   // R8 -> 1011\r\n" + 
+										"ADD R9 = R5, R6 // R9 -> 21 ");
+							}
+						};
+						SwingUtilities.invokeLater(doAssist);	
+					}else if(tempString.equals(".scsort")) {
+						Runnable doAssist = new Runnable() {
+							@Override
+							public void run() {
+								inputCodeTextPane.setText("set r8 = 2\r\n" + 
+										"SB [R1, 0] = r8\r\n" + 
+										"set r8 = 8\r\n" + 
+										"SB [R1, 1] =r8\r\n" + 
+										"set r8=5\r\n" + 
+										"SB [R1, 2] =r8\r\n" + 
+										"set r8=3\r\n" + 
+										"SB [R1, 3] = r8\r\n" + 
+										"set r8=9\r\n" + 
+										"SB [R1, 4] = r8\r\n" + 
+										"set r8=4\r\n" + 
+										"SB [R1, 5] = r8\r\n" + 
+										"set r8 = 7\r\n" + 
+										"SB [R1, 6] = r8\r\n" + 
+										"\r\n" + 
+										"\r\n" + 
+										"ADD R1=R1,6\r\n" + 
+										"ADD R2=R2,0 // i\r\n" + 
+										"ADD R3=R3,0 // j\r\n" + 
+										"\r\n" + 
+										"ADD R5=R5,0 // array index\r\n" + 
+										"ADD R16 = R16, 6\r\n" + 
+										"ADD R17 = R17, 7\r\n" + 
+										"\r\n" + 
+										"\r\n" + 
+										"@LOOP1\r\n" + 
+										"MUL R8=R3,-1\r\n" + 
+										"ADD R4=R1,R8 // array. Length\r\n" + 
+										"SET R3 = 0\r\n" + 
+										"@LOOP2\r\n" + 
+										"\r\n" + 
+										"LB R5 = [R3,0] // LOAD array[0]=2 \r\n" + 
+										"LB R6 = [R3,1] // LOAD array[1]=3\r\n" + 
+										"LT R8 = R5, R6 //array[0] < array[1] they in the right order\r\n" + 
+										"BEQ R8, 1, @LOOPS // array[j] < array[j+1] they in the right order no need to swap\r\n" + 
+										"\r\n" + 
+										"\r\n" + 
+										"@SWAP\r\n" + 
+										"SB [R3,1] = R5 // array[j+1]=R6\r\n" + 
+										"SB [R3,0] =R6// array[j]=R7\r\n" + 
+										"@LOOPS\r\n" + 
+										"LOOP R16, R3, @LOOP2 // j<7\r\n" + 
+										"LOOP R17, R2, @LOOP1 // j<7");
+							}
+						};
+						SwingUtilities.invokeLater(doAssist);	
+					}
+
+
+				}
+			}
+
+			@Override
+			public void changedUpdate(DocumentEvent e) {
+
+			}
+		});
+		
 		// TabbedPane, Execute ( TextSegment, DataSegment )
 		JDesktopPane executeTabDesktopPane = new JDesktopPane();
 		tabbedPane.addTab("Execute", null, executeTabDesktopPane, null);
@@ -501,10 +614,7 @@ public class GUIInterface extends JFrame {
 			}
 		});
 
-		// textSegmentTable.getColumnModel().getColumn(0).setPreferredWidth(116);
-		// textSegmentTable.getColumnModel().getColumn(1).setPreferredWidth(131);
-		// textSegmentTable.getColumnModel().getColumn(2).setPreferredWidth(262);
-		// textSegmentTable.getColumnModel().getColumn(3).setPreferredWidth(347);
+
 		scrollPane.setViewportView(textSegmentTable);
 		textSegmentIF.setVisible(true);
 
@@ -527,10 +637,6 @@ public class GUIInterface extends JFrame {
 			}
 		});
 
-		// dataSegmentTable.getColumnModel().getColumn(0).setPreferredWidth(85);
-		// dataSegmentTable.getColumnModel().getColumn(1).setPreferredWidth(73);
-		// dataSegmentTable.getColumnModel().getColumn(2).setPreferredWidth(111);
-		// dataSegmentTable.getColumnModel().getColumn(3).setPreferredWidth(145);
 		dataSegmentScrollPane.setViewportView(dataSegmentTable);
 		dataSegmentIF.setVisible(true);
 
@@ -628,22 +734,8 @@ public class GUIInterface extends JFrame {
 				// Update the value of the PCLabel
 				lblPcvalue.setText("PC = " + pc.getProgramCounter());
 				/* Print Machine Code Binary */
-				String binaryString = pc.getInstructionsList().get(pc.getProgramCounter()).getInstructionBinary();
-				int decimal = Integer.parseUnsignedInt(binaryString, 2);
-				String hexStr = Integer.toUnsignedString(decimal, 16);
-				if (MachineCodeOption.equals("Hex")) {
-					if (machineCodeArea.getText().equals("")) {
-						machineCodeArea.setText(hexStr + "");
-					} else {
-						machineCodeArea.setText(machineCodeArea.getText() + "\r\n" + hexStr.toUpperCase());
-					}
-				} else if (MachineCodeOption.equals("Binary")) {
-					if (machineCodeArea.getText().equals("")) {
-						machineCodeArea.setText(binaryString + "");
-					} else {
-						machineCodeArea.setText(machineCodeArea.getText() + "\r\n" + binaryString);
-					}
-				}
+
+				
 
 				// Execute Instruction
 				if ((pc.getInstructionsList().get(pc.getProgramCounter())).getClass().getName().equals("IInstruction"))
@@ -717,15 +809,15 @@ public class GUIInterface extends JFrame {
 					if (inputAssemplyCode.indexOf(".data") < inputAssemplyCode.indexOf(".text")) {
 						dataSegment = inputAssemplyCode.split(".text")[0].replace(".data\r\n", "").trim();
 						textSegment = inputAssemplyCode.split(".text")[1];
-						mem.Initilaizor(dataSegment,pc);
+						mem.Initilaizor(dataSegment,pc,IOEditorPane);
 					} else {
 						textSegment = inputAssemplyCode.split(".data")[0].replace(".text\r\n", "").trim();
 						dataSegment = inputAssemplyCode.split(".data")[1];
-						mem.Initilaizor(dataSegment,pc);
+						mem.Initilaizor(dataSegment,pc,IOEditorPane);
 					}
 				} else if (inputAssemplyCode.toLowerCase().contains(".data")) {
 					dataSegment = inputCodeTextPane.getText().toString();
-					mem.Initilaizor(dataSegment,pc);
+					mem.Initilaizor(dataSegment,pc,IOEditorPane);
 				} else {
 					textSegment = inputCodeTextPane.getText().toString();
 				}
@@ -760,7 +852,27 @@ public class GUIInterface extends JFrame {
 				}
 
 				/* Convert assembly language into machine code */
-				Assembler.fetchAssemblyInstructions(pc, instArray, textSegmentTable,BaseTextAddress,IOEditorPane);
+				Assembler.fitchAssemblyInstructions(pc, instArray, textSegmentTable,BaseTextAddress,IOEditorPane);
+				
+				
+				for (int i = 0; i < pc.getInstructionsList().size(); i++) {
+					String binaryString = pc.getInstructionsList().get(i).getInstructionBinary();
+					int decimal = Integer.parseUnsignedInt(binaryString, 2);
+					String hexStr = Integer.toUnsignedString(decimal, 16);if (MachineCodeOption.equals("Hex")) {
+					if (machineCodeArea.getText().equals("")) {
+							machineCodeArea.setText(hexStr + "");
+						} else {
+							machineCodeArea.setText(machineCodeArea.getText() + "\r\n" + hexStr.toUpperCase());
+						}
+					} else if (MachineCodeOption.equals("Binary")) {
+						if (machineCodeArea.getText().equals("")) {
+							machineCodeArea.setText(binaryString + "");
+						} else {
+							machineCodeArea.setText(machineCodeArea.getText() + "\r\n" + binaryString);
+						}
+					}
+				}
+				
 				
 			}
 		});
@@ -847,19 +959,7 @@ public class GUIInterface extends JFrame {
 				String binaryString = pc.getInstructionsList().get(pc.getProgramCounter()).getInstructionBinary();
 				int decimal = Integer.parseUnsignedInt(binaryString, 2);
 				String hexStr = Integer.toUnsignedString(decimal, 16);
-				if (MachineCodeOption.equals("Hex")) {
-					if (machineCodeArea.getText().equals("")) {
-						machineCodeArea.setText(hexStr + "");
-					} else {
-						machineCodeArea.setText(machineCodeArea.getText() + "\r\n" + hexStr.toUpperCase());
-					}
-				} else if (MachineCodeOption.equals("Binary")) {
-					if (machineCodeArea.getText().equals("")) {
-						machineCodeArea.setText(binaryString + "");
-					} else {
-						machineCodeArea.setText(machineCodeArea.getText() + "\r\n" + binaryString);
-					}
-				}
+
 
 				// Execute Instruction
 				if ((pc.getInstructionsList().get(pc.getProgramCounter())).getClass().getName().equals("IInstruction"))

@@ -1,5 +1,7 @@
 import java.util.StringTokenizer;
 
+import javax.swing.JEditorPane;
+
 public class DataMemory {
 
 	private static char[] MemoryArray;
@@ -13,12 +15,12 @@ public class DataMemory {
 
 	}
 	
-	static void Initilaizor(String Data,ProgramCounter pc) {
-		String [] ArrayData =Data.split("\n");
+	static void Initilaizor(String Data,ProgramCounter pc, JEditorPane iOEditorPane) {
+		try {
+		String [] ArrayData = Data.split(System.getProperty("line.separator"));
 		int IndexPointer=0;
-		int Alignment =0;
 		for(int i = 0 ; i<ArrayData.length;i++) {
-			System.out.println(ArrayData.length);
+			
 			if(ArrayData.length>0)
 			if(ArrayData[i].charAt(0)=='@') {
 				String Lable = ArrayData[i].substring(0,ArrayData[i].trim().indexOf(' ')).trim();
@@ -207,7 +209,7 @@ public class DataMemory {
 					
 			    		 IndexPointer=IndexPointer+lengthArray+1;
 					
-					}
+				}
 					
 					
 				
@@ -256,6 +258,11 @@ public class DataMemory {
 				    	 }
 				     } 
 					
+				}else if(Type.contains("space")) {
+					int lengthArray=Integer.parseInt(ArrayData[i]);
+					
+		    		 IndexPointer=IndexPointer+lengthArray+1;
+				
 				}else if(Type.toLowerCase().contentEquals("hword")) {
 				    while (st.hasMoreTokens()) {
 				    	 String Token = st.nextToken();
@@ -386,6 +393,9 @@ public class DataMemory {
 				}
 				
 			}
+		}
+		}catch(Exception e) {
+			iOEditorPane.setText("There is an erorr in the data segment.");
 		}
 
 	}

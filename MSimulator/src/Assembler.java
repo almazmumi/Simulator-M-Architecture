@@ -33,7 +33,7 @@ public class Assembler {
 	static ArrayList<String> instructions = new ArrayList<String>();
 
 
-	public static void fetchAssemblyInstructions(ProgramCounter pc, ArrayList<String> In, JTable textSegmentTable, String baseTextAddress, JEditorPane iOEditorPane) {
+	public static void fitchAssemblyInstructions(ProgramCounter pc, ArrayList<String> In, JTable textSegmentTable, String baseTextAddress, JEditorPane iOEditorPane) {
 		
 		DefaultTableModel model = (DefaultTableModel) textSegmentTable.getModel();
 		while (model.getRowCount() > 0) {
@@ -87,7 +87,7 @@ public class Assembler {
 				iOEditorPane.setText(iOEditorPane.getText().equals("")?"Assemble: operation completed successfully.":"\r\nAssemble: operation completed successfully.");
 
 			}catch(Exception e){
-				iOEditorPane.setText("There is an error at line "+ i+1);
+				iOEditorPane.setText("There is an error at line "+ (i+1));
 			}
 			BaseTemp = BaseTemp + 32;
 		}
@@ -278,7 +278,7 @@ public class Assembler {
 			f = extRegister_4(Integer.toBinaryString(instructionFunction.get(instArray.get(0).toUpperCase())));
 			return OP + a + b + f + Imm;
 
-		} else if (instArray.size() == 4) {// OP="",a="",b="",c="",d="",f="",x="",Imm="",Imm2="";
+		} else if (instArray.size() == 4) {
 			if (instructionCommand.get(instArray.get(0).toUpperCase().toUpperCase()) == 25) {
 
 				OP = extRegister_6(Integer.toBinaryString(instructionCommand.get(instArray.get(0).toUpperCase())));
@@ -342,10 +342,6 @@ public class Assembler {
 
 			Imm = instArray.get(3);
 			if (Imm.contains("@")) {
-//				int pccounter = pc.getProgramCounter();
-//				int lableAddress = pc.getLableAddress(Imm);
-				
-//				int off=Math.abs(pccounter < );
 				String S =Integer.toBinaryString(pc.getLableAddress(Imm) - instructionInd);
 				
 				if(S.length()>16)
