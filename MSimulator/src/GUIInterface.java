@@ -331,7 +331,7 @@ public class GUIInterface extends JFrame {
 		// Parent Split Pane ( ChildSplitPane , RegisterFilePane)
 		// =========================================================================================
 		JSplitPane parentSplitPane = new JSplitPane();
-		parentSplitPane.setResizeWeight(0.99);
+		parentSplitPane.setResizeWeight(0.9);
 		contentPane.add(parentSplitPane, BorderLayout.CENTER);
 
 		// RegisterFilePane
@@ -442,9 +442,16 @@ public class GUIInterface extends JFrame {
 		editTabSplitPane = new JSplitPane();
 		tabbedPane.addTab("Edit", null, editTabSplitPane, null);
 		editTabSplitPane.setResizeWeight(0.999);
+		JScrollPane scrollPane_1 = new JScrollPane();
+		
+		
 		machineCodeArea = new JTextPane();
 		machineCodeArea.setFont(new Font("Segoe UI Historic", Font.PLAIN, 22));
-		editTabSplitPane.setRightComponent(machineCodeArea);
+		
+		scrollPane_1.setViewportView(machineCodeArea);
+		editTabSplitPane.setRightComponent(scrollPane_1);
+		
+		
 		JScrollPane editorPane = new JScrollPane();
 		editTabSplitPane.setLeftComponent(editorPane);
 		inputCodeTextPane = new JTextPane();
@@ -587,6 +594,7 @@ public class GUIInterface extends JFrame {
 			}
 		});
 		
+
 		// TabbedPane, Execute ( TextSegment, DataSegment )
 		JDesktopPane executeTabDesktopPane = new JDesktopPane();
 		tabbedPane.addTab("Execute", null, executeTabDesktopPane, null);
