@@ -284,6 +284,12 @@ public class Assembler {
 				OP = extRegister_6(Integer.toBinaryString(instructionCommand.get(instArray.get(0).toUpperCase())));
 				a = extRegister_5(IntToBinary(Register(instArray.get(1))));
 				b = extRegister_5(IntToBinary(Register(instArray.get(3))));
+				if (instArray.get(2).contains("@")) {
+					Imm=Integer.toBinaryString(pc.getLableAddress(instArray.get(2)));
+					if(Imm.length()>12)
+						Imm=Imm.substring(Imm.length()-12);
+					Imm=extRegister_12(Imm);
+				}else
 				if (IntToBinary(instArray.get(2)).length() > 12) {
 
 					Imm = IntToBinary(instArray.get(2)).substring(IntToBinary(instArray.get(2)).length() - 12);
@@ -298,6 +304,12 @@ public class Assembler {
 				OP = extRegister_6(Integer.toBinaryString(instructionCommand.get(instArray.get(0).toUpperCase())));
 				a = extRegister_5(IntToBinary(Register(instArray.get(2))));
 				b = extRegister_5(IntToBinary(Register(instArray.get(1))));
+				if (instArray.get(3).contains("@")) {
+					Imm=Integer.toBinaryString(pc.getLableAddress(instArray.get(3)));
+					if(Imm.length()>12)
+						Imm=Imm.substring(Imm.length()-12);
+					Imm=extRegister_12(Imm);
+				}else
 				if (IntToBinary(instArray.get(3)).length() > 12) {
 
 					Imm = IntToBinary(instArray.get(3)).substring(IntToBinary(instArray.get(3)).length() - 12);
@@ -316,6 +328,12 @@ public class Assembler {
 			a = extRegister_5(IntToBinary(Register(instArray.get(2))));
 			b = extRegister_5(IntToBinary(Register(instArray.get(1))));
 			Imm2 = extRegister_5(IntToBinary(instArray.get(4)));
+			if (instArray.get(3).contains("@")) {
+				Imm=Integer.toBinaryString(pc.getLableAddress(instArray.get(3)));
+				if(Imm.length()>12)
+					Imm=Imm.substring(Imm.length()-12);
+				Imm=extRegister_12(Imm);
+			}else
 			if (IntToBinary(instArray.get(3)).length() > 12) {
 
 				Imm = IntToBinary(instArray.get(3)).substring(IntToBinary(instArray.get(3)).length() - 12);

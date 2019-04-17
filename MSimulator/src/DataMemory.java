@@ -36,7 +36,7 @@ public class DataMemory {
 
 				     while (st.hasMoreTokens()) {
 				    	 String Token = st.nextToken();
-				    	 if(Token.contains("'")||Token.contains("\"")) {
+				    	 if(Token.contains("'")) {
 				    		 Token=Token.replace("'", "");
 				    		 
 				    		 for(int j =0;j<Token.trim().length();j++) {
@@ -45,7 +45,18 @@ public class DataMemory {
 				    			 
 				    		 }
 				    		 
-				    	 }else if(Token.toLowerCase().contains("0x")) {
+				    	 }else if(Token.contains("\"")){
+				    		 Token=Token.replace("\"", ""); 
+				    		 for(int j =0;j<Token.trim().length();j++) {
+				    			 MemoryArray[IndexPointer]=Token.charAt(j);
+				    			 IndexPointer=IndexPointer+1;
+				    			 
+				    		 }
+				    		 MemoryArray[IndexPointer]=(char)0;
+				    		 IndexPointer=IndexPointer+1;
+				    		 
+				    		 
+				    	 } if(Token.toLowerCase().contains("0x")) {
 				    		 Token=Token.toLowerCase().replace("0x", "");
 
 				    		 MemoryArray[IndexPointer]=(char)Integer.parseInt(Token.trim(), 16);
@@ -65,15 +76,18 @@ public class DataMemory {
 				    		 
 				    	 }
 				    	 else{
-				    		 
-				    		 int S = Integer.parseInt(Token);
-				    		 MemoryArray[IndexPointer]=(char)S;
+				    		
+				    		 String S = Integer.toHexString(Integer.parseInt(Token));
+				    		 if(S.length()>2) {
+				    			 S=S.substring(S.length()-2);
+				    		 }
+				    		 MemoryArray[IndexPointer]=(char)Integer.parseInt(S,16);
 			    			 IndexPointer=IndexPointer+1;
 				    	 }
 				     } 
 					
 				}else if(Type.trim().equalsIgnoreCase("hword")) {
-					 System.out.print("2");
+					
 				    while (st.hasMoreTokens()) {
 				    	 String Token = st.nextToken();
 				    	 if(Token.contains("0x")) {
@@ -252,8 +266,11 @@ public class DataMemory {
 				    	 }
 				    	 else{
 				    		 
-				    		 int S = Integer.parseInt(Token);
-				    		 MemoryArray[IndexPointer]=(char)S;
+				    		 String S = Integer.toHexString(Integer.parseInt(Token));
+				    		 if(S.length()>2) {
+				    			 S=S.substring(S.length()-2);
+				    		 }
+				    		 MemoryArray[IndexPointer]=(char)Integer.parseInt(S,16);
 			    			 IndexPointer=IndexPointer+1;
 				    	 }
 				     } 
