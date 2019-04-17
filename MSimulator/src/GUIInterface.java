@@ -357,25 +357,53 @@ public class GUIInterface extends JFrame {
 		registerFilePane.setViewportView(registerFileTable);
 		registerFileTable.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		registerFileTable.setModel(new DefaultTableModel(
-				new Object[][] { { "R0", "R0", "0" }, { "R1", "R1", "0" }, { "R2", "R2", "0" }, { "R3", "R3", "0" },
-						{ "R4", "R4", "0" }, { "R5", "R5", "0" }, { "R6", "R6", "0" }, { "R7", "R7", "0" },
-						{ "R8", "R8", "0" }, { "R9", "R9", "0" }, { "R10", "T0", "0" }, { "R11", "T1", "0" },
-						{ "R12", "T2", "0" }, { "R13", "T3", "0" }, { "R14", "T4", "0" }, { "R15", "T5", "0" },
-						{ "R16", "T6", "0" }, { "R17", "T7", "0" }, { "R18", "T8", "0" }, { "R19", "T9", "0" },
-						{ "R20", "S0", "0" }, { "R21", "S1", "0" }, { "R22", "S2", "0" }, { "R23", "S3", "0" },
-						{ "R24", "S4", "0" }, { "R25", "S5", "0" }, { "R26", "S6", "0" }, { "R27", "S7", "0" },
-						{ "R28", "S8", "0" }, { "R29", "FP", "0" }, { "R30", "SP", "2147479548" }, { "R31", "LR", "0" }, },
-				new String[] { "R#", "R Name", "Register Number" }) {
-			boolean[] columnEditables = new boolean[] { false, false, false };
-
+			new Object[][] {
+				{"R0", "0"},
+				{"R1", "0"},
+				{"R2", "0"},
+				{"R3", "0"},
+				{"R4", "0"},
+				{"R5", "0"},
+				{"R6", "0"},
+				{"R7", "0"},
+				{"R8", "0"},
+				{"R9", "0"},
+				{"R10(t0)", "0"},
+				{"R11(t1)", "0"},
+				{"R12(t2)", "0"},
+				{"R13(t3)", "0"},
+				{"R14(t4)", "0"},
+				{"R15(t5)", "0"},
+				{"R16(t6)", "0"},
+				{"R17(t7)", "0"},
+				{"R18(t8)", "0"},
+				{"R19(t9)", "0"},
+				{"R20(s0)", "0"},
+				{"R20(s1)", "0"},
+				{"R20(s2)", "0"},
+				{"R20(s3)", "0"},
+				{"R20(s4)", "0"},
+				{"R20(s5)", "0"},
+				{"R20(s6)", "0"},
+				{"R20(s7)", "0"},
+				{"R20(s8)", "0"},
+				{"FP", "0"},
+				{"SP", "2147479548"},
+				{"LR", "0"},
+			},
+			new String[] {
+				"R Name", "Register Number"
+			}
+		) {
+			boolean[] columnEditables = new boolean[] {
+				false, false
+			};
 			public boolean isCellEditable(int row, int column) {
 				return columnEditables[column];
 			}
 		});
-		registerFileTable.getColumnModel().getColumn(0).setPreferredWidth(50);
-		registerFileTable.getColumnModel().getColumn(0).setMinWidth(50);
-		registerFileTable.getColumnModel().getColumn(2).setPreferredWidth(100);
-		registerFileTable.getColumnModel().getColumn(2).setMinWidth(90);
+		registerFileTable.getColumnModel().getColumn(1).setPreferredWidth(100);
+		registerFileTable.getColumnModel().getColumn(1).setMinWidth(90);
 
 		registerFileTable.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent mouseEvent) {
@@ -689,12 +717,15 @@ public class GUIInterface extends JFrame {
 					if (inputAssemplyCode.indexOf(".data") < inputAssemplyCode.indexOf(".text")) {
 						dataSegment = inputAssemplyCode.split(".text")[0].replace(".data\r\n", "").trim();
 						textSegment = inputAssemplyCode.split(".text")[1];
+						mem.Initilaizor(dataSegment,pc);
 					} else {
 						textSegment = inputAssemplyCode.split(".data")[0].replace(".text\r\n", "").trim();
 						dataSegment = inputAssemplyCode.split(".data")[1];
+						mem.Initilaizor(dataSegment,pc);
 					}
 				} else if (inputAssemplyCode.toLowerCase().contains(".data")) {
 					dataSegment = inputCodeTextPane.getText().toString();
+					mem.Initilaizor(dataSegment,pc);
 				} else {
 					textSegment = inputCodeTextPane.getText().toString();
 				}
@@ -707,7 +738,8 @@ public class GUIInterface extends JFrame {
 					a.add(ab[i]);
 				}
 				// ---------------------------------------------------------------------------------------------------------------
-
+				
+				updateDataMemoryTable(dataSegmentTable, mem);
 				tabbedPane.setSelectedIndex(1);
 				// to save all @lables in programCounter
 				for (int i = 0; i < a.size(); i++) {
@@ -728,9 +760,8 @@ public class GUIInterface extends JFrame {
 				}
 
 				/* Convert assembly language into machine code */
-				Assembler.fetchAssemblyInstruction(pc, instArray, textSegmentTable,BaseTextAddress);
-				IOEditorPane.setText(IOEditorPane.getText().equals("")?"Assemble: operation completed successfully.":"\r\nAssemble: operation completed successfully.");
-
+				Assembler.fetchAssemblyInstruction(pc, instArray, textSegmentTable,BaseTextAddress,IOEditorPane);
+				
 			}
 		});
 
@@ -777,12 +808,12 @@ public class GUIInterface extends JFrame {
 			Long registerValue = r.getRegister(i);
 			
 			if (RegistersOption[i].equals("Decimal")) {
-				t.getModel().setValueAt(r.getRegister(i), i, 2);
+				t.getModel().setValueAt(r.getRegister(i), i, 1);
 			} else if (RegistersOption[i].equals("Hex")) {
 				String hexValueExtended = String.format("%016X", registerValue);
-				t.getModel().setValueAt(registerValue>0?"0x"+hexValueExtended: "0x"+ Long.toHexString(registerValue).toUpperCase(), i, 2);
+				t.getModel().setValueAt(registerValue>0?"0x"+hexValueExtended: "0x"+ Long.toHexString(registerValue).toUpperCase(), i, 1);
 			} else if (RegistersOption[i].equals("Binary")) {
-				t.getModel().setValueAt(Long.toBinaryString(registerValue), i, 2);
+				t.getModel().setValueAt(Long.toBinaryString(registerValue), i, 1);
 			}
 		}
 
@@ -798,11 +829,14 @@ public class GUIInterface extends JFrame {
 		}
 
 		public void run() {
+			
+			
 			assembleButton.setEnabled(false);
 			count = 1;
 			IOEditorPane.setText(IOEditorPane.getText().equals("")?"Program is running.": IOEditorPane.getText() + "\r\nProgram is running.");
 
 			while (!terminateFlag && pc.getProgramCounter() < pc.getInstructionsList().size()) {
+				
 				if (pc.getProgramCounter() >= 1)
 					textSegmentTable.getModel().setValueAt("", pc.getProgramCounter() - 1, 3);
 				textSegmentTable.getModel().setValueAt("Executed", pc.getProgramCounter(), 3);
@@ -846,6 +880,7 @@ public class GUIInterface extends JFrame {
 				} else {
 					count++;
 				}
+				
 
 			}
 			// =================================================================================================
@@ -857,6 +892,7 @@ public class GUIInterface extends JFrame {
 			instArray.clear();
 			assembleButton.setEnabled(true);
 			stopButton.setEnabled(false);
+			
 		}
 
 	}

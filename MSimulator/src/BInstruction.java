@@ -11,7 +11,6 @@ public class BInstruction extends Instruction {
 		a = Integer.parseInt(instructionBinary.substring(6, 11), 2);
 		b = Integer.parseInt(instructionBinary.substring(11, 16), 2);
 		offset = returnSigned(instructionBinary.substring(16, 32));
-		offsetUnsigned = Integer.parseInt(instructionBinary.substring(16, 32), 2);
 		setInstructionOpcode(Integer.parseInt(instructionBinary.substring(0, 6), 2));
 	}
 
@@ -80,6 +79,7 @@ public class BInstruction extends Instruction {
 	}
 
 	private void BGEUI() {
+		
 		if (rf.getRegister(a) >= b) {
 			pc.setProgramCounter(pc.getProgramCounter() + offset);
 		} else {

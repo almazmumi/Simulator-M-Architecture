@@ -13,12 +13,13 @@ public class DataMemory {
 
 	}
 	
-	static void Initilaizor(String Data) {
+	static void Initilaizor(String Data,ProgramCounter pc) {
 		String [] ArrayData =Data.split("\n");
 		int IndexPointer=0;
 		int Alignment =0;
-		 MemoryArray[0]=(char)255;
 		for(int i = 0 ; i<ArrayData.length;i++) {
+			System.out.println(ArrayData.length);
+			if(ArrayData.length>0)
 			if(ArrayData[i].charAt(0)=='@') {
 				String Lable = ArrayData[i].substring(0,ArrayData[i].trim().indexOf(' ')).trim();
 				ArrayData[i]=ArrayData[i].substring(ArrayData[i].trim().indexOf(' ')+1).trim();
@@ -26,7 +27,9 @@ public class DataMemory {
 				Type=Type.replace(".", "");
 				ArrayData[i]=ArrayData[i].substring(ArrayData[i].trim().indexOf(' ')+1).trim();
 				
-				 StringTokenizer st = new StringTokenizer(ArrayData[i],",");  
+				 StringTokenizer st = new StringTokenizer(ArrayData[i],",");
+				 pc.addLableAddress(Lable, IndexPointer);
+				 
 				 if(Type.trim().equalsIgnoreCase("byte")) {
 
 				     while (st.hasMoreTokens()) {
@@ -43,7 +46,7 @@ public class DataMemory {
 				    	 }else if(Token.toLowerCase().contains("0x")) {
 				    		 Token=Token.toLowerCase().replace("0x", "");
 
-				    		 MemoryArray[IndexPointer]=(char)Integer.parseInt(Token, 16);
+				    		 MemoryArray[IndexPointer]=(char)Integer.parseInt(Token.trim(), 16);
 				    		 IndexPointer=IndexPointer+1;
 
 				    		 
@@ -199,9 +202,14 @@ public class DataMemory {
 				    	 
 				     } 
 					
-				}
-				
-				
+				}else if(Type.contains("space")) {
+					int lengthArray=Integer.parseInt(ArrayData[i]);
+					
+			    		 IndexPointer=IndexPointer+lengthArray+1;
+					
+					}
+					
+					
 				
 				
 			}else {
