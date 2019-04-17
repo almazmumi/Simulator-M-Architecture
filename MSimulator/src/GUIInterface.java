@@ -532,6 +532,19 @@ public class GUIInterface extends JFrame {
 							}
 						};
 						SwingUtilities.invokeLater(doAssist);	
+					}else if(tempString.equals(".sccall")) {
+						Runnable doAssist = new Runnable() {
+							@Override
+							public void run() {
+								inputCodeTextPane.setText(".data\r\n" + 
+										"@hhh .byte \"Hello world \"\r\n" + 
+										"\r\n" + 
+										".text\r\n" + 
+										"set r0 = @hhh\r\n" + 
+										"scall 4");
+							}
+						};
+						SwingUtilities.invokeLater(doAssist);	
 					}else if(tempString.equals(".scsort")) {
 						Runnable doAssist = new Runnable() {
 							@Override
