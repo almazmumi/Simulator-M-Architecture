@@ -60,7 +60,7 @@ public class Assembler {
 		
 		
 		for (int i = 0; i < In.size(); i++) {
-			try {
+			
 			
 				InstructionFetch(In.get(i));
 				String Inst = getMachineCode(pc,i);
@@ -88,9 +88,7 @@ public class Assembler {
 				}
 				iOEditorPane.setText(iOEditorPane.getText().equals("")?"Assemble: operation completed successfully.":"\r\nAssemble: operation completed successfully.");
 
-			}catch(Exception e){
-				iOEditorPane.setText(e+"There is an error at line "+ i+1);
-			}
+			
 			BaseTemp = BaseTemp + 32;
 		}
 
@@ -98,17 +96,17 @@ public class Assembler {
 
 	public static String getMachineCode(ProgramCounter pc, int instructionInd) {
 		String Is = "";
-		if (instructionFormat.get(instArray.get(0).toUpperCase()).equals('R')
+		if (instructionFormat.get(instArray.get(0).toUpperCase()).equals('R') || instructionFormat.get(instArray.get(0).toUpperCase()).equals('T') || instructionFormat.get(instArray.get(0).toUpperCase()).equals('S')
 				|| instructionFormat.get(instArray.get(0).toUpperCase()).equals('I')) {
 
 			if(instructionCommand.get(instArray.get(0).toUpperCase()) == 60) {
 				return parseIType(pc);
 			}
 			// here we check if it's R type or I type
-			else if ((!instArray.get(2).toUpperCase().contains("R") || !instArray.get(3).toUpperCase().contains("R")
+			else if ((!instArray.get(2).toUpperCase().matches(".*(R|S|T).*") || !instArray.get(3).toUpperCase().matches(".*(R|S|T).*")
 					|| instructionFormat.get(instArray.get(0).toUpperCase()).equals('I'))
-					&& !(instArray.get(1).toUpperCase().contains("R") && instArray.get(2).toUpperCase().contains("R")
-							&& !instArray.get(3).toUpperCase().contains("R") && instArray.size() == 5)) {
+					&& !(instArray.get(1).toUpperCase().matches(".*(R|S|T).*") && instArray.get(2).toUpperCase().matches(".*(R|S|T).*")
+							&& !instArray.get(3).toUpperCase().matches(".*(R|S|T).*") && instArray.size() == 5)) {
 				// I type
 				if (!instArray.get(2).toUpperCase().contains("RET")) {
 					instArray.set(0, instArray.get(0).toUpperCase() + "I");
@@ -124,7 +122,7 @@ public class Assembler {
 
 		} else if (instructionFormat.get(instArray.get(0).toUpperCase()).equals('B')) {
 
-			if ((!instArray.get(1).toUpperCase().contains("R") || !instArray.get(2).toUpperCase().contains("R")
+			if ((!instArray.get(1).toUpperCase().matches(".*(R|S|T).*") || !instArray.get(2).toUpperCase().matches(".*(R|S|T).*")
 					|| instructionFormat.get(instArray.get(0).toUpperCase()).equals('I'))
 					&& !instArray.get(0).toUpperCase().contains("LOOP")) {
 				// I type
@@ -271,7 +269,6 @@ public class Assembler {
 				Imm=ExtRegister_12(Imm);
 			}else
 			if (IntToBinary(instArray.get(2)).length() > 12) {
-				System.out.print(Imm);
 				Imm = IntToBinary(instArray.get(2)).substring(IntToBinary(instArray.get(2)).length() - 12);
 			} else {
 				Imm = ExtRegister_12(IntToBinary(instArray.get(2)));
@@ -344,12 +341,8 @@ public class Assembler {
 
 			Imm = instArray.get(3);
 			if (Imm.contains("@")) {
-//				int pccounter = pc.getProgramCounter();
-//				int lableAddress = pc.getLableAddress(Imm);
-				
-//				int off=Math.abs(pccounter < );
+
 				String S =Integer.toBinaryString(pc.getLableAddress(Imm) - instructionInd);
-				System.out.println("Branch offset " + (pc.getLableAddress(Imm) - instructionInd));
 				if(S.length()>16)
 				Imm = S.substring(S.length()-16);
 				else
@@ -372,7 +365,6 @@ public class Assembler {
 			Imm = instArray.get(3);
 			if (Imm.contains("@")) {
 				String S =Integer.toBinaryString( pc.getLableAddress(Imm)-instructionInd);
-				System.out.println("Branch offset " + (pc.getLableAddress(Imm) - instructionInd));
 
 				if(S.length()>16)
 				Imm = S.substring(S.length()-16);
@@ -402,15 +394,21 @@ public class Assembler {
 	}
 
 	private static String register(String S) {
-		int registerNumber = Integer.parseInt(S.substring(1));
-		System.out.println(registerNumber);
+		
+		
+		String s = S.trim();
+		int registerNumber = Integer.parseInt(s.substring(1));
 		if (S.substring(0).toLowerCase().contains("r") && registerNumber>=0 && registerNumber< 32) {
-			return S.substring(1);
-		} else if (S.toLowerCase().contains("t") && registerNumber>=0 && registerNumber< 10) {
-			return "1" + S.substring(1);
-		} else if (S.toLowerCase().contains("s")&& registerNumber>=0 && registerNumber< 10) {
-			return "2" + S.substring(1);
+			System.out.println(s.substring(1));
+			return s.substring(1);
+		} else if (s.toLowerCase().contains("t") && registerNumber>=0 && registerNumber< 10) {
+			System.out.println(s.substring(1));
+			return "1" + s.substring(1);
+		} else if (s.toLowerCase().contains("s")&& registerNumber>=0 && registerNumber< 10) {
+			System.out.println(s.substring(1));
+			return "2" + s.substring(1);
 		} else {
+			System.out.println(s.substring(1));
 			return null;
 		}
 
