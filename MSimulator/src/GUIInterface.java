@@ -760,7 +760,7 @@ public class GUIInterface extends JFrame {
 				}
 
 				/* Convert assembly language into machine code */
-				Assembler.fetchAssemblyInstruction(pc, instArray, textSegmentTable,BaseTextAddress,IOEditorPane);
+				Assembler.fetchAssemblyInstructions(pc, instArray, textSegmentTable,BaseTextAddress,IOEditorPane);
 				
 			}
 		});
