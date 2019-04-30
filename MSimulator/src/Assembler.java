@@ -239,7 +239,7 @@ public class Assembler {
 	}
 
 	private static String parseIType(ProgramCounter pc) {
-
+		System.out.println(instArray.get(0));
 		if (instArray.size() == 2) {
 			OP = extRegister_6(Integer.toBinaryString(instructionCommand.get(instArray.get(0).toUpperCase())));
 			a = extRegister_5("0");
