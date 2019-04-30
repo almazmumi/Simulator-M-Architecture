@@ -42,60 +42,60 @@ public class Assembler {
 		
 		
 		int BaseTemp = Integer.parseInt(baseTextAddress, 16);
-		
-		
-		for (int i = 0; i < In.size(); i++) {
-			try {
-			
-				String instruction = In.get(i);
+		int i = 0;
+		try {
+			for (i = 0; i < In.size(); i++) {
 				
-				instArray = new ArrayList<String>();
-				instruction = instruction.replace("[", "");
-				instruction = instruction.replace("]", "");
-				instruction = instruction.replace("=", " ");
-				instruction = instruction.replace(",", " ");
-
-				StringTokenizer st = new StringTokenizer(instruction, " ");
-
-				while (st.hasMoreTokens()) {
-					instArray.add(st.nextToken());
-				}
 				
-				String Inst = decodeAnInstruction(pc,i);
-				int decimal = Integer.parseUnsignedInt(Inst, 2);
-				String hexStr = Integer.toUnsignedString(decimal, 16);
-				Instruction Instruction_In;
-				if (instructionFormat.get(instArray.get(0).toUpperCase()).equals('I')) {
-					Instruction_In = new IInstruction(i, In.get(i), Inst);
-					model.addRow(new Object[] { "0x" + Integer.toString(BaseTemp, 16), "0x" + hexStr.toUpperCase(), In.get(i) });
-					pc.getInstructionsList().add(Instruction_In);
-				} else if (instructionFormat.get(instArray.get(0).toUpperCase()).equals('J')) {
-					Instruction_In = new JInstruction(i, In.get(i), Inst);
-					model.addRow(new Object[] { "0x" + Integer.toString(BaseTemp, 16), "0x" + hexStr.toUpperCase(), In.get(i) });
-					pc.getInstructionsList().add(Instruction_In);
-				} else if (instructionFormat.get(instArray.get(0).toUpperCase()).equals('R')) {
-					Instruction_In = new RInstruction(i, In.get(i), Inst);
-					model.addRow(new Object[] { "0x" + Integer.toString(BaseTemp, 16), "0x" + hexStr.toUpperCase(), In.get(i) });
-					pc.getInstructionsList().add(Instruction_In);
-				} else if (instructionFormat.get(instArray.get(0).toUpperCase()).equals('B')) {
-					Instruction_In = new BInstruction(i, In.get(i), Inst);
-					model.addRow(new Object[] { "0x" + Integer.toString(BaseTemp, 16), "0x" + hexStr.toUpperCase(), In.get(i) });
-					pc.getInstructionsList().add(Instruction_In);
-				}else {
-					System.out.println("There is an error in Instruction #"+i);
-				}
-				iOEditorPane.setText(iOEditorPane.getText().equals("")?"Assemble: operation completed successfully.":"\r\nAssemble: operation completed successfully.");
-
-			}catch(Exception e){
-				iOEditorPane.setText("There is an error at line "+ (i+1));
+					String instruction = In.get(i);
+					instArray = new ArrayList<String>();
+					instruction = instruction.replace("[", "");
+					instruction = instruction.replace("]", "");
+					instruction = instruction.replace("=", " ");
+					instruction = instruction.replace(",", " ");
+	
+					StringTokenizer st = new StringTokenizer(instruction, " ");
+	
+					while (st.hasMoreTokens()) {
+						instArray.add(st.nextToken());
+					}
+					
+					String Inst = decodeAnInstruction(pc,i);
+					int decimal = Integer.parseUnsignedInt(Inst, 2);
+					String hexStr = Integer.toUnsignedString(decimal, 16);
+					Instruction Instruction_In;
+					if (instructionFormat.get(instArray.get(0).toUpperCase()).equals('I')) {
+						Instruction_In = new IInstruction(i, In.get(i), Inst);
+						model.addRow(new Object[] { "0x" + Integer.toString(BaseTemp, 16), "0x" + hexStr.toUpperCase(), In.get(i) });
+						pc.getInstructionsList().add(Instruction_In);
+					} else if (instructionFormat.get(instArray.get(0).toUpperCase()).equals('J')) {
+						Instruction_In = new JInstruction(i, In.get(i), Inst);
+						model.addRow(new Object[] { "0x" + Integer.toString(BaseTemp, 16), "0x" + hexStr.toUpperCase(), In.get(i) });
+						pc.getInstructionsList().add(Instruction_In);
+					} else if (instructionFormat.get(instArray.get(0).toUpperCase()).equals('R')) {
+						Instruction_In = new RInstruction(i, In.get(i), Inst);
+						model.addRow(new Object[] { "0x" + Integer.toString(BaseTemp, 16), "0x" + hexStr.toUpperCase(), In.get(i) });
+						pc.getInstructionsList().add(Instruction_In);
+					} else if (instructionFormat.get(instArray.get(0).toUpperCase()).equals('B')) {
+						Instruction_In = new BInstruction(i, In.get(i), Inst);
+						model.addRow(new Object[] { "0x" + Integer.toString(BaseTemp, 16), "0x" + hexStr.toUpperCase(), In.get(i) });
+						pc.getInstructionsList().add(Instruction_In);
+					}else {
+						iOEditorPane.setText("There is an error in Instruction #"+i+"\r\n");
+					}
+					iOEditorPane.setText("Assemble: operation completed successfully.\r\n");
+	
+				
+				BaseTemp = BaseTemp + 32;
 			}
-			BaseTemp = BaseTemp + 32;
+		}catch(Exception e){
+			iOEditorPane.setText("There is an error at line "+ (i+1) + "\r\n");
 		}
 
 	}
 
 	public static String decodeAnInstruction(ProgramCounter pc, int instructionInd) {
-		String Is = "";
+
 		if (instructionFormat.get(instArray.get(0).toUpperCase()).equals('R')
 				|| instructionFormat.get(instArray.get(0).toUpperCase()).equals('I')) {
 
@@ -134,8 +134,8 @@ public class Assembler {
 
 		} else if (instructionFormat.get(instArray.get(0).toUpperCase()).equals('J')) {
 			return parseJType(pc);
-		}
-		return Is;
+		}else 
+		return null;
 
 	}
 
