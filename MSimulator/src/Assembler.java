@@ -263,6 +263,7 @@ public class Assembler {
 			a = extRegister_5(IntToBinary("0"));
 			b = extRegister_5(IntToBinary(Register(instArray.get(1))));
 			if (instArray.get(2).contains("@")) {
+				System.out.print("SS "+pc.getLableAddress(instArray.get(2)));
 				Imm=Integer.toBinaryString(pc.getLableAddress(instArray.get(2)));
 				if(Imm.length()>12)
 					Imm=Imm.substring(Imm.length()-12);

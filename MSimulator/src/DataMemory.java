@@ -31,11 +31,12 @@ public class DataMemory {
 				
 				 StringTokenizer st = new StringTokenizer(ArrayData[i],",");
 				 pc.addLableAddress(Lable, IndexPointer);
-				 
+				 System.out.println(IndexPointer);
 				 if(Type.trim().equalsIgnoreCase("byte")) {
-
+					 
 				     while (st.hasMoreTokens()) {
 				    	 String Token = st.nextToken();
+				    	 System.out.print(Token);
 				    	 if(Token.contains("'")) {
 				    		 Token=Token.replace("'", "");
 				    		 
@@ -62,17 +63,6 @@ public class DataMemory {
 				    		 MemoryArray[IndexPointer]=(char)Integer.parseInt(Token.trim(), 16);
 				    		 IndexPointer=IndexPointer+1;
 
-				    		 
-				    	 }else if(Token.contains("\"")){
-				    		 Token=Token.replace("\"", ""); 
-				    		 for(int j =0;j<Token.trim().length();j++) {
-				    			 MemoryArray[IndexPointer]=Token.charAt(j);
-				    			 IndexPointer=IndexPointer+1;
-				    			 
-				    		 }
-				    		 MemoryArray[IndexPointer]=(char)0;
-				    		 IndexPointer=IndexPointer+1;
-				    		 
 				    		 
 				    	 }
 				    	 else{
