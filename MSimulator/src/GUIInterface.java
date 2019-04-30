@@ -118,8 +118,14 @@ public class GUIInterface extends JFrame {
 	private boolean fileSaveableFlag = false;
 	private String fileDirectory = "";
 	private String fileName = "";
+	
+	private String machineCodeHex;
+	private String machineCodeBinary;
+	private boolean assembled;
 
+	
 	public static void main(String[] args) {
+		
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -142,6 +148,11 @@ public class GUIInterface extends JFrame {
 		contentPane.setLayout(new BorderLayout(0, 0));
 		// =======================================================================
 
+		
+		
+
+		
+		
 		// =========================================================================================
 		// Menu Items
 		// ==================================================================================
@@ -155,11 +166,11 @@ public class GUIInterface extends JFrame {
 		JMenuItem newMenuItem = new JMenuItem("New");
 		newMenuItem.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		newMenuItem.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				newFunction();
-				
+
 			}
 		});
 		mnFile.add(newMenuItem);
@@ -189,26 +200,108 @@ public class GUIInterface extends JFrame {
 		JMenuItem saveAsMenuItem = new JMenuItem("Save As");
 		saveAsMenuItem.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		saveAsMenuItem.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				saveAsFunction();
-				
+
 			}
 		});
 		mnFile.add(saveAsMenuItem);
 
+		
+		
+		JMenuItem exportMachineCodeMenuItem = new JMenuItem("Export Machine Code");
+		exportMachineCodeMenuItem.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+		exportMachineCodeMenuItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(assembled) {
+					String[] options = { "Hex", "Binary" };
+					int n = JOptionPane.showOptionDialog( null, "Hex or Binary?",
+					        "Unsaved changes", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[ 1 ] );
+					
+					if(n == 0) {
+						System.out.println("Hex");
+						JFileChooser c = new JFileChooser();
+						// Demonstrate "Save" dialog:
+						int rVal = c.showSaveDialog(GUIInterface.this);
+						if (rVal == JFileChooser.APPROVE_OPTION) {
+							FileWriter out;
+							try {
 
+								fileDirectory = c.getCurrentDirectory().toString() + "\\" + c.getSelectedFile().getName();
+								fileName = c.getSelectedFile().getName();
+
+								out = new FileWriter(fileDirectory + ".txt");
+
+								out.write(machineCodeHex);
+								out.close();
+								tabbedPane.setTitleAt(0, fileName);
+							} catch (IOException e1) {
+
+							}
+						}
+					}else if(n == 1) {
+						JFileChooser c = new JFileChooser();
+						// Demonstrate "Save" dialog:
+						int rVal = c.showSaveDialog(GUIInterface.this);
+						if (rVal == JFileChooser.APPROVE_OPTION) {
+							FileWriter out;
+							try {
+
+								fileDirectory = c.getCurrentDirectory().toString() + "\\" + c.getSelectedFile().getName();
+								fileName = c.getSelectedFile().getName();
+
+								out = new FileWriter(fileDirectory + ".txt");
+
+								out.write(machineCodeBinary);
+								out.close();
+								tabbedPane.setTitleAt(0, fileName);
+							} catch (IOException e1) {
+
+							}
+						}
+					}
+				}else{
+					JOptionPane.showMessageDialog(null,
+						    "You Should Assemble first.",
+						    "Assemble first",
+						    JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		});
+		mnFile.add(exportMachineCodeMenuItem);
+		
+		
 		JMenuItem exitMenuItem = new JMenuItem("Exit");
 		exitMenuItem.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		exitMenuItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if (fileSaveableFlag) {
+
+					int response = JOptionPane.showConfirmDialog(null, "Do you want to save the changes", "Confirm",
+							JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+					if (response == JOptionPane.YES_OPTION) {
+						if (fileDirectory.equals("")) {
+							saveAsFunction();
+						} else {
+							saveFunction();
+						}
+					}
+
+				}
+				
 				System.exit(0);
 			}
 		});
 		mnFile.add(exitMenuItem);
 
+
+		
+		
 		JMenu mnEdit = new JMenu("Edit");
 		mnEdit.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		menuBar.add(mnEdit);
@@ -282,6 +375,8 @@ public class GUIInterface extends JFrame {
 		rdbtnmntmHex.addActionListener(registersOptionActionListeners);
 		rdbtnmntmDecimal.addActionListener(registersOptionActionListeners);
 
+		
+		
 		ButtonGroup machineCodeOption = new ButtonGroup();
 		JRadioButtonMenuItem rdbtnmntmBinaryMC = new JRadioButtonMenuItem("Binary");
 		rdbtnmntmBinaryMC.setSelected(true);
@@ -637,50 +732,97 @@ public class GUIInterface extends JFrame {
 	}
 
 	public void saveFunction() {
-		
+
 		if (fileDirectory.equals("")) {
 			saveAsFunction();
 		}
-	    	FileWriter out;
-			try {
-				out = new FileWriter(fileDirectory+".msm");
-	            out.write(inputCodeTextPane.getText());
-	            out.close();
-			} catch (IOException e) {
-				
-			}
-			
-			fileSaveableFlag = false;
-			tabbedPane.setTitleAt(0, fileName);
+		FileWriter out;
+		try {
+			out = new FileWriter(fileDirectory + ".msm");
+			out.write(inputCodeTextPane.getText());
+			out.close();
+		} catch (IOException e) {}
 
+		fileSaveableFlag = false;
+		tabbedPane.setTitleAt(0, fileName);
 
 	}
 
 	public void saveAsFunction() {
 		JFileChooser c = new JFileChooser();
-	      // Demonstrate "Save" dialog:
-	      int rVal = c.showSaveDialog(GUIInterface.this);
-	      if (rVal == JFileChooser.APPROVE_OPTION) {
-	    	  FileWriter out;
-				try {
-					
-					fileDirectory = c.getCurrentDirectory().toString() + "\\" + c.getSelectedFile().getName();
-					fileName = c.getSelectedFile().getName();
-					
-					out = new FileWriter(fileDirectory);
-		            out.write(inputCodeTextPane.getText());
-		            out.close();
-				} catch (IOException e) {
-					
-				}
-	      }
+		// Demonstrate "Save" dialog:
+		int rVal = c.showSaveDialog(GUIInterface.this);
+		if (rVal == JFileChooser.APPROVE_OPTION) {
+			FileWriter out;
+			try {
+
+				fileDirectory = c.getCurrentDirectory().toString() + "\\" + c.getSelectedFile().getName();
+				fileName = c.getSelectedFile().getName();
+
+				out = new FileWriter(fileDirectory + ".msm");
+
+				out.write(inputCodeTextPane.getText());
+				out.close();
+				tabbedPane.setTitleAt(0, fileName);
+			} catch (IOException e) {
+
+			}
+		}
 
 	}
 
 	public void newFunction() {
+
+		if (fileSaveableFlag) {
+
+			int response = JOptionPane.showConfirmDialog(null, "Do you want to save the changes", "Confirm",
+					JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+			if (response == JOptionPane.YES_OPTION) {
+				if (fileDirectory.equals("")) {
+					saveAsFunction();
+				} else {
+					saveFunction();
+				}
+			}
+
+		}
+
 		fileDirectory = "";
 		fileName = "";
 		fileSaveableFlag = false;
+
+		// reset everything
+		IOEditorPane.setText("");
+		pc.reset();
+		rf.reset();
+		mem.reset();
+		instArray.clear();
+		updateRegisterFileTable(registerFileTable, rf, pc);
+		updateDataMemoryTable(dataSegmentTable, mem);
+		lblPcvalue.setText("PC = 0");
+		machineCodeArea.setText("");
+		StyledDocument doc = (StyledDocument) rowLines.getDocument();
+		Style style = rowLines.addStyle("MyHilite", null);
+		StyleConstants.setBold(style, false);
+		doc.setCharacterAttributes(0, rowLines.getText().toString().length() - 1, style, true);
+
+		DefaultTableModel model = (DefaultTableModel) textSegmentTable.getModel();
+		while (model.getRowCount() > 0) {
+			model.removeRow(0);
+		}
+
+		runButton.setEnabled(true);
+		traceButton.setEnabled(true);
+		/* Reinitialise the ProgramCounter and RegisterFile */
+		pc.reset();
+		rf.reset();
+		mem.reset();
+		machineCodeArea.setText("");
+
+		inputCodeTextPane.setText("");
+		tabbedPane.setTitleAt(0, "Edit");
+
 	}
 
 	public void openFunction() {
@@ -698,55 +840,70 @@ public class GUIInterface extends JFrame {
 			}
 
 		}
-			try {
-				JFileChooser c = new JFileChooser();
+		try {
+			JFileChooser c = new JFileChooser();
 
-				FileFilter msmFilter = new FileTypeFilter(".msm", "M-Code File");
-				c.addChoosableFileFilter(msmFilter);
-					
-				
-				int rVal = c.showOpenDialog(GUIInterface.this);
-				if (rVal == JFileChooser.APPROVE_OPTION) {
-					
-					fileDirectory = c.getCurrentDirectory().toString() + "\\" + c.getSelectedFile().getName();
-					fileName = c.getSelectedFile().getName();
+			FileFilter msmFilter = new FileTypeFilter(".msm", "M-Code File");
+			c.addChoosableFileFilter(msmFilter);
 
-					
-					
-					FileReader in;
-					in = new FileReader(fileDirectory);
-					char[] buffer = new char[1024];
-					int n = in.read(buffer);
-					String text = new String(buffer, 0, n);
-					inputCodeTextPane.setText(text);
-					in.close();
-					fileSaveableFlag = false;
-					tabbedPane.setTitleAt(0, fileName);
-				}
-				
-				
-				
-			} catch (FileNotFoundException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+			int rVal = c.showOpenDialog(GUIInterface.this);
+			if (rVal == JFileChooser.APPROVE_OPTION) {
+
+				fileDirectory = c.getCurrentDirectory().toString() + "\\" + c.getSelectedFile().getName();
+				fileName = c.getSelectedFile().getName();
+
+				FileReader in;
+				in = new FileReader(fileDirectory);
+				char[] buffer = new char[1024];
+				int n = in.read(buffer);
+				String text = new String(buffer, 0, n);
+				inputCodeTextPane.setText(text);
+				in.close();
+				fileSaveableFlag = false;
+				tabbedPane.setTitleAt(0, fileName);
 			}
-		}
+			
+			
 
-	
+		} catch (FileNotFoundException e1) {
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+	}
 
 	public GUIInterface() {
 		setExtendedState(Frame.MAXIMIZED_BOTH);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+		
 		// =========================================================================================
 		// Initialise the GUI Components
 		// =========================================================================================
 		initiliseGUI();
 		// =========================================================================================
 
+		
+		addWindowListener(new java.awt.event.WindowAdapter() {
+		    @Override
+		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+				if (fileSaveableFlag) {
+
+					int response = JOptionPane.showConfirmDialog(null, "Do you want to save the changes", "Confirm",
+							JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+					if (response == JOptionPane.YES_OPTION) {
+						if (fileDirectory.equals("")) {
+							saveAsFunction();
+						} else {
+							saveFunction();
+						}
+					}
+
+				}
+		    }
+		});
+		
 		// =========================================================================================
 		// Initialise the hash map for all instructions type (ADD, J, JAL, SUB, ...)
 		// =========================================================================================
@@ -825,7 +982,7 @@ public class GUIInterface extends JFrame {
 				textSegmentTable.getModel().setValueAt("Executed", pc.getProgramCounter(), 3);
 
 				// Update the value of the PCLabel
-				lblPcvalue.setText("PC = " + pc.getProgramCounter()*4);
+				lblPcvalue.setText("PC = " + pc.getProgramCounter() * 4);
 				/* Print Machine Code Binary */
 
 				// Execute Instruction
@@ -946,10 +1103,14 @@ public class GUIInterface extends JFrame {
 				/* Convert assembly language into machine code */
 				Assembler.fitchAssemblyInstructions(pc, instArray, textSegmentTable, BaseTextAddress, IOEditorPane);
 
+				machineCodeBinary = "";
+				machineCodeHex =  "";
 				for (int i = 0; i < pc.getInstructionsList().size(); i++) {
 					String binaryString = pc.getInstructionsList().get(i).getInstructionBinary();
+					machineCodeBinary += binaryString+"\r\n";
 					int decimal = Integer.parseUnsignedInt(binaryString, 2);
 					String hexStr = Integer.toUnsignedString(decimal, 16);
+					machineCodeHex += "0x"+hexStr+"\r\n";
 					if (MachineCodeOption.equals("Hex")) {
 						if (machineCodeArea.getText().equals("")) {
 							machineCodeArea.setText(hexStr + "");
@@ -963,8 +1124,9 @@ public class GUIInterface extends JFrame {
 							machineCodeArea.setText(machineCodeArea.getText() + "\r\n" + binaryString);
 						}
 					}
+					
 				}
-
+				assembled= true;
 			}
 		});
 
@@ -1014,7 +1176,7 @@ public class GUIInterface extends JFrame {
 				t.getModel().setValueAt(r.getRegister(i), i, 1);
 			} else if (RegistersOption[i].equals("Hex")) {
 				String hexValueExtended = String.format("%016X", registerValue);
-				t.getModel().setValueAt(registerValue > 0 ? "0x" + hexValueExtended
+				t.getModel().setValueAt(registerValue >= 0 ? "0x" + hexValueExtended
 						: "0x" + Long.toHexString(registerValue).toUpperCase(), i, 1);
 			} else if (RegistersOption[i].equals("Binary")) {
 				t.getModel().setValueAt(Long.toBinaryString(registerValue), i, 1);
@@ -1050,26 +1212,26 @@ public class GUIInterface extends JFrame {
 	}
 
 	class FileTypeFilter extends FileFilter {
-	    private String extension;
-	    private String description;
-	 
-	    public FileTypeFilter(String extension, String description) {
-	        this.extension = extension;
-	        this.description = description;
-	    }
-	 
-	    public boolean accept(File file) {
-	        if (file.isDirectory()) {
-	            return true;
-	        }
-	        return file.getName().endsWith(extension);
-	    }
-	 
-	    public String getDescription() {
-	        return description + String.format(" (*%s)", extension);
-	    }
+		private String extension;
+		private String description;
+
+		public FileTypeFilter(String extension, String description) {
+			this.extension = extension;
+			this.description = description;
+		}
+
+		public boolean accept(File file) {
+			if (file.isDirectory()) {
+				return true;
+			}
+			return file.getName().endsWith(extension);
+		}
+
+		public String getDescription() {
+			return description + String.format(" (*%s)", extension);
+		}
 	}
-	
+
 	class ExecutingThread implements Runnable {
 		private int count;
 
