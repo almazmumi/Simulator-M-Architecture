@@ -7,7 +7,7 @@ public class RInstruction extends Instruction {
 	private int c;
 	private int d;
 
-	DataMemory Mem;
+	DataMemory mem;
 	private RegisterFile registerFile;
 
 	public RInstruction(int instructionNumber, String instructionName, String instructionBinary) {
@@ -47,9 +47,9 @@ public class RInstruction extends Instruction {
 		return d;
 	}
 
-	public void execute(ProgramCounter pc, RegisterFile r, DataMemory M) {
-		registerFile = r;
-		Mem = M;
+	public void execute() {
+		registerFile = GlobalVariables.rf;
+		mem = GlobalVariables.dm;
 		if (getInstrcutionOpcode() == 40 && f == 0 && x == 0) {
 			ADD();
 
@@ -147,7 +147,7 @@ public class RInstruction extends Instruction {
 		} else if (getInstrcutionOpcode() == 26 && f == 7) {
 			LD();
 		}
-		pc.incrementProgramCounter();
+		GlobalVariables.pc.incrementProgramCounter();
 	}
 
 	/*
@@ -366,7 +366,7 @@ public class RInstruction extends Instruction {
 		System.out.println(Integer.parseInt(Byte, 2));
 		char Data = (char) Integer.parseInt(Byte, 2);
 		int Address = (int)((registerFile.getRegister(b) << x) + registerFile.getRegister(a));
-		Mem.addData(Address, Data);
+		mem.addData(Address, Data);
 
 	}
 
@@ -388,7 +388,7 @@ public class RInstruction extends Instruction {
 
 			char Data = (char) Integer.parseInt(Bytes[i], 2);
 			int Address = (int)((registerFile.getRegister(b) << x) + registerFile.getRegister(a) + i);
-			Mem.addData(Address, Data);
+			mem.addData(Address, Data);
 		}
 	}
 
@@ -409,7 +409,7 @@ public class RInstruction extends Instruction {
 		for (int i = 0; i < 4; i++) {
 			char Data = (char) Integer.parseInt(Bytes[i], 2);
 			int Address = (int)((registerFile.getRegister(b) << x) + registerFile.getRegister(a) + i);
-			Mem.addData(Address, Data);
+			mem.addData(Address, Data);
 		}
 
 	}
@@ -436,7 +436,7 @@ public class RInstruction extends Instruction {
 		for (int i = 0; i < 7; i++) {
 			char Data = (char) Integer.parseInt(Bytes[i], 2);
 			int Address = (int)((registerFile.getRegister(b) << x) + registerFile.getRegister(a) + i);
-			Mem.addData(Address, Data);
+			mem.addData(Address, Data);
 		}
 
 	}
@@ -445,7 +445,7 @@ public class RInstruction extends Instruction {
 
 		int Address = (int)((registerFile.getRegister(b) << x) + registerFile.getRegister(a));
 
-		String Byte = Integer.toBinaryString((int) Mem.getData(Address));
+		String Byte = Integer.toBinaryString((int) mem.getData(Address));
 
 		for (int i = 0; i < 8 - Byte.length(); i++) {
 			Byte = "0" + Byte;
@@ -466,8 +466,8 @@ public class RInstruction extends Instruction {
 		int Address = (int)((registerFile.getRegister(b) << x) + registerFile.getRegister(a));
 
 		String Byte = "";
-		Bytes[0] = Integer.toBinaryString((int) Mem.getData(Address));
-		Bytes[1] = Integer.toBinaryString((int) Mem.getData(Address + 1));
+		Bytes[0] = Integer.toBinaryString((int) mem.getData(Address));
+		Bytes[1] = Integer.toBinaryString((int) mem.getData(Address + 1));
 
 		for (int j = 0; j < Bytes.length; j++) {
 			for (int i = 0; i < 8 - Bytes[j].length(); i++) {
@@ -497,10 +497,10 @@ public class RInstruction extends Instruction {
 		int Address = (int)((registerFile.getRegister(b) << x) + registerFile.getRegister(a));
 
 		String Byte = "";
-		Bytes[0] = Integer.toBinaryString((int) Mem.getData(Address));
-		Bytes[1] = Integer.toBinaryString((int) Mem.getData(Address + 1));
-		Bytes[2] = Integer.toBinaryString((int) Mem.getData(Address + 2));
-		Bytes[3] = Integer.toBinaryString((int) Mem.getData(Address + 3));
+		Bytes[0] = Integer.toBinaryString((int) mem.getData(Address));
+		Bytes[1] = Integer.toBinaryString((int) mem.getData(Address + 1));
+		Bytes[2] = Integer.toBinaryString((int) mem.getData(Address + 2));
+		Bytes[3] = Integer.toBinaryString((int) mem.getData(Address + 3));
 
 		for (int j = 0; j < Bytes.length; j++) {
 			for (int i = 0; i < 8 - Bytes[j].length(); i++) {
@@ -529,14 +529,14 @@ public class RInstruction extends Instruction {
 		int Address = (int)((registerFile.getRegister(b) << x) + registerFile.getRegister(a));
 
 		String Byte = "";
-		Bytes[0] = Integer.toBinaryString((int) Mem.getData(Address));
-		Bytes[1] = Integer.toBinaryString((int) Mem.getData(Address + 1));
-		Bytes[2] = Integer.toBinaryString((int) Mem.getData(Address + 2));
-		Bytes[3] = Integer.toBinaryString((int) Mem.getData(Address + 3));
-		Bytes[4] = Integer.toBinaryString((int) Mem.getData(Address+4));
-		Bytes[5] = Integer.toBinaryString((int) Mem.getData(Address + 5));
-		Bytes[6] = Integer.toBinaryString((int) Mem.getData(Address + 6));
-		Bytes[7] = Integer.toBinaryString((int) Mem.getData(Address + 7));
+		Bytes[0] = Integer.toBinaryString((int) mem.getData(Address));
+		Bytes[1] = Integer.toBinaryString((int) mem.getData(Address + 1));
+		Bytes[2] = Integer.toBinaryString((int) mem.getData(Address + 2));
+		Bytes[3] = Integer.toBinaryString((int) mem.getData(Address + 3));
+		Bytes[4] = Integer.toBinaryString((int) mem.getData(Address+4));
+		Bytes[5] = Integer.toBinaryString((int) mem.getData(Address + 5));
+		Bytes[6] = Integer.toBinaryString((int) mem.getData(Address + 6));
+		Bytes[7] = Integer.toBinaryString((int) mem.getData(Address + 7));
 
 		for (int j = 0; j < Bytes.length; j++) {
 			for (int i = 0; i < 8 - Bytes[j].length(); i++) {
@@ -558,7 +558,7 @@ public class RInstruction extends Instruction {
 
 		int Address = (int)((registerFile.getRegister(b) << x) + registerFile.getRegister(a));
 
-		String Byte = Integer.toBinaryString((int) Mem.getData(Address));
+		String Byte = Integer.toBinaryString((int) mem.getData(Address));
 
 		for (int i = 0; i < 8 - Byte.length(); i++) {
 			Byte = "0" + Byte;
@@ -579,8 +579,8 @@ public class RInstruction extends Instruction {
 		int Address = (int)((registerFile.getRegister(b) << x) + registerFile.getRegister(a));
 
 		String Byte = "";
-		Bytes[0] = Integer.toBinaryString((int) Mem.getData(Address));
-		Bytes[1] = Integer.toBinaryString((int) Mem.getData(Address + 1));
+		Bytes[0] = Integer.toBinaryString((int) mem.getData(Address));
+		Bytes[1] = Integer.toBinaryString((int) mem.getData(Address + 1));
 
 		for (int j = 0; j < Bytes.length; j++) {
 			for (int i = 0; i < 8 - Bytes[j].length(); i++) {
@@ -605,10 +605,10 @@ public class RInstruction extends Instruction {
 		int Address = (int)((registerFile.getRegister(b) << x) + registerFile.getRegister(a));
 
 		String Byte = "";
-		Bytes[0] = Integer.toBinaryString((int) Mem.getData(Address));
-		Bytes[1] = Integer.toBinaryString((int) Mem.getData(Address + 1));
-		Bytes[2] = Integer.toBinaryString((int) Mem.getData(Address + 2));
-		Bytes[3] = Integer.toBinaryString((int) Mem.getData(Address + 3));
+		Bytes[0] = Integer.toBinaryString((int) mem.getData(Address));
+		Bytes[1] = Integer.toBinaryString((int) mem.getData(Address + 1));
+		Bytes[2] = Integer.toBinaryString((int) mem.getData(Address + 2));
+		Bytes[3] = Integer.toBinaryString((int) mem.getData(Address + 3));
 
 		for (int j = 0; j < Bytes.length; j++) {
 			for (int i = 0; i < 8 - Bytes[j].length(); i++) {
@@ -632,14 +632,14 @@ public class RInstruction extends Instruction {
 		int Address = (int)((registerFile.getRegister(b) << x) + registerFile.getRegister(a));
 
 		String Byte = "";
-		Bytes[0] = Integer.toBinaryString((int) Mem.getData(Address));
-		Bytes[1] = Integer.toBinaryString((int) Mem.getData(Address + 1));
-		Bytes[2] = Integer.toBinaryString((int) Mem.getData(Address + 2));
-		Bytes[3] = Integer.toBinaryString((int) Mem.getData(Address + 3));
-		Bytes[4] = Integer.toBinaryString((int) Mem.getData(Address + 4));
-		Bytes[5] = Integer.toBinaryString((int) Mem.getData(Address + 5));
-		Bytes[6] = Integer.toBinaryString((int) Mem.getData(Address + 6));
-		Bytes[7] = Integer.toBinaryString((int) Mem.getData(Address + 7));
+		Bytes[0] = Integer.toBinaryString((int) mem.getData(Address));
+		Bytes[1] = Integer.toBinaryString((int) mem.getData(Address + 1));
+		Bytes[2] = Integer.toBinaryString((int) mem.getData(Address + 2));
+		Bytes[3] = Integer.toBinaryString((int) mem.getData(Address + 3));
+		Bytes[4] = Integer.toBinaryString((int) mem.getData(Address + 4));
+		Bytes[5] = Integer.toBinaryString((int) mem.getData(Address + 5));
+		Bytes[6] = Integer.toBinaryString((int) mem.getData(Address + 6));
+		Bytes[7] = Integer.toBinaryString((int) mem.getData(Address + 7));
 
 		for (int j = 0; j < Bytes.length; j++) {
 			for (int i = 0; i < 8 - Bytes[j].length(); i++) {

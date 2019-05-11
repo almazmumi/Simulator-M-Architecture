@@ -17,11 +17,12 @@ public class JInstruction extends Instruction{
 	}
 	
 	
-	public void execute(ProgramCounter pc, RegisterFile r,DataMemory M)  {
+	public void execute()  {
+		ProgramCounter pc = GlobalVariables.pc;
 		if(getInstrcutionOpcode() == 2) {
 			J(pc);
 		}else if(getInstrcutionOpcode() == 3) {
-			JAL(pc, r);
+			JAL(pc, GlobalVariables.rf);
 		}
 		
 	}

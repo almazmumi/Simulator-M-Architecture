@@ -10,12 +10,12 @@ public class DataMemory {
 		MemoryArray = new char[8192];
 	}
 
-	static void addData(int Address, char Data) {
+	public void addData(int Address, char Data) {
 		MemoryArray[Address] = Data;
 
 	}
 	
-	static void Initilaizor(String Data,ProgramCounter pc, JEditorPane iOEditorPane) {
+	public void Initilaizor(String Data,ProgramCounter pc, JEditorPane iOEditorPane) {
 		try {
 		String [] ArrayData = Data.split(System.getProperty("line.separator"));
 		int IndexPointer=0;

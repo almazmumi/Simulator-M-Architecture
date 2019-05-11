@@ -43,7 +43,7 @@ public class Instruction {
 	public void execute(ProgramCounter pc, RegisterFile r, DataMemory M, JEditorPane iOEditorPane) {
 		System.out.println("noooo");
 	}
-	public void execute(ProgramCounter pc, RegisterFile r, DataMemory M) {
+	public void execute() {
 		System.out.println("noooo");
 	}
 	public boolean isExecuting() {

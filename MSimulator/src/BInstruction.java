@@ -39,9 +39,9 @@ public class BInstruction extends Instruction {
 		return offset;
 	}
 
-	public void execute(ProgramCounter pc, RegisterFile rf, DataMemory M) {
-		this.pc = pc;
-		this.rf = rf;
+	public void execute() {
+		this.pc = GlobalVariables.pc;
+		this.rf = GlobalVariables.rf;
 
 		if (getInstrcutionOpcode() == 16) {
 			BEQ();
