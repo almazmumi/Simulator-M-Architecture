@@ -1,7 +1,0 @@
-.data
-@String .byte "Enter 5 numbers: "
-
-.text
-
-set R0=@String
-SCALL 0

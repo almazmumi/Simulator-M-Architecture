@@ -1,22 +1,21 @@
 
 public class InstructionObject {
 	private int opcode;
-	private char format;
+	private String format;
 	private String name;
 	private int function;
 	private int x;
-
-	public InstructionObject(String name, char format, int opcode, int f, int x) {
+	public InstructionObject(String name, String format, int opcode, int function, int x) {
 		this.opcode = opcode;
-		this.setName(name);
+		this.name = name;
 		this.format = format;
-		this.function = f;
-		this.x = x;		
+		this.function = function;
+		this.x = x;
 	}
 	public int getOpcode() {
 		return opcode;
 	}
-	public char getFormat() {
+	public String getFormat() {
 		return format;
 	}
 	public int getFunction() {
@@ -24,12 +23,6 @@ public class InstructionObject {
 	}
 	public int getX() {
 		return x;
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
 	}
 	
 	

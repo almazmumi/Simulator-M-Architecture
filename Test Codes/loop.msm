@@ -1,0 +1,5 @@
+SET R5 = 10
+SET R6 = 0
+@FOR
+ADD R7 = R7 , 2
+LOOP R5, R6, @FOR 

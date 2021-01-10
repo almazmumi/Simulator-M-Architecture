@@ -1,0 +1,4 @@
+SET R5 = 10
+@loop ADD R6 = R6,1
+BNE R6, 10, @loop
+ADD R10 = R10, 1 

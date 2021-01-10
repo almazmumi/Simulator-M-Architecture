@@ -4,8 +4,7 @@ public class RegisterFile {
 	
 	public RegisterFile(){
 		// Register files are an array of 31 string(Binary Value)
-		registersFile = new long[32];
-		registersFile[30] = 2147479548;
+		registersFile = new long[32];	
 	}
 	
 	public long getRegister(int RegisterNumber) {
@@ -24,7 +23,6 @@ public class RegisterFile {
 		for (int i= 0; i< registersFile.length; i++) {
 			registersFile[i] = 0;
 		}
-		registersFile[30] = 2147479548;
 	}
 
 	

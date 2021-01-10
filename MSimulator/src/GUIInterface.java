@@ -1,12 +1,14 @@
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.EventQueue;
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.filechooser.FileFilter;
+import javax.swing.event.UndoableEditListener;
 import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
 import javax.swing.AbstractButton;
@@ -17,26 +19,36 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.File;
+import java.beans.PropertyVetoException;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.LineNumberReader;
 import java.util.ArrayList;
+import java.util.Collections;
+
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
+import javax.swing.text.Element;
+import javax.swing.text.MutableAttributeSet;
+import javax.swing.text.Position;
+import javax.swing.text.Segment;
+import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import java.awt.Dimension;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
@@ -48,14 +60,25 @@ import java.awt.GridLayout;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
 import java.awt.Frame;
+import java.awt.FlowLayout;
 import javax.swing.JEditorPane;
-import javax.swing.JFileChooser;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
+import java.awt.Point;
 
 @SuppressWarnings("serial")
 public class GUIInterface extends JFrame {
 
-	private ArrayList<String> instructionList;
+	// TODO make error code area
+
+	private DataMemory mem;
+	private ProgramCounter pc;
+	private RegisterFile rf;
+	private ArrayList<String> instArray;
 	private JPanel contentPane;
+	private JTable registerFileTable;
+	private String BaseDataAddress = "40004000";
 	private String RegistersOption[];
 
 	private String MachineCodeOption = "Binary";
@@ -66,6 +89,8 @@ public class GUIInterface extends JFrame {
 	private JTextPane rowLines;
 	private JInternalFrame dataSegmentIF;
 	private JInternalFrame textSegmentIF;
+	private JTable textSegmentTable;
+	private JTable dataSegmentTable;
 	private JPanel buttonPanel;
 	private JButton runButton;
 	private JButton traceButton;
@@ -75,20 +100,11 @@ public class GUIInterface extends JFrame {
 	private AbstractButton assembleButton;
 	private AbstractButton stopButton;
 	private boolean terminateFlag;
-
 	private JTabbedPane tabbedPane;
+	private JEditorPane IOEditorPane;
 	private JScrollPane IOEditorScrollViewPane;
 
-	private boolean fileSaveableFlag = false;
-	private File fileDirectory = null;
-	private String fileName = "";
-
-	private String machineCodeHex;
-	private String machineCodeBinary;
-	private Assembler assembler;
-
 	public static void main(String[] args) {
-
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -121,133 +137,45 @@ public class GUIInterface extends JFrame {
 		mnFile.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		menuBar.add(mnFile);
 
-		JMenuItem newMenuItem = new JMenuItem("New");
-		newMenuItem.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-		newMenuItem.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				newFunction();
-			}
-		});
-		mnFile.add(newMenuItem);
+		JMenuItem mntmNew = new JMenuItem("New");
+		mntmNew.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+		mnFile.add(mntmNew);
 
-		JMenuItem openMenuItem = new JMenuItem("Open");
-		openMenuItem.addActionListener(new ActionListener() {
+		JMenuItem mntmNewMenuItem = new JMenuItem("Open");
+		mntmNewMenuItem.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+		mnFile.add(mntmNewMenuItem);
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				openFunction();
-			}
+		JMenuItem mntmSave = new JMenuItem("Save");
+		mntmSave.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+		mnFile.add(mntmSave);
 
-		});
-		openMenuItem.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-		mnFile.add(openMenuItem);
+		JMenuItem mntmSaveAs = new JMenuItem("Save As");
+		mntmSaveAs.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+		mnFile.add(mntmSaveAs);
 
-		JMenuItem saveMenuItem = new JMenuItem("Save");
-		saveMenuItem.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-		saveMenuItem.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				saveFunction();
-			}
-		});
-		mnFile.add(saveMenuItem);
+		JMenuItem mntmAboutUs = new JMenuItem("About us");
+		mntmAboutUs.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+		mnFile.add(mntmAboutUs);
 
-		JMenuItem saveAsMenuItem = new JMenuItem("Save As");
-		saveAsMenuItem.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-		saveAsMenuItem.addActionListener(new ActionListener() {
+		JMenuItem mntmExit = new JMenuItem("Exit");
+		mntmExit.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+		mnFile.add(mntmExit);
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				saveAsFunction();
+		JMenu mnAssembler = new JMenu("Assembler");
+		mnAssembler.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+		menuBar.add(mnAssembler);
 
-			}
-		});
-		mnFile.add(saveAsMenuItem);
+		JMenuItem mntmGetBinaryCode = new JMenuItem("Get Binary Code");
+		mntmGetBinaryCode.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+		mnAssembler.add(mntmGetBinaryCode);
 
-		JMenuItem exportMachineCodeMenuItem = new JMenuItem("Export Machine Code");
-		exportMachineCodeMenuItem.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-		exportMachineCodeMenuItem.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (assembler.getStatus()) {
-					String[] options = { "Hex", "Binary" };
-					int n = JOptionPane.showOptionDialog(null, "Hex or Binary?", "Unsaved changes",
-							JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[1]);
+		JMenu mnSimulation = new JMenu("Simulation");
+		mnSimulation.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+		menuBar.add(mnSimulation);
 
-					if (n == 0) {
-						JFileChooser c = new JFileChooser();
-						// Demonstrate "Save" dialog:
-						int rVal = c.showSaveDialog(GUIInterface.this);
-						if (rVal == JFileChooser.APPROVE_OPTION) {
-							FileWriter out;
-							try {
-
-								fileDirectory = c.getSelectedFile();
-								fileName = c.getSelectedFile().getName();
-
-								out = new FileWriter(fileDirectory + ".txt");
-
-								out.write(machineCodeHex);
-								out.close();
-								tabbedPane.setTitleAt(0, fileName);
-							} catch (IOException e1) {
-
-							}
-						}
-					} else if (n == 1) {
-						JFileChooser c = new JFileChooser();
-						// Demonstrate "Save" dialog:
-						int rVal = c.showSaveDialog(GUIInterface.this);
-						if (rVal == JFileChooser.APPROVE_OPTION) {
-							FileWriter out;
-							try {
-
-								fileDirectory = c.getSelectedFile();
-								fileName = c.getSelectedFile().getName();
-
-								out = new FileWriter(fileDirectory + ".txt");
-
-								out.write(machineCodeBinary);
-								out.close();
-								tabbedPane.setTitleAt(0, fileName);
-							} catch (IOException e1) {
-
-							}
-						}
-					}
-				} else {
-					JOptionPane.showMessageDialog(null, "You Should Assemble first.", "Assemble first",
-							JOptionPane.ERROR_MESSAGE);
-				}
-			}
-		});
-		mnFile.add(exportMachineCodeMenuItem);
-
-		JMenuItem exitMenuItem = new JMenuItem("Exit");
-		exitMenuItem.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-		exitMenuItem.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (fileSaveableFlag) {
-
-					int response = JOptionPane.showConfirmDialog(null, "Do you want to save the changes", "Confirm",
-							JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-
-					if (response == JOptionPane.YES_OPTION) {
-						if (fileDirectory == null) {
-							saveAsFunction();
-						} else {
-							saveFunction();
-						}
-					}
-
-				}
-
-				System.exit(0);
-			}
-		});
-		mnFile.add(exitMenuItem);
+		JMenuItem mntmGetStatistic = new JMenuItem("Get Statistic");
+		mntmGetStatistic.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+		mnSimulation.add(mntmGetStatistic);
 
 		JMenu mnEdit = new JMenu("Edit");
 		mnEdit.setFont(new Font("Segoe UI", Font.PLAIN, 20));
@@ -308,8 +236,8 @@ public class GUIInterface extends JFrame {
 				for (int i = 0; i < RegistersOption.length; i++) {
 					RegistersOption[i] = aButton.getText();
 				}
-
-				updateRegisterFileTable();
+				
+				updateRegisterFileTable(registerFileTable, rf, pc);
 
 			}
 		};
@@ -423,44 +351,79 @@ public class GUIInterface extends JFrame {
 		// RegisterFilePane
 		JScrollPane registerFilePane = new JScrollPane();
 		parentSplitPane.setRightComponent(registerFilePane);
-		GlobalVariables.registerFileTable = new JTable();
-		registerFilePane.setViewportView(GlobalVariables.registerFileTable);
-		GlobalVariables.registerFileTable.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		GlobalVariables.registerFileTable.setModel(new DefaultTableModel(
-				new Object[][] { { "R0", "0" }, { "R1", "0" }, { "R2", "0" }, { "R3", "0" }, { "R4", "0" },
-						{ "R5", "0" }, { "R6", "0" }, { "R7", "0" }, { "R8", "0" }, { "R9", "0" }, { "R10(t0)", "0" },
-						{ "R11(t1)", "0" }, { "R12(t2)", "0" }, { "R13(t3)", "0" }, { "R14(t4)", "0" },
-						{ "R15(t5)", "0" }, { "R16(t6)", "0" }, { "R17(t7)", "0" }, { "R18(t8)", "0" },
-						{ "R19(t9)", "0" }, { "R20(s0)", "0" }, { "R21(s1)", "0" }, { "R22(s2)", "0" },
-						{ "R23(s3)", "0" }, { "R24(s4)", "0" }, { "R25(s5)", "0" }, { "R26(s6)", "0" },
-						{ "R27(s7)", "0" }, { "R28(s8)", "0" }, { "FP", "0" }, { "SP", "2147479548" }, { "LR", "0" }, },
-				new String[] { "Register Name", "Register Number" }) {
-			boolean[] columnEditables = new boolean[] { false, false };
-
+		registerFileTable = new JTable();
+		registerFilePane.setViewportView(registerFileTable);
+		registerFileTable.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		registerFileTable.setModel(new DefaultTableModel(
+			new Object[][] {
+				{"R0", "R0", "0"},
+				{"R1", "R1", "0"},
+				{"R2", "R2", "0"},
+				{"R3", "R3", "0"},
+				{"R4", "R4", "0"},
+				{"R5", "R5", "0"},
+				{"R6", "R6", "0"},
+				{"R7", "R7", "0"},
+				{"R8", "R8", "0"},
+				{"R9", "R9", "0"},
+				{"R10", "T0", "0"},
+				{"R11", "T1", "0"},
+				{"R12", "T2", "0"},
+				{"R13", "T3", "0"},
+				{"R14", "T4", "0"},
+				{"R15", "T5", "0"},
+				{"R16", "T6", "0"},
+				{"R17", "T7", "0"},
+				{"R18", "T8", "0"},
+				{"R19", "T9", "0"},
+				{"R20", "S0", "0"},
+				{"R21", "S1", "0"},
+				{"R22", "S2", "0"},
+				{"R23", "S3", "0"},
+				{"R24", "S4", "0"},
+				{"R25", "S5", "0"},
+				{"R26", "S6", "0"},
+				{"R27", "S7", "0"},
+				{"R28", "S8", "0"},
+				{"R29", "FP", "0"},
+				{"R30", "SP", "0"},
+				{"R31", "LR", "0"},
+			},
+			new String[] {
+				"R#", "R Name", "Register Number"
+			}
+		) {
+			boolean[] columnEditables = new boolean[] {
+				false, false, false
+			};
 			public boolean isCellEditable(int row, int column) {
 				return columnEditables[column];
 			}
 		});
-		GlobalVariables.registerFileTable.getColumnModel().getColumn(1).setPreferredWidth(100);
-		GlobalVariables.registerFileTable.getColumnModel().getColumn(1).setMinWidth(90);
-
-		GlobalVariables.registerFileTable.addMouseListener(new MouseAdapter() {
-			public void mousePressed(MouseEvent mouseEvent) {
-				JTable table = (JTable) mouseEvent.getSource();
-				if (mouseEvent.getClickCount() == 2 && table.getSelectedRow() != -1) {
-					if (RegistersOption[table.getSelectedRow()].equals("Decimal")) {
-						RegistersOption[table.getSelectedRow()] = "Hex";
-					} else if (RegistersOption[table.getSelectedRow()].equals("Hex")) {
-						RegistersOption[table.getSelectedRow()] = "Binary";
-					} else if (RegistersOption[table.getSelectedRow()].equals("Binary")) {
-						RegistersOption[table.getSelectedRow()] = "Decimal";
-					}
-
-					updateRegisterFileTable();
-				}
-			}
+		registerFileTable.getColumnModel().getColumn(0).setPreferredWidth(50);
+		registerFileTable.getColumnModel().getColumn(0).setMinWidth(50);
+		registerFileTable.getColumnModel().getColumn(2).setPreferredWidth(100);
+		registerFileTable.getColumnModel().getColumn(2).setMinWidth(90);
+		
+		registerFileTable.addMouseListener(new MouseAdapter() {
+		    public void mousePressed(MouseEvent mouseEvent) {
+		        JTable table =(JTable) mouseEvent.getSource();
+		        Point point = mouseEvent.getPoint();
+		        int row = table.rowAtPoint(point);
+		        if (mouseEvent.getClickCount() == 2 && table.getSelectedRow() != -1) {
+		        	if(RegistersOption[table.getSelectedRow()].equals("Decimal")) {
+		        		RegistersOption[table.getSelectedRow()] = "Hex";
+		        	}else if(RegistersOption[table.getSelectedRow()].equals("Hex")) {
+		        		RegistersOption[table.getSelectedRow()] = "Binary";
+		        	}else if(RegistersOption[table.getSelectedRow()].equals("Binary")) {
+		        		RegistersOption[table.getSelectedRow()] = "Decimal";
+		        	}
+		            
+		            updateRegisterFileTable(registerFileTable, rf, pc);
+		        }
+		    }
 		});
-		GlobalVariables.registerFileTable.setRowHeight(28);
+		registerFileTable.setRowHeight(28);
 
 		JSplitPane splitPane = new JSplitPane();
 		splitPane.setResizeWeight(0.8);
@@ -474,18 +437,18 @@ public class GUIInterface extends JFrame {
 		JButton clearButton = new JButton("CLEAR");
 		clearButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				GlobalVariables.IOEditorPane.setText("");
+				IOEditorPane.setText("");
 			}
 		});
 		clearButton.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		panel_1.add(clearButton, BorderLayout.SOUTH);
-
+		
 		IOEditorScrollViewPane = new JScrollPane();
 		panel_1.add(IOEditorScrollViewPane);
-
-		GlobalVariables.IOEditorPane = new JEditorPane();
-		IOEditorScrollViewPane.setViewportView(GlobalVariables.IOEditorPane);
-		GlobalVariables.IOEditorPane.setFont(new Font("Tahoma", Font.PLAIN, 22));
+		
+		IOEditorPane = new JEditorPane();
+		IOEditorScrollViewPane.setViewportView(IOEditorPane);
+		IOEditorPane.setFont(new Font("Tahoma", Font.PLAIN, 22));
 
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setFont(new Font("Tahoma", Font.PLAIN, 20));
@@ -495,14 +458,9 @@ public class GUIInterface extends JFrame {
 		editTabSplitPane = new JSplitPane();
 		tabbedPane.addTab("Edit", null, editTabSplitPane, null);
 		editTabSplitPane.setResizeWeight(0.999);
-		JScrollPane scrollPane_1 = new JScrollPane();
-
 		machineCodeArea = new JTextPane();
 		machineCodeArea.setFont(new Font("Segoe UI Historic", Font.PLAIN, 22));
-
-		scrollPane_1.setViewportView(machineCodeArea);
-		editTabSplitPane.setRightComponent(scrollPane_1);
-
+		editTabSplitPane.setRightComponent(machineCodeArea);
 		JScrollPane editorPane = new JScrollPane();
 		editTabSplitPane.setLeftComponent(editorPane);
 		inputCodeTextPane = new JTextPane();
@@ -510,136 +468,11 @@ public class GUIInterface extends JFrame {
 		editorPane.setViewportView(inputCodeTextPane);
 		rowLines = new JTextPane();
 		rowLines.setText(
-				"1\r\n2\r\n3\r\n4\r\n5\r\n6\r\n7\r\n8\r\n9\r\n10\r\n11\r\n12\r\n13\r\n14\r\n15\r\n16\r\n17\r\n18\r\n19\r\n20\r\n21\r\n22\r\n23\r\n24\r\n25\r\n26\r\n27\r\n28\r\n29\r\n30\r\n31\r\n32\r\n33\r\n34\r\n35\r\n36\r\n37\r\n38\r\n39\r\n40\r\n41\r\n42\r\n43\r\n44\r\n45\r\n46\r\n47\r\n48\r\n49\r\n50\r\n51\r\n52\r\n53\r\n54\r\n55\r\n56\r\n57\r\n58\r\n59\r\n60\r\n61\r\n62\r\n63\r\n64\r\n65\r\n66\r\n67\r\n68\r\n69\r\n70\r\n71\r\n72\r\n73\r\n74\r\n75\r\n76\r\n77\r\n78\r\n79\r\n80\r\n81\r\n82\r\n83\r\n84\r\n85\r\n86\r\n87\r\n88\r\n89\r\n90\r\n91\r\n92\r\n93\r\n94\r\n95\r\n96\r\n97\r\n98\r\n99\r\n100\r\n101\r\n102\r\n103\r\n104\r\n105\r\n106\r\n107\r\n108\r\n109\r\n110\r\n111\r\n112\r\n113\r\n114\r\n115\r\n116\r\n117\r\n118\r\n119\r\n120\r\n121\r\n122\r\n123\r\n124\r\n125\r\n126\r\n127\r\n128\r\n129\r\n130\r\n131\r\n132\r\n133\r\n134\r\n135\r\n136\r\n137\r\n138\r\n139\r\n140\r\n141\r\n142\r\n143\r\n144\r\n145\r\n146\r\n147\r\n148\r\n149\r\n150\r\n151\r\n152\r\n153\r\n154\r\n155\r\n156\r\n157\r\n158\r\n159\r\n160\r\n161\r\n162\r\n163\r\n164\r\n165\r\n166\r\n167\r\n168\r\n169\r\n170\r\n171\r\n172\r\n173\r\n174\r\n175\r\n176\r\n177\r\n178\r\n179\r\n180\r\n181\r\n182\r\n183\r\n184\r\n185\r\n186\r\n187\r\n188\r\n189\r\n190\r\n191\r\n192\r\n193\r\n194\r\n195\r\n196\r\n197\r\n198\r\n199\r\n200\r\n201\r\n202\r\n203\r\n204\r\n205\r\n206\r\n207\r\n208\r\n209\r\n210\r\n211\r\n212\r\n213\r\n214\r\n215\r\n216\r\n217\r\n218\r\n219\r\n220\r\n221\r\n222\r\n223\r\n224\r\n225\r\n226\r\n227\r\n228\r\n229\r\n230\r\n231\r\n232\r\n233\r\n234\r\n235\r\n236\r\n237\r\n238\r\n239\r\n240\r\n241\r\n242\r\n243\r\n244\r\n245\r\n246\r\n247\r\n248\r\n249\r\n250\r\n251\r\n252\r\n253\r\n254\r\n255\r\n256\r\n257\r\n258\r\n259\r\n260\r\n261\r\n262\r\n263\r\n264\r\n265\r\n266\r\n267\r\n268\r\n269\r\n270\r\n271");
+				"1\r\n2\r\n3\r\n4\r\n5\r\n6\r\n7\r\n8\r\n9\r\n10\r\n11\r\n12\r\n13\r\n14\r\n15\r\n16\r\n17\r\n18\r\n19\r\n20\r\n21\r\n22\r\n23\r\n24\r\n25");
 		rowLines.setFont(new Font("Segoe UI Historic", Font.PLAIN, 22));
 		rowLines.setEnabled(false);
 		rowLines.setEditable(false);
 		editorPane.setRowHeaderView(rowLines);
-
-		Document d = inputCodeTextPane.getDocument();
-
-		// To change the instruction name style
-		d.addDocumentListener(new DocumentListener() {
-
-			@Override
-			public void removeUpdate(DocumentEvent e) {
-
-			}
-
-
-			@Override
-			public void insertUpdate(DocumentEvent e) {
-				if (!fileSaveableFlag) {
-					tabbedPane.setTitleAt(0, tabbedPane.getTitleAt(0) + "*");
-					fileSaveableFlag = true;
-				}
-				char c = inputCodeTextPane.getText().toString()
-						.charAt(inputCodeTextPane.getText().toString().length() - 1);
-				if (c == ' ') {
-
-					String[] temp = inputCodeTextPane.getText().toString().split(" ");
-					String tempString = temp[temp.length - 1];
-					if (tempString.equals(".scloop")) {
-						Runnable doAssist = new Runnable() {
-							@Override
-							public void run() {
-								inputCodeTextPane.setText("SET R5 = 10\r\n" + "SET R6 = 0\r\n"
-										+ "@FOR\r\nADD R7 = R7 , 2\r\n" + "LOOP R5, R6, @FOR ");
-							}
-						};
-						SwingUtilities.invokeLater(doAssist);
-					} else if (tempString.equals(".scbranch")) {
-						Runnable doAssist = new Runnable() {
-							@Override
-							public void run() {
-								inputCodeTextPane.setText("SET R5 = 10\r\n" + "@loop ADD R6 = R6,1\r\n"
-										+ "BNE R6, 10, @loop\r\n" + "ADD R10 = R10, 1 \r\n" + "");
-							}
-						};
-						SwingUtilities.invokeLater(doAssist);
-					} else if (tempString.equals(".scjumpandalu")) {
-						Runnable doAssist = new Runnable() {
-							@Override
-							public void run() {
-								inputCodeTextPane.setText("J, @lable\r\n" + "ADD R5 = R5, 5\r\n" + "ADD R5 = R5, R5\r\n"
-										+ "@lable\r\n" + "ADD R6 = R6, 5\r\n" + "ADD R6 = R6, R6");
-							}
-						};
-						SwingUtilities.invokeLater(doAssist);
-					} else if (tempString.equals(".scalu")) {
-						Runnable doAssist = new Runnable() {
-							@Override
-							public void run() {
-								inputCodeTextPane.setText("SET R5 = 11     //-> 1011 \r\n"
-										+ "SET R6 = 10     //-> 1010\r\n" + "AND R7 = R5, R6 // R7 -> 1010\r\n"
-										+ "OR R8 = R5, R6   // R8 -> 1011\r\n" + "ADD R9 = R5, R6 // R9 -> 21 ");
-							}
-						};
-						SwingUtilities.invokeLater(doAssist);
-					} else if (tempString.equals(".sccall")) {
-						Runnable doAssist = new Runnable() {
-							@Override
-							public void run() {
-								inputCodeTextPane.setText(".data\r\n" + "@hhh .byte \"Hello world \"\r\n" + "\r\n"
-										+ ".text\r\n" + "set r0 = @hhh\r\n" + "scall 4");
-							}
-						};
-						SwingUtilities.invokeLater(doAssist);
-					} else if (tempString.equals(".scsort")) {
-						Runnable doAssist = new Runnable() {
-							@Override
-							public void run() {
-								inputCodeTextPane.setText("		set r8 = 2\r\n" + 
-										"		SB [R1, 0] = r8\r\n" + 
-										"		set r8 = 8\r\n" + 
-										"		SB [R1, 1] =r8\r\n" + 
-										"		set r8=5\r\n" + 
-										"		SB [R1, 2] =r8\r\n" + 
-										"		set r8=3\r\n" + 
-										"		SB [R1, 3] = r8\r\n" + 
-										"		set r8=9\r\n" + 
-										"		SB [R1, 4] = r8\r\n" + 
-										"		set r8=4\r\n" + 
-										"		SB [R1, 5] = r8\r\n" + 
-										"		set r8 = 7\r\n" + 
-										"		SB [R1, 6] = r8\r\n" + 
-										"\r\n" + 
-										"\r\n" + 
-										"		ADD R1=R1,6\r\n" + 
-										"		ADD R2=R2,0 // i\r\n" + 
-										"		ADD R3=R3,0 // j\r\n" + 
-										"\r\n" + 
-										"		ADD R5=R5,0 // array index\r\n" + 
-										"		ADD R16 = R16, 6\r\n" + 
-										"		ADD R17 = R17, 7\r\n" + 
-										"\r\n" + 
-										"\r\n" + 
-										"@LOOP1	MUL R8=R3,-1\r\n" + 
-										"		ADD R4=R1,R8 // array. Length\r\n" + 
-										"		SET R3 = 0\r\n" + 
-										"@LOOP2	LB R5 = [R3,0] // LOAD array[0]=2 \r\n" + 
-										"		LB R6 = [R3,1] // LOAD array[1]=3\r\n" + 
-										"		LT R8 = R5, R6 //array[0] < array[1] they in the right order\r\n" + 
-										"		BEQ R8, 1, @LOOPS // array[j] < array[j+1] they in the right order no need to swap\r\n" + 
-										"\r\n" + 
-										"\r\n" + 
-										"@SWAP	SB [R3,1] = R5 // array[j+1]=R6\r\n" + 
-										"		SB [R3,0] =R6// array[j]=R7\r\n" + 
-										"@LOOPS	LOOP R16, R3, @LOOP2 // j<7\r\n" + 
-										"		LOOP R17, R2, @LOOP1 // j<7");
-							}
-						};
-						SwingUtilities.invokeLater(doAssist);
-					}
-
-				}
-			}
-
-			@Override
-			public void changedUpdate(DocumentEvent e) {
-
-			}
-		});
 
 		// TabbedPane, Execute ( TextSegment, DataSegment )
 		JDesktopPane executeTabDesktopPane = new JDesktopPane();
@@ -660,16 +493,19 @@ public class GUIInterface extends JFrame {
 		String[] dataSegmentCols = new String[] { "Address", "+0", "+8", "+16", "+24" };
 		JScrollPane scrollPane = new JScrollPane();
 		textSegmentIF.getContentPane().add(scrollPane, BorderLayout.CENTER);
-		GlobalVariables.textSegmentTable = new JTable();
-		GlobalVariables.textSegmentTable.setRowHeight(18);
-		GlobalVariables.textSegmentTable.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		GlobalVariables.textSegmentTable.setModel(new DefaultTableModel(textSegmentRows, textSegmentCols) {
+		textSegmentTable = new JTable();
+		textSegmentTable.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		textSegmentTable.setModel(new DefaultTableModel(textSegmentRows, textSegmentCols) {
 			public boolean isCellEditable(int row, int column) {
 				return false;
 			}
 		});
 
-		scrollPane.setViewportView(GlobalVariables.textSegmentTable);
+		// textSegmentTable.getColumnModel().getColumn(0).setPreferredWidth(116);
+		// textSegmentTable.getColumnModel().getColumn(1).setPreferredWidth(131);
+		// textSegmentTable.getColumnModel().getColumn(2).setPreferredWidth(262);
+		// textSegmentTable.getColumnModel().getColumn(3).setPreferredWidth(347);
+		scrollPane.setViewportView(textSegmentTable);
 		textSegmentIF.setVisible(true);
 
 		// DataSegment
@@ -683,158 +519,22 @@ public class GUIInterface extends JFrame {
 		JScrollPane dataSegmentScrollPane = new JScrollPane();
 		dataSegmentIF.getContentPane().add(dataSegmentScrollPane, BorderLayout.CENTER);
 
-		GlobalVariables.dataSegmentTable = new JTable();
+		dataSegmentTable = new JTable();
 
-		GlobalVariables.dataSegmentTable.setModel(new DefaultTableModel(dataSegmentRows, dataSegmentCols) {
+		dataSegmentTable.setModel(new DefaultTableModel(dataSegmentRows, dataSegmentCols) {
 			public boolean isCellEditable(int row, int col) {
 				return false;
 			}
 		});
 
-		dataSegmentScrollPane.setViewportView(GlobalVariables.dataSegmentTable);
+		// dataSegmentTable.getColumnModel().getColumn(0).setPreferredWidth(85);
+		// dataSegmentTable.getColumnModel().getColumn(1).setPreferredWidth(73);
+		// dataSegmentTable.getColumnModel().getColumn(2).setPreferredWidth(111);
+		// dataSegmentTable.getColumnModel().getColumn(3).setPreferredWidth(145);
+		dataSegmentScrollPane.setViewportView(dataSegmentTable);
 		dataSegmentIF.setVisible(true);
 
 		// ==================================================================================================
-	}
-
-	public void saveFunction() {
-
-		if (fileDirectory == null) {
-			saveAsFunction();
-		}
-		FileWriter out;
-		try {
-			out = new FileWriter(fileDirectory);
-			out.write(inputCodeTextPane.getText());
-			out.close();
-		} catch (IOException e) {
-		}
-
-		fileSaveableFlag = false;
-		tabbedPane.setTitleAt(0, fileName);
-
-	}
-
-	public void saveAsFunction() {
-		JFileChooser c = new JFileChooser();
-		// Demonstrate "Save" dialog:
-		int rVal = c.showSaveDialog(GUIInterface.this);
-		if (rVal == JFileChooser.APPROVE_OPTION) {
-			FileWriter out;
-			try {
-
-				fileDirectory = c.getSelectedFile();
-				fileName = c.getSelectedFile().getName();
-
-				out = new FileWriter(fileDirectory + ".msm");
-
-				out.write(inputCodeTextPane.getText());
-				out.close();
-				tabbedPane.setTitleAt(0, fileName);
-			} catch (IOException e) {
-
-			}
-		}
-
-	}
-
-	public void newFunction() {
-
-		if (fileSaveableFlag) {
-
-			int response = JOptionPane.showConfirmDialog(null, "Do you want to save the changes", "Confirm",
-					JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-
-			if (response == JOptionPane.YES_OPTION) {
-				if (fileDirectory == null) {
-					saveAsFunction();
-				} else {
-					saveFunction();
-				}
-			}
-
-		}
-
-		fileDirectory = null;
-		fileName = "";
-		fileSaveableFlag = false;
-
-		// reset everything
-		GlobalVariables.IOEditorPane.setText("");
-		(GlobalVariables.pc).reset();
-		GlobalVariables.rf.reset();
-		GlobalVariables.dm.reset();
-		instructionList.clear();
-		updateRegisterFileTable();
-		updateDataMemoryTable();
-		lblPcvalue.setText("PC = 0");
-		machineCodeArea.setText("");
-		StyledDocument doc = (StyledDocument) rowLines.getDocument();
-		Style style = rowLines.addStyle("MyHilite", null);
-		StyleConstants.setBold(style, false);
-		doc.setCharacterAttributes(0, rowLines.getText().toString().length() - 1, style, true);
-
-		DefaultTableModel model = (DefaultTableModel) GlobalVariables.textSegmentTable.getModel();
-		while (model.getRowCount() > 0) {
-			model.removeRow(0);
-		}
-
-		runButton.setEnabled(true);
-		traceButton.setEnabled(true);
-		/* Reinitialise the ProgramCounter and RegisterFile */
-		(GlobalVariables.pc).reset();
-		GlobalVariables.rf.reset();
-		GlobalVariables.dm.reset();
-		machineCodeArea.setText("");
-
-		inputCodeTextPane.setText("");
-		tabbedPane.setTitleAt(0, "Edit");
-
-	}
-
-	public void openFunction() {
-		if (fileSaveableFlag) {
-
-			int response = JOptionPane.showConfirmDialog(null, "Do you want to save the changes", "Confirm",
-					JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-
-			if (response == JOptionPane.YES_OPTION) {
-				if (fileDirectory == null) {
-					saveAsFunction();
-				} else {
-					saveFunction();
-				}
-			}
-
-		}
-		try {
-			JFileChooser c = new JFileChooser();
-
-			FileFilter msmFilter = new FileTypeFilter(".msm", "M-Code File");
-			c.addChoosableFileFilter(msmFilter);
-
-			int rVal = c.showOpenDialog(GUIInterface.this);
-			if (rVal == JFileChooser.APPROVE_OPTION) {
-
-				fileDirectory = c.getSelectedFile();
-				fileName = c.getSelectedFile().getName();
-
-				FileReader in;
-				in = new FileReader(fileDirectory);
-				char[] buffer = new char[1024];
-				int n = in.read(buffer);
-				String text = new String(buffer, 0, n);
-				inputCodeTextPane.setText(text);
-				in.close();
-				fileSaveableFlag = false;
-				tabbedPane.setTitleAt(0, fileName);
-			}
-
-		} catch (FileNotFoundException e1) {
-			e1.printStackTrace();
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
 	}
 
 	public GUIInterface() {
@@ -847,35 +547,13 @@ public class GUIInterface extends JFrame {
 		initiliseGUI();
 		// =========================================================================================
 
-		GlobalVariables.textBaseAddress = "00400000";
-		GlobalVariables.dataBaseAddress = "10010000";
-
-		addWindowListener(new java.awt.event.WindowAdapter() {
-			@Override
-			public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-				if (fileSaveableFlag) {
-
-					int response = JOptionPane.showConfirmDialog(null, "Do you want to save the changes", "Confirm",
-							JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-
-					if (response == JOptionPane.YES_OPTION) {
-						if (fileDirectory == null) {
-							saveAsFunction();
-						} else {
-							saveFunction();
-						}
-					}
-
-				}
-			}
-		});
-
 		// =========================================================================================
 		// Initialise the hash map for all instructions type (ADD, J, JAL, SUB, ...)
 		// =========================================================================================
 		try {
-			assembler = new Assembler();
+			Assembler.initializeCommands();
 		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		// =========================================================================================
@@ -883,27 +561,30 @@ public class GUIInterface extends JFrame {
 		// =========================================================================================
 		// Initialise the program counter, registerFile and dataMemory.
 		// =========================================================================================
-		GlobalVariables.pc = new ProgramCounter();
-		GlobalVariables.rf = new RegisterFile();
-		GlobalVariables.dm = new DataMemory();
+		pc = new ProgramCounter();
+		rf = new RegisterFile();
+		mem = new DataMemory();
 		// =========================================================================================
 
+		
+		
 		RegistersOption = new String[32];
+		
 		for (int i = 0; i < RegistersOption.length; i++) {
 			RegistersOption[i] = "Decimal";
 		}
-
+		
 		// =========================================================================================
 		// Reset Button
 		// =========================================================================================
 		resetButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				(GlobalVariables.pc).reset();
-				GlobalVariables.rf.reset();
-				GlobalVariables.dm.reset();
-				instructionList.clear();
-				updateRegisterFileTable();
-				updateDataMemoryTable();
+				pc.reset();
+				rf.reset();
+				mem.reset();
+				instArray.clear();
+				updateRegisterFileTable(registerFileTable, rf, pc);
+				updateDataMemoryTable(dataSegmentTable, mem);
 				lblPcvalue.setText("PC = 0");
 				machineCodeArea.setText("");
 				StyledDocument doc = (StyledDocument) rowLines.getDocument();
@@ -911,7 +592,7 @@ public class GUIInterface extends JFrame {
 				StyleConstants.setBold(style, false);
 				doc.setCharacterAttributes(0, rowLines.getText().toString().length() - 1, style, true);
 
-				DefaultTableModel model = (DefaultTableModel) GlobalVariables.textSegmentTable.getModel();
+				DefaultTableModel model = (DefaultTableModel) textSegmentTable.getModel();
 				while (model.getRowCount() > 0) {
 					model.removeRow(0);
 				}
@@ -919,7 +600,7 @@ public class GUIInterface extends JFrame {
 			}
 		});
 
-		instructionList = new ArrayList<String>();
+		instArray = new ArrayList<String>();
 
 		// =========================================================================================
 		// Run Button
@@ -937,38 +618,57 @@ public class GUIInterface extends JFrame {
 		// =========================================================================================
 		// Trace Button
 		// =========================================================================================
+
 		traceButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
-				if ((GlobalVariables.pc).getProgramCounter() >= 1)
-					GlobalVariables.textSegmentTable.getModel().setValueAt("",
-							(GlobalVariables.pc).getProgramCounter() - 1, 3);
-				GlobalVariables.textSegmentTable.getModel().setValueAt("Executed",
-						(GlobalVariables.pc).getProgramCounter(), 3);
+				if (!pc.isItRunning()) {
 
-				// Update the value of the PCLabel
-				lblPcvalue.setText("PC = " + (GlobalVariables.pc).getProgramCounter() * 4);
+					/* Print Machine Code Binary */
+					String binaryString = pc.getInstructionsList().get(pc.getProgramCounter()).getInstructionBinary();
+					int decimal = Integer.parseUnsignedInt(binaryString, 2);
+					String hexStr = Integer.toUnsignedString(decimal, 16);
+					if (MachineCodeOption.equals("Hex")) {
+						machineCodeArea.setText(hexStr + "");
+					} else if (MachineCodeOption.equals("Binary")) {
+						machineCodeArea.setText(binaryString + "");
+					}
+				} else {
+					String binaryString = pc.getInstructionsList().get(pc.getProgramCounter()).getInstructionBinary();
+					int decimal = Integer.parseUnsignedInt(binaryString, 2);
+					String hexStr = Integer.toUnsignedString(decimal, 16);
+					if (MachineCodeOption.equals("Hex")) {
+						machineCodeArea.setText(machineCodeArea.getText() + "\r\n" + hexStr.toUpperCase());
+					} else if (MachineCodeOption.equals("Binary")) {
+						machineCodeArea.setText(machineCodeArea.getText() + "\r\n" + binaryString);
+					}
+				}
 
-				// Execute Instruction
-				((GlobalVariables.pc).getInstructionsList().get((GlobalVariables.pc).getProgramCounter())).execute();
+				lblPcvalue.setText("PC = " + pc.getProgramCounter());
+				StyledDocument doc = (StyledDocument) rowLines.getDocument();
+				int start = pc.getProgramCounter() * 2;
+				int end = start + 2;
+				Style style = rowLines.addStyle("MyHilite", null);
 
-				updateRegisterFileTable();
-				updateDataMemoryTable();
+				StyleConstants.setBold(style, false);
+				doc.setCharacterAttributes(0, rowLines.getText().toString().length() - 1, style, true);
+				StyleConstants.setBold(style, true);
+				doc.setCharacterAttributes(start, end - start, style, true);
 
-				if ((GlobalVariables.pc).getProgramCounter() == (GlobalVariables.pc).getInstructionsList().size()) {
-					(GlobalVariables.pc).reset();
-					GlobalVariables.rf.reset();
-					GlobalVariables.dm.reset();
-					instructionList.clear();
+				(pc.getInstructionsList().get(pc.getProgramCounter())).execute(pc, rf, mem);
+				updateRegisterFileTable(registerFileTable, rf, pc);
+				updateDataMemoryTable(dataSegmentTable, mem);
+				if (pc.getProgramCounter() == pc.getInstructionsList().size()) {
+					pc.reset();
+					rf.reset();
+					mem.reset();
+					instArray.clear();
 				}
 
 			}
 		});
 
-		// =========================================================================================
-		// Stop Button
-		// =========================================================================================
 		stopButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				stopButton.setEnabled(false);
@@ -977,18 +677,15 @@ public class GUIInterface extends JFrame {
 			}
 		});
 
-		// =========================================================================================
-		// Assemble Button
-		// =========================================================================================
 		assembleButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				GlobalVariables.IOEditorPane.setText("");
-				(GlobalVariables.pc).reset();
-				GlobalVariables.rf.reset();
-				GlobalVariables.dm.reset();
-				instructionList.clear();
-				updateRegisterFileTable();
-				updateDataMemoryTable();
+				IOEditorPane.setText("");
+				pc.reset();
+				rf.reset();
+				mem.reset();
+				instArray.clear();
+				updateRegisterFileTable(registerFileTable, rf, pc);
+				updateDataMemoryTable(dataSegmentTable, mem);
 				lblPcvalue.setText("PC = 0");
 				machineCodeArea.setText("");
 				StyledDocument doc = (StyledDocument) rowLines.getDocument();
@@ -996,19 +693,17 @@ public class GUIInterface extends JFrame {
 				StyleConstants.setBold(style, false);
 				doc.setCharacterAttributes(0, rowLines.getText().toString().length() - 1, style, true);
 
-				DefaultTableModel model = (DefaultTableModel) GlobalVariables.textSegmentTable.getModel();
+				DefaultTableModel model = (DefaultTableModel) textSegmentTable.getModel();
 				while (model.getRowCount() > 0) {
 					model.removeRow(0);
 				}
-				
-				
 
-				
-				
+				runButton.setEnabled(true);
+				traceButton.setEnabled(true);
 				/* Reinitialise the ProgramCounter and RegisterFile */
-				(GlobalVariables.pc).reset();
-				GlobalVariables.rf.reset();
-				GlobalVariables.dm.reset();
+				pc.reset();
+				rf.reset();
+				mem.reset();
 				machineCodeArea.setText("");
 
 				/* Convert the text to array list of assembly instructions */
@@ -1021,112 +716,58 @@ public class GUIInterface extends JFrame {
 					if (inputAssemplyCode.indexOf(".data") < inputAssemplyCode.indexOf(".text")) {
 						dataSegment = inputAssemplyCode.split(".text")[0].replace(".data\r\n", "").trim();
 						textSegment = inputAssemplyCode.split(".text")[1];
-						GlobalVariables.dm.Initilaizor(dataSegment, GlobalVariables.pc, GlobalVariables.IOEditorPane);
 					} else {
 						textSegment = inputAssemplyCode.split(".data")[0].replace(".text\r\n", "").trim();
 						dataSegment = inputAssemplyCode.split(".data")[1];
-						GlobalVariables.dm.Initilaizor(dataSegment, GlobalVariables.pc, GlobalVariables.IOEditorPane);
 					}
 				} else if (inputAssemplyCode.toLowerCase().contains(".data")) {
 					dataSegment = inputCodeTextPane.getText().toString();
-					GlobalVariables.dm.Initilaizor(dataSegment, GlobalVariables.pc, GlobalVariables.IOEditorPane);
 				} else {
 					textSegment = inputCodeTextPane.getText().toString();
 				}
 
-				
-//				while( !textSegment.replaceFirst("(?m)^[ \t]*\r?\n", "").equals(textSegment) ) {
-//					textSegment = textSegment.replaceFirst("(?m)^[ \t]*\r?\n", "");
-//				}
 				// to replace all blank lines
-				String[] ab = textSegment.split("\r\n");
-				int offset = 0;
-				ArrayList<String> a = new ArrayList<String>();
-				for (int i = 0; i < ab.length; i++) {
-					a.add(ab[i].trim());
-					
-				}
+				String[] a = textSegment.replaceAll("(?m)^[ \t]*\r?\n", "").split(System.getProperty("line.separator"));
 				// ---------------------------------------------------------------------------------------------------------------
 
-				updateDataMemoryTable();
+				tabbedPane.setSelectedIndex(1);
 				// to save all @lables in programCounter
-				for (int i = 0; i < a.size(); i++) {
-					a.set(i, a.get(i).split("\\//")[0]);
-					a.set(i, a.get(i).replaceAll("\t"," "));
-					String temp = a.get(i).split(" ")[0];
-					if(a.get(i).trim().equals("")) {
-						offset++;
-					}
+				for (int i = 0; i < a.length; i++) {
+					a[i] = a[i].split("\\//")[0];
+					String temp = a[i].split(" ")[0];
 					if (temp.contains("@")) {
-						(GlobalVariables.pc).addLableAddress(a.get(i).split(" ")[0], i-offset);
-						a.set(i, a.get(i).replace(temp, "").trim().equals("") ? null
-								: a.get(i).replace(temp, "").trim());
-						
-						if(a.get(i).split(" ")[1].equals("")) {
-							i--;
-							offset++;
-						}
-						
+						pc.addLableAddress(a[i].split(" ")[0], i);
+						a[i] = a[i].replace(temp, "").trim().equals("") ? null : a[i].replace(temp, "").trim();
 					}
-				}
-				for (int i = 0; i < a.size(); i++) {
-					if (a.get(i).trim().equals("") || a.get(i) == null) {
-						instructionList.add(null);
-					}else{
-						instructionList.add(a.get(i));
+					if (a[i] != null) {
+						instArray.add(a[i]);
 					}
 				}
 
 				/* Convert assembly language into machine code */
-				assembler.fetchAssemblyInstructions(instructionList);
+				Assembler.fetchAssemblyInstruction(pc, instArray, textSegmentTable);
 
-				if (assembler.getStatus()) {
-					runButton.setEnabled(true);
-					traceButton.setEnabled(true);
-					tabbedPane.setSelectedIndex(1);
-					machineCodeBinary = "";
-					machineCodeHex = "";
-					for (int i = 0; i < (GlobalVariables.pc).getInstructionsList().size(); i++) {
-						String binaryString = (GlobalVariables.pc).getInstructionsList().get(i).getInstructionBinary();
-						machineCodeBinary += binaryString + "\r\n";
-						int decimal = Integer.parseUnsignedInt(binaryString, 2);
-						String hexStr = Integer.toUnsignedString(decimal, 16);
-						machineCodeHex += "0x" + hexStr + "\r\n";
-						if (MachineCodeOption.equals("Hex")) {
-							if (machineCodeArea.getText().equals("")) {
-								machineCodeArea.setText(hexStr + "");
-							} else {
-								machineCodeArea.setText(machineCodeArea.getText() + "\r\n" + hexStr.toUpperCase());
-							}
-						} else if (MachineCodeOption.equals("Binary")) {
-							if (machineCodeArea.getText().equals("")) {
-								machineCodeArea.setText(binaryString + "");
-							} else {
-								machineCodeArea.setText(machineCodeArea.getText() + "\r\n" + binaryString);
-							}
-						}
-
-					}
-				}
 			}
 		});
 
 	}
 
-	private void updateDataMemoryTable() {
-		int baseTemp = Integer.parseInt(GlobalVariables.dataBaseAddress, 16);
+	private void updateDataMemoryTable(JTable t, DataMemory MemoryS) {
+		int BaseTemp = Integer.parseInt(BaseDataAddress, 16);
 		for (int i = 0; i < 100; i++) {
-			GlobalVariables.dataSegmentTable.getModel().setValueAt("0x" + Integer.toString(baseTemp, 16), i, 0);
+			t.getModel().setValueAt(Integer.toString(BaseTemp, 16), i, 0);
 			for (int j = 0; j < 4; j++) {
-				GlobalVariables.dataSegmentTable.getModel().setValueAt("0x" + convert8AddressesToHex(GlobalVariables.dm, i * 32 + j * 8), i, j + 1);
+				t.getModel().setValueAt(convert8AddressesToHex(MemoryS, i * 32 + j * 8), i, j + 1);
 			}
-			baseTemp += 32;
+			BaseTemp = BaseTemp + 32;
 		}
 
 	}
 
 	private String convert8AddressesToHex(DataMemory MemoryS, int Baddress) {
+		String[] StringMemory = new String[8];
 		long TemValue = 0;
+		String DataHex = "";
 		TemValue = (long) ((int) MemoryS.getData(Baddress + (7)));
 
 		for (int i = 0; i < 7; i++) {
@@ -1149,42 +790,31 @@ public class GUIInterface extends JFrame {
 		}
 	}
 
-	private void updateRegisterFileTable() {
+	private void updateRegisterFileTable(JTable t, RegisterFile r, ProgramCounter pc) {
 		for (int i = 0; i < 32; i++) {
-			Long registerValue = GlobalVariables.rf.getRegister(i);
-
 			if (RegistersOption[i].equals("Decimal")) {
-				GlobalVariables.registerFileTable.getModel().setValueAt(GlobalVariables.rf.getRegister(i), i, 1);
-			} else if (RegistersOption[i].equals("Hex")) {
-				String hexValueExtended = String.format("%016X", registerValue);
-				GlobalVariables.registerFileTable.getModel().setValueAt(registerValue >= 0 ? "0x" + hexValueExtended
-						: "0x" + Long.toHexString(registerValue).toUpperCase(), i, 1);
-			} else if (RegistersOption[i].equals("Binary")) {
-				GlobalVariables.registerFileTable.getModel().setValueAt(Long.toBinaryString(registerValue), i, 1);
+				t.getModel().setValueAt(r.getRegister(i), i, 2);
+			}else if(RegistersOption[i].equals("Hex")) {
+				t.getModel().setValueAt(Long.toString(r.getRegister(i), 16).toUpperCase(), i, 2);
+			}else if(RegistersOption[i].equals("Binary")) {
+				t.getModel().setValueAt(Long.toBinaryString(r.getRegister(i)), i, 2);
 			}
 		}
-
-	}
-
-	class FileTypeFilter extends FileFilter {
-		private String extension;
-		private String description;
-
-		public FileTypeFilter(String extension, String description) {
-			this.extension = extension;
-			this.description = description;
-		}
-
-		public boolean accept(File file) {
-			if (file.isDirectory()) {
-				return true;
-			}
-			return file.getName().endsWith(extension);
-		}
-
-		public String getDescription() {
-			return description + String.format(" (*%s)", extension);
-		}
+		
+		
+//		if (RegistersOption.equals("Decimal"))
+//			for (int i = 0; i < 32; i++) {
+//				t.getModel().setValueAt(r.getRegister(i), i, 2);
+//			}
+//		else if (RegistersOption.equals("Hex"))
+//			for (int i = 0; i < 32; i++) {
+//
+//				t.getModel().setValueAt(Long.toString(r.getRegister(i), 16).toUpperCase(), i, 2);
+//			}
+//		else if (RegistersOption.equals("Binary"))
+//			for (int i = 0; i < 32; i++) {
+//				t.getModel().setValueAt(Long.toBinaryString(r.getRegister(i)), i, 2);
+//			}
 	}
 
 	class ExecutingThread implements Runnable {
@@ -1192,34 +822,41 @@ public class GUIInterface extends JFrame {
 
 		public void terminate() {
 			terminateFlag = true;
-			GlobalVariables.IOEditorPane.setText(GlobalVariables.IOEditorPane.getText() + "Program is terminated.\r\n");
-
 		}
 
 		public void run() {
-
 			assembleButton.setEnabled(false);
 			count = 1;
-			GlobalVariables.IOEditorPane.setText(GlobalVariables.IOEditorPane.getText() + "Program is running.\r\n");
+			while (!terminateFlag && pc.getProgramCounter() < pc.getInstructionsList().size()) {
+				if (pc.getProgramCounter() >= 1)
+					textSegmentTable.getModel().setValueAt("", pc.getProgramCounter() - 1, 3);
+				textSegmentTable.getModel().setValueAt("Executed", pc.getProgramCounter(), 3);
 
-			while (!terminateFlag
-					&& (GlobalVariables.pc).getProgramCounter() < (GlobalVariables.pc).getInstructionsList().size()) {
-
-				if ((GlobalVariables.pc).getProgramCounter() >= 1)
-					GlobalVariables.textSegmentTable.getModel().setValueAt("",
-							(GlobalVariables.pc).getProgramCounter() - 1, 3);
-				GlobalVariables.textSegmentTable.getModel().setValueAt("Executed",
-						(GlobalVariables.pc).getProgramCounter(), 3);
-
-				// Update the value of the PCLabel
-				lblPcvalue.setText("PC = " + (GlobalVariables.pc).getProgramCounter());
+				/* Print Machine Code Binary */
+				String binaryString = pc.getInstructionsList().get(pc.getProgramCounter()).getInstructionBinary();
+				int decimal = Integer.parseUnsignedInt(binaryString, 2);
+				String hexStr = Integer.toUnsignedString(decimal, 16);
+				if (MachineCodeOption.equals("Hex")) {
+					if (machineCodeArea.getText().equals("")) {
+						machineCodeArea.setText(hexStr + "");
+					} else {
+						machineCodeArea.setText(machineCodeArea.getText() + "\r\n" + hexStr.toUpperCase());
+					}
+				} else if (MachineCodeOption.equals("Binary")) {
+					if (machineCodeArea.getText().equals("")) {
+						machineCodeArea.setText(binaryString + "");
+					} else {
+						machineCodeArea.setText(machineCodeArea.getText() + "\r\n" + binaryString);
+					}
+				}
 
 				// Execute Instruction
-
-				((GlobalVariables.pc).getInstructionsList().get((GlobalVariables.pc).getProgramCounter())).execute();
-
-				updateRegisterFileTable();
-				updateDataMemoryTable();
+				if((pc.getInstructionsList().get(pc.getProgramCounter())).getClass().getName().equals("IInstruction")) 
+					(pc.getInstructionsList().get(pc.getProgramCounter())).execute(pc, rf, mem, IOEditorPane);
+				else
+					(pc.getInstructionsList().get(pc.getProgramCounter())).execute(pc, rf, mem);
+				updateRegisterFileTable(registerFileTable, rf, pc);
+				updateDataMemoryTable(dataSegmentTable, mem);
 
 				// Determine the frequency speed
 				if (frequencySpeed != -1 && count == frequencySpeed) {
@@ -1236,14 +873,11 @@ public class GUIInterface extends JFrame {
 			}
 			// =================================================================================================
 
-			GlobalVariables.IOEditorPane
-					.setText(GlobalVariables.IOEditorPane.getText() + "\r\nProgram is finished.\r\n");
 			terminateFlag = false;
-			(GlobalVariables.pc).reset();
-			instructionList.clear();
+			pc.reset();
+			instArray.clear();
 			assembleButton.setEnabled(true);
 			stopButton.setEnabled(false);
-
 		}
 
 	}

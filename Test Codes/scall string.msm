@@ -1,0 +1,8 @@
+.data
+@Label1 .space 0
+
+.text
+set R0=@Label1
+set R1= 5
+SCALL 9
+SCALL 4
